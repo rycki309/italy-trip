@@ -7,371 +7,707 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./D31A2BD6-5684-4EAC-81E3-748CEA0C0E7C.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Italy 2026">
 <title>Italy 2026 🇮🇹</title>
 
 <style>
 :root{
-  --bg:#f7f4ed;
+  --green:#173b32;
+  --green2:#24594b;
+  --cream:#f7f4ed;
   --card:#fff;
   --ink:#202522;
   --muted:#68706b;
-  --green:#173b32;
-  --cream:#f7f4ed;
-  --yellow:#fff1b8;
   --line:#e4e0d8;
+  --yellow:#fff1b8;
+  --red:#b43b32;
+  --shadow:0 4px 18px rgba(32,37,34,.08);
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  padding-bottom:95px;
-}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
 header{
   background:var(--green);
-  color:white;
-  padding:calc(18px + env(safe-area-inset-top)) 18px 18px;
+  color:#fff;
+  padding:calc(14px + env(safe-area-inset-top)) 18px 18px;
+  position:sticky;
+  top:0;
+  z-index:20;
 }
-header h1{margin:0;font-size:27px}
-header p{margin:5px 0 0;opacity:.8}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:22px;margin:0}
+header .sub{font-size:13px;opacity:.82;margin-top:3px}
 
-main{padding:14px;max-width:650px;margin:auto}
-.page{display:none}
-.page.active{display:block}
+.search-btn{
+  border:0;background:rgba(255,255,255,.14);color:#fff;
+  width:42px;height:42px;border-radius:14px;font-size:19px
+}
+
+.quickbar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+  padding:10px 12px;background:#fff;border-bottom:1px solid var(--line);
+  position:sticky;top:76px;z-index:15
+}
+.quickbar button{
+  border:1px solid var(--line);background:#fff;border-radius:12px;
+  padding:9px 3px;font-size:12px;font-weight:700;color:var(--green)
+}
+
+main{max-width:720px;margin:auto;padding:15px}
+.screen{display:none}
+.screen.active{display:block}
+
+.hero{
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#fff;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow)
+}
+.hero h2{margin:0 0 5px;font-size:25px}
+.hero p{margin:0;opacity:.88}
 
 .card{
-  background:var(--card);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  background:var(--card);border:1px solid var(--line);
+  border-radius:18px;padding:16px;margin:12px 0;box-shadow:var(--shadow)
 }
-.card h2,.card h3{margin:0 0 10px}
-.row{
-  padding:9px 0;
-  border-bottom:1px solid var(--line);
-  line-height:1.4;
+.card h3{margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px}
+
+.day-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 14px}
+.day-nav button,.soft-btn{
+  border:1px solid var(--line);background:#fff;border-radius:12px;
+  padding:10px 12px;color:var(--green);font-weight:700
 }
-.row:last-child{border-bottom:0}
-.label{font-weight:700}
-.optional{
-  background:var(--yellow);
-  padding:12px;
-  border-radius:12px;
-  margin:8px 0;
+.day-label{text-align:center;font-weight:800;flex:1}
+
+.easy{
+  width:100%;border:1px solid #ead47c;background:var(--yellow);
+  padding:12px;border-radius:14px;font-weight:800;margin-bottom:12px
 }
-.easy{font-weight:700;color:#34764d}
-.medium{font-weight:700;color:#9b6814}
-.small{color:var(--muted);font-size:14px}
-button.nav{
-  border:0;
-  background:none;
-  font-size:12px;
-  color:#555;
-  min-width:58px;
+.easy.on{background:#ffe27a}
+
+.period{
+  font-size:13px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--green);font-weight:900;margin:20px 4px 7px
 }
-button.nav span{
-  display:block;
-  font-size:23px;
-  margin-bottom:3px;
+.activity{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  margin:8px 0;padding:13px
 }
-nav{
-  position:fixed;
-  left:0;right:0;bottom:0;
-  padding:8px 5px calc(8px + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.96);
-  border-top:1px solid #ddd;
-  display:flex;
-  justify-content:space-around;
-  z-index:10;
+.activity.done{opacity:.55}
+.activity.skipped{opacity:.55}
+.activity-top{display:flex;gap:10px;align-items:flex-start}
+.check{
+  width:30px;height:30px;flex:0 0 30px;border-radius:50%;
+  border:2px solid #b8bdb9;background:#fff;font-weight:900
 }
-a{
-  color:#176a57;
-  font-weight:600;
+.done .check{background:var(--green);color:#fff;border-color:var(--green)}
+.activity-title{font-weight:800;line-height:1.25}
+.time{font-size:12px;color:var(--muted);margin-bottom:2px}
+.note{font-size:13px;color:var(--muted);margin-top:7px}
+.tag{
+  display:inline-block;font-size:11px;font-weight:800;border-radius:999px;
+  padding:5px 8px;margin:7px 5px 0 0;background:#edf3f0;color:var(--green)
 }
-.notice{
-  padding:12px;
-  border-radius:12px;
-  background:#e8f1ec;
-  margin-bottom:12px;
+.tag.yellow{background:var(--yellow);color:#68520a}
+.activity-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.activity-actions button{
+  border:1px solid var(--line);background:#fafafa;border-radius:10px;
+  padding:7px 9px;font-size:12px;font-weight:700
 }
+
+.place{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:15px;
+  padding:13px;margin:8px 0
+}
+.place strong{display:block}
+.place small{display:block;color:var(--muted);margin-top:3px}
+.navigate{
+  border:0;background:var(--green);color:#fff;border-radius:11px;
+  padding:9px 11px;font-weight:800;white-space:nowrap
+}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big-tile{
+  min-height:105px;border:1px solid var(--line);background:#fff;border-radius:18px;
+  padding:16px;text-align:left;box-shadow:var(--shadow)
+}
+.big-tile .emoji{font-size:27px}
+.big-tile strong{display:block;margin-top:8px}
+
+.progress{height:9px;background:#ece9e1;border-radius:20px;overflow:hidden;margin:9px 0}
+.progress span{display:block;height:100%;background:var(--green)}
+
+.list-row{
+  display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)
+}
+.list-row:last-child{border-bottom:0}
+.list-row input{width:21px;height:21px;margin-top:1px}
+.list-row strong{display:block}
+.list-row small{color:var(--muted)}
+
+.phrase{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:14px;margin:9px 0
+}
+.phrase-it{font-size:19px;font-weight:900}
+.phrase-say{color:var(--green);font-weight:700;margin-top:3px}
+.phrase-en{color:var(--muted);margin-top:4px}
+.show-btn{
+  border:0;background:var(--green);color:#fff;border-radius:11px;
+  padding:9px 11px;margin-top:9px;font-weight:800
+}
+
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px
+}
+.modal-box{
+  width:min(600px,100%);max-height:88vh;overflow:auto;
+  background:#fff;border-radius:24px;padding:22px
+}
+.modal-close{float:right;border:0;background:#eee;border-radius:50%;width:36px;height:36px}
+.show-italian{text-align:center;font-size:38px;font-weight:900;margin:55px 0 12px}
+.show-english{text-align:center;font-size:20px;color:var(--muted);margin-bottom:30px}
+
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  background:#fff;border-top:1px solid var(--line);
+  padding:7px 4px calc(7px + env(safe-area-inset-bottom))
+}
+.bottom-nav button{
+  border:0;background:transparent;color:#747a76;padding:5px 1px;
+  font-size:10px;font-weight:800
+}
+.bottom-nav .icon{display:block;font-size:21px;margin-bottom:2px}
+.bottom-nav button.active{color:var(--green)}
+
+.status{
+  display:inline-flex;align-items:center;gap:6px;background:#edf3f0;
+  color:var(--green);padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800
+}
+.warning{background:var(--yellow);padding:12px;border-radius:13px;font-size:13px}
+.danger{background:#fff0ee;color:var(--red)}
+@media(min-width:700px){main{padding:24px}.grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Rycki + Dennis 🇮🇹</h1>
-<p>Rome → Florence · Oct 28–Nov 2, 2026</p>
+  <div class="header-row">
+    <div>
+      <h1>Italy 2026 🇮🇹</h1>
+      <div class="sub" id="headerSub">Rycki + Dennis</div>
+    </div>
+    <button class="search-btn" onclick="openSearch()">🔎</button>
+  </div>
 </header>
+
+<div class="quickbar">
+  <button onclick="hotelShortcut()">🏨 Hotel</button>
+  <button onclick="showScreen('map')">🧭 Navigate</button>
+  <button onclick="taxiShortcut()">🚕 Taxi</button>
+  <button onclick="showHelp()">🆘 Help</button>
+</div>
 
 <main>
 
-<section id="today" class="page active">
-<div class="notice">
-<strong>📴 Offline trip guide</strong><br>
-The important information is written directly into this app.
-</div>
-
-<div class="card">
-<h2>✈️ Wed Oct 28 · Rome</h2>
-<div class="easy">🟢 EASY DAY</div>
-<div class="row"><span class="label">⭐ Plan:</span> Airport → hotel → unpack → shower → REST.</div>
-<div class="optional"><strong>🟡 If feeling good:</strong><br>20–45 minute Prati wander + Be.Re./Trapizzino.</div>
-<div class="row"><span class="label">🍺 Dinner:</span> Be.Re. + Trapizzino, Piazza del Risorgimento 7/A.</div>
-<div class="row"><span class="label">😴 Tired?</span> Skip the wander. Hotel + nearby seated dinner.</div>
-</div>
-
-<div class="card">
-<h2>🏛️ Thu Oct 29 · Ancient Rome</h2>
-<div class="medium">🟡 MODERATE</div>
-<div class="row"><span class="label">⭐ Main:</span> Colosseum around 10 AM · 1.5–2 hr.</div>
-<div class="optional"><strong>🟡 Optional:</strong><br>Palatine Hill · 45–60 min max. Hilly/uneven.</div>
-<div class="row"><span class="label">🍝 Rest:</span> Long seated lunch + optional 1–2 hr hotel reset.</div>
-<div class="row"><span class="label">🌆 Evening:</span> Taxi to Trastevere. Wander, eat and drink.</div>
-<div class="row"><span class="label">🍺 Bonus:</span> Ma Che Siete Venuti A Fà only if seating/energy cooperate.</div>
-<div class="row"><span class="label">🎟️:</span> Colosseum still needs booking.</div>
-</div>
-
-<div class="card">
-<h2>⛲ Fri Oct 30 · Classic Rome</h2>
-<div class="medium">🟡 MODERATE</div>
-<div class="row"><span class="label">10:30ish:</span> Piazza Navona.</div>
-<div class="row"><span class="label">11:15ish:</span> Pantheon INSIDE.</div>
-<div class="row"><span class="label">Then:</span> Trevi Fountain → Spanish Steps bottom.</div>
-<div class="row"><span class="label">🍝:</span> Long seated lunch.</div>
-<div class="row"><span class="label">😴:</span> Taxi back to hotel · rest ~3–5:30.</div>
-<div class="row"><span class="label">🍺 Evening:</span> Open Baladin for seated dinner + craft beer.</div>
-<div class="row"><span class="label">🎟️:</span> Pantheon still needs booking.</div>
-</div>
-
-<div class="card">
-<h2>🚆 Sat Oct 31 · Florence</h2>
-<div class="medium">🟡 MODERATE</div>
-<div class="row"><span class="label">10:15ish:</span> Checkout → taxi to Termini.</div>
-<div class="row"><span class="label">🚆 BOOKED:</span> 11:50 Roma Termini → Firenze SMN ~1:31.</div>
-<div class="row"><span class="label">🏨:</span> Taxi to Hotel Milu. Check-in from 3 PM.</div>
-<div class="optional"><strong>🟡 If feeling good:</strong><br>Duomo exterior → Signoria → Ponte Vecchio → Oltrarno/Santo Spirito.</div>
-<div class="row"><span class="label">🍺 Dinner:</span> Rione Brewpub.</div>
-<div class="row"><span class="label">😴 Tired?</span> Hotel rest → Rione → bed.</div>
-</div>
-
-<div class="card">
-<h2>🗿 Sun Nov 1 · Florence</h2>
-<div class="medium">🟠 MODERATE+</div>
-<div class="row"><span class="label">⭐ Main:</span> Accademia / David · ~1–1.5 hr.</div>
-<div class="row"><span class="label">🍝:</span> Sit-down lunch → hotel reset 1–2 hr.</div>
-<div class="optional"><strong>🟡 Boboli:</strong><br>45–90 minutes if Dennis feels good. Hilly/gravel. Don't automatically skip it!</div>
-<div class="row"><span class="label">🌅:</span> Piazzale Michelangelo by BUS/TAXI uphill.</div>
-<div class="row"><strong>🚫 No strenuous uphill walk.</strong></div>
-<div class="row"><span class="label">🍽️:</span> Relaxed final dinner.</div>
-</div>
-
-<div class="card">
-<h2>✈️ Mon Nov 2 · Split Day</h2>
-<div class="easy">🟢 EASY</div>
-<div class="row"><span class="label">Morning:</span> Breakfast + pack. No sightseeing.</div>
-<div class="row"><span class="label">Dennis:</span> Hotel-arranged taxi → FLR.</div>
-<div class="row"><span class="label">Rycki:</span> Employer transfer toward Colle di Val d'Elsa.</div>
-<div class="row"><span class="label">⚠️ Need:</span> Work house exact pin + pickup time/contact.</div>
-</div>
+<section id="plans" class="screen active">
+  <div id="plansContent"></div>
 </section>
 
-<section id="go" class="page">
-<div class="card">
-<h2>📍 Rome Home Base</h2>
-<div class="row"><strong>Little Heaven / Suri Suites</strong><br>Via Candia 41, Roma</div>
-<div class="row">🚇 Nearest Metro: Ottaviano · Line A</div>
-<div class="row">🚕 Taxi: 06 0609 / 06 3570</div>
-</div>
-
-<div class="card">
-<h3>🏛️ Hotel → Colosseum</h3>
-<div class="row">Metro A: Ottaviano toward <strong>Anagnina</strong> → Termini.</div>
-<div class="row">Change to Metro B toward <strong>Laurentina</strong> → Colosseo.</div>
-<div class="row">⏱️ Allow roughly 30–45 minutes including transfer.</div>
-<div class="row">😴 Easy option: taxi.</div>
-</div>
-
-<div class="card">
-<h3>⛲ Oct 30 Walking Route</h3>
-<div class="row">Hotel → Piazza Navona: taxi preferred.</div>
-<div class="row">Navona → Pantheon: walk ~5–7 min.</div>
-<div class="row">Pantheon → Trevi: walk ~10–12 min.</div>
-<div class="row">Trevi → Spanish Steps: walk ~10–12 min.</div>
-<div class="row">Spanish Steps → hotel: taxi for your planned rest.</div>
-<div class="row">Hotel → Open Baladin: taxi.</div>
-</div>
-
-<div class="card">
-<h2>📍 Florence Home Base</h2>
-<div class="row"><strong>Hotel Milu</strong><br>Via de’ Tornabuoni 8, Firenze</div>
-<div class="row">🚕 Taxi: 055 4242 / 055 4390</div>
-</div>
-
-<div class="card">
-<h3>🚶 Florence Center</h3>
-<div class="row">Milu → Duomo: ~8–10 min.</div>
-<div class="row">Duomo → Signoria: ~8–10 min.</div>
-<div class="row">Signoria → Ponte Vecchio: ~5–7 min.</div>
-<div class="row">Ponte Vecchio → Santo Spirito: ~8–10 min.</div>
-<div class="row">Santo Spirito → Rione: ~12–15 min. Taxi if tired.</div>
-</div>
-
-<div class="card">
-<h3>🌳 Nov 1</h3>
-<div class="row">Milu → Accademia: walk ~15–18 min OR taxi.</div>
-<div class="row">Milu → Boboli: taxi preferred.</div>
-<div class="row">Boboli → Piazzale Michelangelo: <strong>bus/taxi uphill.</strong></div>
-<div class="row">If Boboli is skipped: taxi Milu → Piazzale.</div>
-</div>
+<section id="map" class="screen">
+  <div class="hero">
+    <h2>🗺️ Navigate</h2>
+    <p>Choose a destination here. Apple Maps handles the actual map and directions.</p>
+  </div>
+  <div class="card">
+    <button class="soft-btn" style="width:100%;margin-bottom:8px" onclick="hotelShortcut()">🏨 Take Me to My Hotel</button>
+    <button class="soft-btn" style="width:100%" onclick="findMe()">📍 Find My Location</button>
+  </div>
+  <div id="mapPlaces"></div>
 </section>
 
-<section id="food" class="page">
-<div class="card">
-<h2>🍺 Rome</h2>
-<div class="row"><strong>⭐ Be.Re. + Trapizzino</strong><br>Piazza del Risorgimento 7/A<br>Great arrival-night option near hotel.</div>
-<div class="row"><strong>⭐ Open Baladin Roma</strong><br>Via degli Specchi 6<br>Big Italian craft selection + full food + seating.</div>
-<div class="row"><strong>🍺 Ma Che Siete Venuti A Fà</strong><br>Via Benedetta 25<br>Excellent beer, but small. Bonus only if seating works.</div>
-</div>
-
-<div class="card">
-<h2>🍺 Florence</h2>
-<div class="row"><strong>⭐ Rione Brewpub</strong><br>Via Pisana 1R<br>Preferred Saturday beer dinner.</div>
-<div class="row"><strong>🍺 Archea Brewery</strong><br>Via dei Serragli 44R<br>Bonus beer-specialist stop.</div>
-<div class="row"><strong>Backup:</strong> Chianti Brew Fighters · Via Pisana 80R.</div>
-<div class="row"><strong>Backup:</strong> Alibi Craft Beer & Kitchen · Via Faenza 21R.</div>
-</div>
-
-<div class="card">
-<h2>🍽️ Useful Italian</h2>
-<div class="row"><strong>Un tavolo per due, per favore.</strong><br>A table for two, please.</div>
-<div class="row"><strong>Una birra, per favore.</strong><br>A beer, please.</div>
-<div class="row"><strong>Acqua naturale</strong> = still water.</div>
-<div class="row"><strong>Acqua frizzante</strong> = sparkling water.</div>
-<div class="row"><strong>Il conto, per favore.</strong><br>The check, please.</div>
-</div>
+<section id="lists" class="screen">
+  <div class="hero">
+    <h2>☑️ Lists</h2>
+    <p>Get ready without keeping everything in your head.</p>
+  </div>
+  <div id="listsContent"></div>
 </section>
 
-<section id="tickets" class="page">
-<div class="card">
-<h2>🟠 Colosseum</h2>
-<div class="row"><strong>NOT BOOKED</strong></div>
-<div class="row">Thu Oct 29 · aim ~10 AM.</div>
-<div class="row">Full Experience + Arena · €24/adult desired.</div>
-<div class="row">€48 total for 2.</div>
-</div>
-
-<div class="card">
-<h2>🟠 Pantheon</h2>
-<div class="row"><strong>NOT BOOKED</strong></div>
-<div class="row">Fri Oct 30 · desired 11 AM–12 PM.</div>
-<div class="row">€7/adult · €14 total.</div>
-<div class="row">Previous online card payment declined. Retry later; on-site ticket office is backup.</div>
-</div>
-
-<div class="card">
-<h2>🟢 Accademia</h2>
-<div class="row">Sun Nov 1.</div>
-<div class="row">First Sunday: free admission / no advance reservation planned.</div>
-<div class="row">⚠️ Nov 1 is also All Saints' Day. Verify official hours before trip.</div>
-</div>
-
-<div class="card">
-<h2>🟡 Boboli</h2>
-<div class="row">Optional Sun Nov 1.</div>
-<div class="row">45–90 minute short visit.</div>
-<div class="row">Verify Nov 1 hours/free-Sunday policy before trip.</div>
-</div>
-
-<div class="card">
-<h2>🟢 Train — BOOKED</h2>
-<div class="row"><strong>Sat Oct 31 · 11:50 AM</strong></div>
-<div class="row">Roma Termini → Firenze Santa Maria Novella.</div>
-<div class="row">Arrive ~1:31 PM.</div>
-<div class="row">📸 Save ticket screenshot before leaving the U.S.</div>
-</div>
+<section id="italian" class="screen">
+  <div class="hero">
+    <h2>🇮🇹 Italian</h2>
+    <p>Tap a situation. Everything here works offline.</p>
+  </div>
+  <div id="italianContent"></div>
 </section>
 
-<section id="help" class="page">
-<div class="card">
-<h2>🆘 Offline Essentials</h2>
-<div class="row"><strong>Emergency:</strong> 112</div>
-<div class="row"><strong>Rome taxi:</strong> 06 0609 / 06 3570</div>
-<div class="row"><strong>Florence taxi:</strong> 055 4242 / 055 4390</div>
-</div>
-
-<div class="card">
-<h2>🏨 Addresses</h2>
-<div class="row"><strong>Rome:</strong><br>Via Candia 41, Roma</div>
-<div class="row"><strong>Florence:</strong><br>Hotel Milu<br>Via de’ Tornabuoni 8, Firenze</div>
-</div>
-
-<div class="card">
-<h2>🇮🇹 Show a Driver</h2>
-<div class="row"><strong>Via Candia quarantuno, per favore.</strong><br>Via Candia 41, please.</div>
-<div class="row"><strong>Via de’ Tornabuoni otto, per favore.</strong><br>Via de’ Tornabuoni 8, please.</div>
-<div class="row"><strong>Stazione Roma Termini, per favore.</strong></div>
-<div class="row"><strong>Stazione Santa Maria Novella, per favore.</strong></div>
-<div class="row"><strong>Aeroporto di Firenze, per favore.</strong></div>
-</div>
-
-<div class="card">
-<h2>🇮🇹 Help</h2>
-<div class="row"><strong>Dov'è il bagno?</strong><br>Where is the bathroom?</div>
-<div class="row"><strong>Parla inglese?</strong><br>Do you speak English?</div>
-<div class="row"><strong>Aiuto, per favore.</strong><br>Help, please.</div>
-<div class="row"><strong>Chiami il 112, per favore.</strong><br>Call 112, please.</div>
-</div>
-
-<div class="card">
-<h2>📴 Before Leaving Home</h2>
-<div class="row">⬜ Download Rome offline map.</div>
-<div class="row">⬜ Download Florence offline map.</div>
-<div class="row">⬜ Screenshot train ticket.</div>
-<div class="row">⬜ Screenshot hotel confirmations.</div>
-<div class="row">⬜ Save flight confirmations/boarding passes.</div>
-<div class="row">⬜ Save attraction tickets.</div>
-<div class="row">⬜ Charge power bank.</div>
-<div class="row">⬜ Get Rycki's work-house exact address/pin + transfer contact.</div>
-</div>
-
-<div class="card">
-<h2>💳 Quick Reminders</h2>
-<div class="row">Choose <strong>EUR</strong>, not USD, if a payment terminal asks.</div>
-<div class="row">Keep a backup card separate.</div>
-<div class="row">Carry modest cash.</div>
-</div>
+<section id="more" class="screen">
+  <div class="hero">
+    <h2>••• More</h2>
+    <p>Trip details, saved places, tickets, money and offline tools.</p>
+  </div>
+  <div id="moreContent"></div>
 </section>
 
 </main>
 
-<nav>
-<button class="nav" onclick="show('today')"><span>📅</span>Today</button>
-<button class="nav" onclick="show('go')"><span>📍</span>Go</button>
-<button class="nav" onclick="show('food')"><span>🍝</span>Eat</button>
-<button class="nav" onclick="show('tickets')"><span>🎟️</span>Tickets</button>
-<button class="nav" onclick="show('help')"><span>🆘</span>Help</button>
+<nav class="bottom-nav">
+  <button class="active" data-screen="plans" onclick="showScreen('plans',this)"><span class="icon">🗓️</span>Plans</button>
+  <button data-screen="map" onclick="showScreen('map',this)"><span class="icon">🗺️</span>Map</button>
+  <button data-screen="lists" onclick="showScreen('lists',this)"><span class="icon">☑️</span>Lists</button>
+  <button data-screen="italian" onclick="showScreen('italian',this)"><span class="icon">🇮🇹</span>Italian</button>
+  <button data-screen="more" onclick="showScreen('more',this)"><span class="icon">•••</span>More</button>
 </nav>
 
-<script>
-function show(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- window.scrollTo({top:0,behavior:'smooth'});
-}
-</script>
+<div id="modal" class="modal hidden" onclick="modalBackdrop(event)">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script src="./trip-core.js"></script>
+<script src="./trip-itinerary.js"></script>
+<script src="./trip-places.js"></script>
+<script src="./trip-italian.js"></script>
+<script src="./trip-lists.js"></script>
+<script src="./trip-reference.js"></script>
 
 <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
+const STORAGE_KEY="italy2026-v2-user";
+const defaultUser={
+  activities:{},
+  tasks:{},
+  packing:{},
+  favorites:{},
+  notes:{},
+  customPlaces:[],
+  easyDay:false,
+  exchangeRate:null,
+  privateInfo:{},
+  mapDownloads:{rome:false,florence:false},
+  lastOfflineTest:null
+};
+
+let user=loadUser();
+let selectedDate=getDefaultDate();
+let phraseCategory=null;
+
+function loadUser(){
+  try{
+    return Object.assign({},defaultUser,JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"));
+  }catch(e){return {...defaultUser}}
+}
+function saveUser(){localStorage.setItem(STORAGE_KEY,JSON.stringify(user))}
+
+function showScreen(id,btn){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));
+  const b=btn||document.querySelector('[data-screen="'+id+'"]');
+  if(b)b.classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function getDefaultDate(){
+  const today=new Date();
+  const iso=[
+    today.getFullYear(),
+    String(today.getMonth()+1).padStart(2,"0"),
+    String(today.getDate()).padStart(2,"0")
+  ].join("-");
+  const dates=ITALY_TRIP_ITINERARY.map(d=>d.date);
+  if(dates.includes(iso))return iso;
+  if(iso<dates[0])return dates[0];
+  return dates[dates.length-1];
+}
+
+function datePretty(iso){
+  return new Date(iso+"T12:00:00").toLocaleDateString("en-US",{
+    weekday:"long",month:"short",day:"numeric"
   });
 }
-</script>
 
+function activityKey(day,index){return day.date+"-"+index}
+
+function activityState(day,index){
+  return user.activities[activityKey(day,index)]||"pending";
+}
+
+function cycleActivity(day,index){
+  const key=activityKey(day,index);
+  const now=activityState(day,index);
+  user.activities[key]=now==="pending"?"done":now==="done"?"pending":"done";
+  saveUser();renderPlans();
+}
+
+function skipActivity(day,index){
+  const key=activityKey(day,index);
+  user.activities[key]=activityState(day,index)==="skipped"?"pending":"skipped";
+  saveUser();renderPlans();
+}
+
+function easyLabel(a){
+  if(!user.easyDay||!a.easy)return "";
+  const labels={
+    "skip-first":"SKIP FIRST IF TIRED",
+    "taxi":"🚕 TAXI RECOMMENDED",
+    "protect-rest":"🛏️ PROTECT THIS REST"
+  };
+  return labels[a.easy]||"KEEP ❤️";
+}
+
+function renderPlans(){
+  const el=document.getElementById("plansContent");
+  const dates=ITALY_TRIP_ITINERARY.map(x=>x.date);
+  const day=ITALY_TRIP_ITINERARY.find(x=>x.date===selectedDate)||ITALY_TRIP_ITINERARY[0];
+  const idx=dates.indexOf(day.date);
+
+  let html=`
+    <div class="hero">
+      <h2>${datePretty(day.date)}</h2>
+      <p>${day.city} · ${day.title}</p>
+    </div>
+    <div class="day-nav">
+      <button onclick="changeDay(-1)" ${idx===0?"disabled":""}>←</button>
+      <div class="day-label">${day.city}<br><span class="muted">${day.effort} day</span></div>
+      <button onclick="changeDay(1)" ${idx===dates.length-1?"disabled":""}>→</button>
+    </div>
+    <button class="easy ${user.easyDay?"on":""}" onclick="toggleEasy()">❤️ Easy Day: ${user.easyDay?"ON":"OFF"}</button>
+  `;
+
+  let current="";
+  day.activities.forEach((a,i)=>{
+    if(a.period!==current){
+      current=a.period;
+      html+=`<div class="period">${current}</div>`;
+    }
+    const state=activityState(day,i);
+    const easy=easyLabel(a);
+    html+=`
+      <div class="activity ${state}">
+        <div class="activity-top">
+          <button class="check" onclick="cycleActivity(ITALY_TRIP_ITINERARY[${idx}],${i})">${state==="done"?"✓":""}</button>
+          <div style="flex:1">
+            ${a.time?`<div class="time">${a.time}</div>`:""}
+            <div class="activity-title">${a.title}</div>
+            ${a.note?`<div class="note">${a.note}</div>`:""}
+            ${a.type==="optional"?`<span class="tag yellow">OPTIONAL</span>`:""}
+            ${a.type==="booked"?`<span class="tag">BOOKED</span>`:""}
+            ${easy?`<span class="tag yellow">${easy}</span>`:""}
+            <div class="activity-actions">
+              ${a.place?`<button onclick="navigateTo('${a.place}')">🧭 Navigate</button>`:""}
+              ${a.type==="optional"?`<button onclick="skipActivity(ITALY_TRIP_ITINERARY[${idx}],${i})">${state==="skipped"?"↩ Restore":"Skip"}</button>`:""}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+function changeDay(n){
+  const dates=ITALY_TRIP_ITINERARY.map(x=>x.date);
+  let i=dates.indexOf(selectedDate)+n;
+  if(i>=0&&i<dates.length){selectedDate=dates[i];renderPlans()}
+}
+
+function toggleEasy(){user.easyDay=!user.easyDay;saveUser();renderPlans()}
+
+function getPlace(id){return ITALY_TRIP_PLACES.find(p=>p.id===id)}
+
+function appleMaps(place){
+  const q=encodeURIComponent(place.address||place.name);
+  return "https://maps.apple.com/?q="+q;
+}
+function navigateTo(id){
+  const p=getPlace(id);
+  if(p)location.href=appleMaps(p);
+}
+function hotelShortcut(){
+  const day=ITALY_TRIP_ITINERARY.find(x=>x.date===selectedDate);
+  navigateTo(day&&day.city==="Florence"?"florence-hotel":"rome-hotel");
+}
+function taxiShortcut(){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🚕 Taxi</h2>
+    <p><strong>Rome:</strong> 06 0609 or 06 3570</p>
+    <p><strong>Florence:</strong> 055 4242 or 055 4390</p>
+    <div class="warning">When possible, have the hotel or restaurant call the taxi for you.</div>
+    <button class="show-btn" onclick="showPhraseText('Può portarci qui?','Can you take us here?')">🇮🇹 Show taxi phrase</button>
+  `);
+}
+function findMe(){
+  if(!navigator.geolocation){
+    alert("Location is not available on this device.");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    p=>location.href=`https://maps.apple.com/?ll=${p.coords.latitude},${p.coords.longitude}`,
+    ()=>alert("Location permission was not available.")
+  );
+}
+
+function renderMap(){
+  const el=document.getElementById("mapPlaces");
+  ["Rome","Florence"].forEach(city=>{
+    el.innerHTML+=`<div class="period">${city}</div>`;
+    ITALY_TRIP_PLACES.filter(p=>p.city===city).forEach(p=>{
+      el.innerHTML+=`
+        <div class="place">
+          <div><strong>${p.name}</strong><small>${p.address}</small></div>
+          <button class="navigate" onclick="navigateTo('${p.id}')">Go</button>
+        </div>`;
+    });
+  });
+}
+
+function taskKey(type,i){return type+"-"+i}
+function toggleList(type,i){
+  const store=type==="packing"?user.packing:user.tasks;
+  store[taskKey(type,i)]=!store[taskKey(type,i)];
+  saveUser();renderLists();
+}
+
+function progressFor(type,total){
+  const store=type==="packing"?user.packing:user.tasks;
+  const done=Object.values(store).filter(Boolean).length;
+  return total?Math.min(100,Math.round(done/total*100)):0;
+}
+
+function renderLists(){
+  const el=document.getElementById("listsContent");
+  const tasks=ITALY_TRIP_LISTS.preTrip||[];
+  const packing=ITALY_TRIP_LISTS.packing||[];
+  const taskPct=progressFor("task",tasks.length);
+  const packPct=progressFor("packing",packing.length);
+
+  let html=`
+    <div class="card">
+      <h3>🔥 Do This Next</h3>
+      ${tasks.filter((x,i)=>!user.tasks[taskKey("task",i)]).slice(0,3).map(x=>`<div class="list-row"><div>⬜</div><div><strong>${x.task}</strong><small>${x.when}</small></div></div>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>✈️ Before Italy · ${taskPct}%</h3>
+      <div class="progress"><span style="width:${taskPct}%"></span></div>
+      ${tasks.map((x,i)=>`
+        <label class="list-row">
+          <input type="checkbox" ${user.tasks[taskKey("task",i)]?"checked":""} onchange="toggleList('task',${i})">
+          <span><strong>${x.task}</strong><small>${x.when} · ${x.who}</small></span>
+        </label>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>🧳 Packing · ${packPct}%</h3>
+      <div class="progress"><span style="width:${packPct}%"></span></div>
+      ${packing.map((x,i)=>`
+        <label class="list-row">
+          <input type="checkbox" ${user.packing[taskKey("packing",i)]?"checked":""} onchange="toggleList('packing',${i})">
+          <span><strong>${x.item}</strong><small>${x.who} · ${x.category}${x.qty?" · "+x.qty:""}</small></span>
+        </label>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>🎟️ Bookings</h3>
+      ${(ITALY_TRIP_LISTS.bookingStatuses||[]).map(x=>`
+        <div class="list-row"><div>${x.label.split(" ")[0]}</div>
+        <div><strong>${x.name}</strong><small>${x.date} · ${x.label.replace(/^.. /,"")}${x.note?" · "+x.note:""}</small></div></div>`).join("")}
+    </div>
+  `;
+  el.innerHTML=html;
+}
+
+function renderItalian(){
+  const el=document.getElementById("italianContent");
+
+  if(!phraseCategory){
+    el.innerHTML=`<div class="grid">${
+      ITALY_PHRASE_CATEGORIES.map(c=>`
+        <button class="big-tile" onclick="openPhraseCategory('${c.name}')">
+          <span class="emoji">${c.icon}</span>
+          <strong>${c.name}</strong>
+        </button>`).join("")
+    }</div>`;
+    return;
+  }
+
+  const phrases=ITALY_TRIP_ITALIAN.filter(p=>
+    p.category===phraseCategory ||
+    (phraseCategory==="Basics"&&["Basics","Language","Time"].includes(p.category))
+  );
+
+  el.innerHTML=`
+    <button class="soft-btn" onclick="phraseCategory=null;renderItalian()">← Categories</button>
+    <div class="period">${phraseCategory}</div>
+    ${phrases.map(p=>`
+      <div class="phrase">
+        <div class="phrase-it">${p.italian}</div>
+        <div class="phrase-say">${p.say}</div>
+        <div class="phrase-en">${p.english}</div>
+        <button class="show-btn" onclick='showPhraseText(${JSON.stringify(p.italian)},${JSON.stringify(p.english)})'>👀 SHOW THEM</button>
+      </div>`).join("")}
+  `;
+}
+function openPhraseCategory(c){phraseCategory=c;renderItalian()}
+
+function renderMore(){
+  const el=document.getElementById("moreContent");
+  const menu=ITALY_TRIP_REFERENCE.moreMenu||[];
+  el.innerHTML=`
+    <div class="grid">
+      ${menu.map(m=>`
+        <button class="big-tile" onclick="moreAction('${m.screen}')">
+          <span class="emoji">${m.icon}</span><strong>${m.label}</strong>
+        </button>`).join("")}
+    </div>
+    <div class="card">
+      <span class="status">${navigator.onLine?"🟢 Online":"🟠 Offline"}</span>
+      <h3 style="margin-top:12px">📶 Offline-first</h3>
+      <p class="muted">Your itinerary, phrases and saved progress are designed to remain available without internet once the V2 cache is installed.</p>
+    </div>`;
+}
+
+function moreAction(screen){
+  if(screen==="tickets"){
+    showScreen("lists");
+    return;
+  }
+  if(screen==="help"){showHelp();return}
+  if(screen==="money"){showMoney();return}
+  if(screen==="trip-info"){showTripInfo();return}
+  if(screen==="food"){
+    openModal(`<button class="modal-close" onclick="closeModal()">×</button><h2>🍺 Food & Beer</h2>${
+      ITALY_TRIP_PLACES.filter(p=>["food","beer"].includes(p.type)).map(p=>
+        `<div class="place"><div><strong>${p.name}</strong><small>${p.city}${p.note?" · "+p.note:""}</small></div><button class="navigate" onclick="navigateTo('${p.id}')">Go</button></div>`
+      ).join("")
+    }`);
+    return;
+  }
+  if(screen==="offline"){showOffline();return}
+  if(screen==="saved"){
+    openModal(`<button class="modal-close" onclick="closeModal()">×</button><h2>⭐ Saved Places</h2><p class="muted">Favorites will appear here as we wire the save buttons into V2.</p>`);
+    return;
+  }
+  if(screen==="settings"){
+    openModal(`<button class="modal-close" onclick="closeModal()">×</button><h2>⚙️ Settings</h2><p>Easy Day: <strong>${user.easyDay?"On":"Off"}</strong></p><div class="warning danger">Reset controls will be added with confirmation protection.</div>`);
+    return;
+  }
+  openModal(`<button class="modal-close" onclick="closeModal()">×</button><h2>🇮🇹 Italy 2026</h2><p class="muted">Offline-first trip companion for Rome + Florence.</p>`);
+}
+
+function showTripInfo(){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🏨 Trip Info</h2>
+    <h3>Rome</h3>
+    <p><strong>${ITALY_TRIP_CORE.hotels.rome.name}</strong><br>${ITALY_TRIP_CORE.hotels.rome.address}<br>${ITALY_TRIP_CORE.hotels.rome.dates}</p>
+    <h3>Florence</h3>
+    <p><strong>${ITALY_TRIP_CORE.hotels.florence.name}</strong><br>${ITALY_TRIP_CORE.hotels.florence.address}<br>${ITALY_TRIP_CORE.hotels.florence.dates}</p>
+    <h3>🚆 Train</h3>
+    <p>${ITALY_TRIP_CORE.train.date}<br>${ITALY_TRIP_CORE.train.depart} ${ITALY_TRIP_CORE.train.from} → ${ITALY_TRIP_CORE.train.to}<br>Arrive ${ITALY_TRIP_CORE.train.arrive}</p>
+  `);
+}
+
+function showMoney(){
+  const rate=user.exchangeRate||"";
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>💶 EUR → USD</h2>
+    <label>Saved USD value of €1</label>
+    <input id="rate" inputmode="decimal" value="${rate}" placeholder="Example: 1.17" style="width:100%;padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:12px">
+    <label>Euros</label>
+    <input id="euros" inputmode="decimal" placeholder="50" style="width:100%;padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:12px">
+    <button class="show-btn" onclick="calcMoney()">Calculate</button>
+    <div id="moneyResult" style="font-size:25px;font-weight:900;margin-top:18px"></div>
+    <p class="muted">Save a rate while online; calculation itself works offline.</p>
+  `);
+}
+function calcMoney(){
+  const rate=parseFloat(document.getElementById("rate").value);
+  const eur=parseFloat(document.getElementById("euros").value);
+  if(!rate||isNaN(eur))return;
+  user.exchangeRate=rate;saveUser();
+  document.getElementById("moneyResult").textContent="≈ $"+(eur*rate).toFixed(2);
+}
+
+function showOffline(){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>📶 Offline & App Status</h2>
+    <p><span class="status">${navigator.onLine?"🟢 Internet available":"🟠 Currently offline"}</span></p>
+    ${(ITALY_TRIP_REFERENCE.offlineChecklist||[]).map(x=>`<div class="list-row"><div>⬜</div><div><strong>${x.label}</strong></div></div>`).join("")}
+    <div class="warning">Before departure: download both Rome and Florence in Apple Maps, then test the app with Airplane Mode ON and Wi-Fi OFF.</div>
+  `);
+}
+
+function showHelp(){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🆘 Help</h2>
+    <div class="warning danger"><strong>Emergency: 112</strong><br>Police · Fire · Medical</div>
+    <button class="soft-btn" style="width:100%;margin-top:12px" onclick="hotelShortcut()">🏨 Get to Hotel</button>
+    <button class="soft-btn" style="width:100%;margin-top:8px" onclick="taxiShortcut()">🚕 Taxi Information</button>
+    <button class="soft-btn" style="width:100%;margin-top:8px" onclick="showPhraseText('Ho bisogno di un medico','I need a doctor')">🇮🇹 Show “I need a doctor”</button>
+  `);
+}
+
+function showPhraseText(it,en){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="show-italian">${it}</div>
+    <div class="show-english">${en}</div>
+  `);
+}
+
+function openSearch(){
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🔎 Search</h2>
+    <input id="searchInput" oninput="runSearch()" placeholder="Pantheon, beer, taxi..." style="width:100%;padding:13px;border:1px solid var(--line);border-radius:12px">
+    <div id="searchResults"></div>
+  `);
+  setTimeout(()=>document.getElementById("searchInput")?.focus(),100);
+}
+
+function runSearch(){
+  const q=document.getElementById("searchInput").value.toLowerCase().trim();
+  const out=document.getElementById("searchResults");
+  if(q.length<2){out.innerHTML="";return}
+  const places=ITALY_TRIP_PLACES.filter(p=>(p.name+" "+p.city+" "+p.type+" "+(p.note||"")).toLowerCase().includes(q)).slice(0,8);
+  const phrases=ITALY_TRIP_ITALIAN.filter(p=>(p.italian+" "+p.english+" "+p.category).toLowerCase().includes(q)).slice(0,6);
+  out.innerHTML=
+    places.map(p=>`<div class="place"><div><strong>${p.name}</strong><small>${p.city}</small></div><button class="navigate" onclick="navigateTo('${p.id}')">Go</button></div>`).join("")+
+    phrases.map(p=>`<div class="phrase"><div class="phrase-it">${p.italian}</div><div class="phrase-en">${p.english}</div></div>`).join("");
+}
+
+function openModal(html){
+  document.getElementById("modalBox").innerHTML=html;
+  document.getElementById("modal").classList.remove("hidden");
+}
+function closeModal(){document.getElementById("modal").classList.add("hidden")}
+function modalBackdrop(e){if(e.target.id==="modal")closeModal()}
+
+window.addEventListener("online",renderMore);
+window.addEventListener("offline",renderMore);
+
+renderPlans();
+renderMap();
+renderLists();
+renderItalian();
+renderMore();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+}
+</script>
 </body>
 </html>
