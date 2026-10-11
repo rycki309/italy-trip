@@ -1,12 +1,13 @@
-const CACHE_NAME = "italy-trip-v1";
+const CACHE_NAME = "italy-trip-v2";
 
 const APP_FILES = [
   "./",
   "./index.html",
-  "./manifest.json"
+  "./manifest.json",
+  "./D31A2BD6-5684-4EAC-81E3-748CEA0C0E7C.png"
 ];
 
-// Save the core app files when the service worker installs.
+Save the core app files when the service worker installs.
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
