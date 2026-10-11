@@ -1,6 +1,6 @@
 window.ITALY_TRIP_CORE={
 schemaVersion:1,
-appDataVersion:"2026-10-11.1",
+appDataVersion:"2026-10-11.2",
 
 trip:{
 title:"Rycki + Dennis — Italy 2026",
