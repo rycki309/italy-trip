@@ -1,0 +1,20 @@
+ITALY 2026 — REQUIREMENTS PASS / TEST BUILD
+
+Use this entire folder as one version. Do not mix files from earlier ZIPs.
+
+LOCAL PREVIEW
+- Unzip and double-click index.html to inspect appearance and interactions.
+- Local file previews cannot reliably test service workers, offline GPS, or PWA install.
+
+GITHUB / IPHONE
+- Work on v2-development only. Keep main and the working V1 untouched.
+- Upload/replace all files from this ZIP on v2-development, including final-pass.js and final-pass.css.
+- Test on HTTPS and in airplane mode before considering a merge.
+
+KNOWN LIMITS
+- The Apple Maps navigation screen is a destination hub, not a pinch-zoom map.
+- Offline navigation depends on separately downloaded Apple Maps areas.
+- Exchange rate is a saved 2026-10-11 reference rate; update it manually when needed.
+- Ticket wallet stores device-only text/links, not locally embedded PDF or screenshot files yet.
+- Nearby essentials are a small, pre-saved list; check holiday hours and exact storefronts.
+- Private data and user progress live in this browser's local storage. They do not sync automatically to another device.
