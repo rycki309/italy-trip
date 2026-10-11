@@ -1,0 +1,11 @@
+{
+  "name": "Rycki + Dennis — Italy 2026",
+  "short_name": "Italy 2026",
+  "description": "Offline trip guide for Rome and Florence",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ed",
+  "theme_color": "#173b32",
+  "orientation": "portrait-primary"
+}
