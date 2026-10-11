@@ -1,4 +1,4 @@
-const CACHE_NAME = "italy-trip-v2";
+const CACHE_NAME = "italy-trip-v3";
 
 const APP_FILES = [
   "./",
@@ -7,7 +7,6 @@ const APP_FILES = [
   "./D31A2BD6-5684-4EAC-81E3-748CEA0C0E7C.png"
 ];
 
-Save the core app files when the service worker installs.
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -16,40 +15,57 @@ self.addEventListener("install", event => {
   );
 });
 
-// Take control immediately.
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys()
-      .then(keys =>
+    Promise.all([
+      caches.keys().then(keys =>
         Promise.all(
           keys
             .filter(key => key !== CACHE_NAME)
             .map(key => caches.delete(key))
         )
-      )
-      .then(() => self.clients.claim())
+      ),
+      self.clients.claim()
+    ])
   );
 });
 
-// Use the saved copy when possible.
-// If internet is available, update the cache in the background.
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      const networkRequest = fetch(event.request)
+  // Page/navigation requests:
+  // try internet first, but ALWAYS fall back to our saved app.
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
         .then(response => {
-          if (response && response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put("./index.html", copy));
+          return response;
+        })
+        .catch(() =>
+          caches.match("./index.html")
+            .then(response => response || caches.match("./"))
+        )
+    );
+    return;
+  }
+
+  // Everything else: saved copy first.
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => {
+        if (cached) return cached;
+
+        return fetch(event.request).then(response => {
+          if (response && response.ok) {
             const copy = response.clone();
             caches.open(CACHE_NAME)
               .then(cache => cache.put(event.request, copy));
           }
           return response;
-        })
-        .catch(() => cached);
-
-      return cached || networkRequest;
-    })
+        });
+      })
   );
 });
