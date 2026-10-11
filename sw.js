@@ -1,10 +1,17 @@
-const CACHE_NAME = "italy-trip-v3";
+const CACHE_NAME = "italy-trip-v4-v2";
 
 const APP_FILES = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./D31A2BD6-5684-4EAC-81E3-748CEA0C0E7C.png"
+  "./D31A2BD6-5684-4EAC-81E3-748CEA0C0E7C.png",
+
+  "./trip-core.js",
+  "./trip-itinerary.js",
+  "./trip-places.js",
+  "./trip-italian.js",
+  "./trip-lists.js",
+  "./trip-reference.js"
 ];
 
 self.addEventListener("install", event => {
@@ -17,55 +24,53 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    Promise.all([
-      caches.keys().then(keys =>
+    caches.keys()
+      .then(keys =>
         Promise.all(
           keys
             .filter(key => key !== CACHE_NAME)
             .map(key => caches.delete(key))
         )
-      ),
-      self.clients.claim()
-    ])
+      )
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
-  // Page/navigation requests:
-  // try internet first, but ALWAYS fall back to our saved app.
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request)
         .then(response => {
           const copy = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put("./index.html", copy));
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put("./index.html", copy);
+          });
+
           return response;
         })
-        .catch(() =>
-          caches.match("./index.html")
-            .then(response => response || caches.match("./"))
-        )
+        .catch(() => caches.match("./index.html"))
     );
+
     return;
   }
 
-  // Everything else: saved copy first.
   event.respondWith(
-    caches.match(event.request)
-      .then(cached => {
-        if (cached) return cached;
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
 
-        return fetch(event.request).then(response => {
-          if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, copy));
-          }
-          return response;
+      return fetch(event.request).then(response => {
+        if (!response || response.status !== 200) return response;
+
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, copy);
         });
-      })
+
+        return response;
+      });
+    })
   );
 });
