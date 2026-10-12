@@ -37,7 +37,9 @@ preTrip:[
 {when:"Departure day",who:"Both",category:"Flight",task:"Fill water bottles after security + grab snacks"},
 {when:"Nov 1",who:"Rycki",category:"Work",task:"Repack work essentials into Rycki's bag"},
 {when:"Nov 1",who:"Rycki",category:"Work",task:"Screenshot Nov 2 pickup / transfer information"},
-{when:"Nov 2",who:"Both",category:"Transition",task:"Dennis airport plan + Rycki work-transfer plan"}
+{when:"Nov 2",who:"Both",category:"Transition",task:"Dennis airport plan + Rycki work-transfer plan"},
+{when:"ASAP",who:"Both",category:"Dinner Reservations",task:"Reserve Open Baladin dinner — Oct 30, 6:00–6:30 PM"},
+{when:"ASAP",who:"Both",category:"Dinner Reservations",task:"Reserve Rione Brewpub dinner — Oct 31, about 7:00 PM"}
 ],
 
 packingCategories:[

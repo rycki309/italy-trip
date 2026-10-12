@@ -1,0 +1,18 @@
+/* V2.1 final mobile readability + spacing pass */
+body{font-size:17px}
+.head{padding-bottom:9px}.head h1{font-size:31px}.head p,.muted{font-size:13px;line-height:1.45}
+.hero{height:188px}.hero p{font-size:14px}.card{margin-top:9px;margin-bottom:9px}.pad{padding:13px 14px}
+.title{font-size:16px}.row{font-size:14px;line-height:1.35;padding:10px 0}.row small{font-size:12px;line-height:1.4;margin-top:3px}
+.btn{font-size:13px;min-height:41px}.factivity b{font-size:15px}.factivity small{font-size:12px}.placeRow b{font-size:14px}.placeRow small{font-size:11.5px}
+/* Lists: title and progress must never collide */
+.listmenu>button,.listmenu.clean>button{min-height:72px;padding:12px 14px;gap:12px}
+.listmenu>button>span:nth-child(2),.listmenu.clean>button>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;text-align:left}
+.listmenu>button b,.listmenu.clean>button b{display:block;font-size:15px;line-height:1.2}
+.listmenu>button small,.listmenu.clean>button small{display:block;font-size:12px;line-height:1.25;margin:0;color:#6c7887;white-space:normal}
+/* Use the available screen instead of tiny type surrounded by whitespace */
+.catgrid{gap:8px;padding-top:10px}.cat{min-height:80px;font-size:12px}.phrase{margin:8px 12px;padding:12px 46px 11px 12px}.phrase b{font-size:16px}.phrase .say,.phrase .en{font-size:12px;line-height:1.4}.reply{font-size:11.5px}
+.work-card p,.work-address-empty{font-size:12px}
+/* Sheets/modals: wrap naturally on narrow iPhones */
+.sheet{padding:17px 16px calc(17px + env(safe-area-inset-bottom));overflow-x:hidden}.sheet h2{font-size:23px;line-height:1.2}.sheet p{line-height:1.45}.sheet .row,.sheet .booking{min-width:0;max-width:100%}.sheet .grow,.sheet span{min-width:0}.sheet b,.sheet small,.sheet p,.sheet label{overflow-wrap:anywhere;word-break:normal}
+.booking-card{padding:14px 0;border-bottom:1px solid #e8e6df;min-width:0}.booking-card:last-of-type{border-bottom:0}.booking-card h3{font-size:16px;line-height:1.25;margin:0 0 5px}.booking-card .status{font-size:13px;font-weight:800;line-height:1.35;margin:5px 0}.booking-card .date{display:block;font-size:12px;line-height:1.4;margin:5px 0}.booking-card p{font-size:13px;line-height:1.45;margin:7px 0 10px}.booking-card .actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%}.booking-card .actions .btn{width:100%;white-space:normal;text-align:center}.booking-confirm{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:start;gap:9px;margin-top:12px;font-size:13px;line-height:1.4}.booking-confirm input{width:22px;height:22px;margin:0}
+@media(max-width:380px){.booking-card .actions{grid-template-columns:1fr}.head h1{font-size:29px}}
