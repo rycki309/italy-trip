@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-17-secure-vault-starter';
+  const APP_VERSION = '2026-10-17-integrated-private-vault-v2';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -399,6 +399,17 @@
   }
   window.toggleTask=(i,v)=>{user.tasks['t-'+i]=v;saveUser();render();};
 
+  function privateInline(key, fallback='🔒 Unlock to view') {
+    const value=window.ItalyVault?.get(key);
+    return value ? `<span class="private-value">${esc(value)}</span> <button class="pill-btn gray" onclick="copyText(window.ItalyVault.get('${key}'))">Copy</button>` : `<button class="pill-btn" onclick="ItalyVault.open()">${fallback}</button>`;
+  }
+  function bookingPrivate(kind,name){
+    const items=window.ItalyVault?.all()||{};
+    if(!Object.keys(items).length)return '';
+    const terms=[kind,name].join(' ').toLowerCase().split(/\s+/).filter(x=>x.length>3);
+    const found=Object.entries(items).filter(([k])=>terms.some(t=>k.toLowerCase().includes(t)) && /confirm|booking|reservation|reference|ticket|pnr/i.test(k));
+    return found.map(([k,v])=>`<small>🔐 ${esc(k)}: <span class="private-value">${esc(v)}</span></small>`).join('');
+  }
   function bookingsScreen(city){
     const tabs=['All','Flights','Hotels','Trains','Tours','Restaurants'];
     const base=[
@@ -415,7 +426,7 @@
     ];
     RESTAURANT_BOOKINGS.forEach(r=>base.push({kind:'Restaurants',icon:'🍴',name:r.name,date:r.date,sub:r.label,status:r.status,place:r.place,site:r.site}));
     const filtered=base.filter(x=>(bookingFilter==='All'||x.kind===bookingFilter) && (!city || !x.place || place(x.place)?.city===city || x.kind==='Flights' || x.kind==='Hotels'));
-    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
+    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${bookingPrivate(x.kind,x.name)}${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
   }
   window.setBookingFilter=t=>{bookingFilter=t;render();};
 
@@ -749,9 +760,9 @@
       <div class="info-row"><div class="emoji">☎️</div><div class="copy"><b>Reception office telephone</b><small>+39 0577 971066</small><div class="action-row"><a class="pill-btn" href="tel:+390577971066">Call office</a><button class="pill-btn gray" onclick="copyText('+390577971066')">Copy number</button></div></div></div>
       <div class="info-row"><div class="emoji">✉️</div><div class="copy"><b>Email</b><small>info@nerbona.com</small><div class="action-row"><a class="pill-btn" href="mailto:info@nerbona.com">Email Nerbona</a></div></div></div>
       <h3 class="work-section-title">📶 Wi-Fi details</h3>
-      <div class="work-wifi-card"><b>Main Nerbona building</b><small>Network</small><div class="work-value">Nerbona Guest <button onclick="copyText('Nerbona Guest')">Copy</button></div><small>Password</small><div class="work-value"><a class="pill-btn" href="private.html">Open private vault 🔒</a></div></div>
-      <div class="work-wifi-card"><b>La Casina building</b><small>Network</small><div class="work-value">La Casina wifi <button onclick="copyText('La Casina wifi')">Copy</button></div><small>Password</small><div class="work-value"><a class="pill-btn" href="private.html">Open private vault 🔒</a></div></div>
-      <div class="work-note">🔐 These passwords are included for your private travel copy. <b>Do not publish this build to a public website or repository.</b> They are the values shown in Nerbona’s guest guide and may change.</div>
+      <div class="work-wifi-card"><b>Main Nerbona building</b><small>Network</small><div class="work-value">Nerbona Guest <button onclick="copyText('Nerbona Guest')">Copy</button></div><small>Password</small><div class="work-value">${privateInline('nerbona_main_password')}</div></div>
+      <div class="work-wifi-card"><b>La Casina building</b><small>Network</small><div class="work-value">La Casina wifi <button onclick="copyText('La Casina wifi')">Copy</button></div><small>Password</small><div class="work-value">${privateInline('nerbona_casina_password')}</div></div>
+      <div class="work-note">🔐 Passwords appear here only after you unlock your encrypted private copy. The public app does not include them.</div>
       <div class="info-row"><div class="emoji">🏡</div><div class="copy"><b>If reception cannot be reached</b><small>For a serious property issue, the housekeeper lives in apartment FRANTOIO, to the right of reception near the gate, up the stairs. For a medical or safety emergency call 112.</small></div></div>
       <div class="info-row"><div class="emoji">🤫</div><div class="copy"><b>Quiet hours</b><small>2–4 PM and 10 PM–8 AM.</small></div></div>`;
     }else body=`<div class="work-note">${duringTab==='Facilities'?'🧺 Facilities and practical information for your November stay.':'♻️ Follow the property’s posted bin labels if they differ from this summary.'}</div>${sections[duringTab].map(([i,t,d])=>`<div class="info-row"><div class="emoji">${i}</div><div class="copy"><b>${t}</b><small>${d}</small></div></div>`).join('')}`;
@@ -759,7 +770,7 @@
   }
 
   function settingsScreen(){
-    return `<section class="screen">${topbar('Settings')}<div class="content"><div class="info-row"><div class="emoji">💗</div><div class="copy"><b>Rest Mode</b><small>Highlights rest/taxi/skip-first suggestions without removing plans.</small></div><button class="pill-btn ${user.easyDay?'green':'gray'}" onclick="toggleEasyDay()">${user.easyDay?'ON':'OFF'}</button></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b><a href="private.html">Open Private Travel Vault</a></b><small>Google sign-in and encrypted offline copy.</small></div></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b>Private notes stay on this device</b><small>Do not place flight confirmation numbers or private reservation codes in the public GitHub files.</small></div></div><div class="info-row"><div class="emoji">📱</div><div class="copy"><b>App version</b><small>${APP_VERSION}</small></div></div><button class="nav-card" onclick="confirmReset()"><span class="icon">♻️</span><span class="copy">Reset local progress<small>Protected by confirmation</small></span></button></div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('Settings')}<div class="content"><div class="info-row"><div class="emoji">💗</div><div class="copy"><b>Rest Mode</b><small>Highlights rest/taxi/skip-first suggestions without removing plans.</small></div><button class="pill-btn ${user.easyDay?'green':'gray'}" onclick="toggleEasyDay()">${user.easyDay?'ON':'OFF'}</button></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b><a href="#" onclick="ItalyVault.open();return false">Unlock / Sync Private Details</a></b><small>Google sign-in and encrypted offline copy.</small></div></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b>Private notes stay on this device</b><small>Do not place flight confirmation numbers or private reservation codes in the public GitHub files.</small></div></div><div class="info-row"><div class="emoji">📱</div><div class="copy"><b>App version</b><small>${APP_VERSION}</small></div></div><button class="nav-card" onclick="confirmReset()"><span class="icon">♻️</span><span class="copy">Reset local progress<small>Protected by confirmation</small></span></button></div>${bottomNav('more')}</section>`;
   }
   window.toggleEasyDay=()=>{user.easyDay=!user.easyDay;saveUser();render();};
 
@@ -843,5 +854,6 @@
   }
 
   if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+  window.addEventListener('italy-vault-change',()=>render());
   render();
 })();
