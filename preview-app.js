@@ -213,7 +213,7 @@
     const td=checkedCount(user.tasks,'t-',tasks.length), pd=checkedCount(user.packing,'p-',pack.length);
     const prepPct=Math.round((td/Math.max(1,tasks.length))*100), packPct=Math.round((pd/Math.max(1,pack.length))*100);
     return `<section class="screen">
-      <div class="hero home"><img src="assets/florence-hero.jpg" alt="Italy scenery"><div class="hero-copy"><h1>🇮🇹 Italy</h1><p>Oct 28 – Nov 7, 2026</p></div></div>
+      <div class="hero home"><img src="florence-hero.jpg" alt="Italy scenery"><div class="hero-copy"><h1>🇮🇹 Italy</h1><p>Oct 28 – Nov 7, 2026</p></div></div>
       <div class="home-card">
         <div class="countdown-line"><span class="countdown-icon" aria-hidden="true">✈</span><span>${daysToGo()} days to go</span></div>
         <div class="progress-pair">
@@ -237,7 +237,7 @@
   function cityScreen(city){
     const isRome=city==='Rome';
     const dates=isRome?'Oct 28 – Oct 30':'Oct 30 – Nov 2';
-    const img=isRome?'assets/rome-hero.jpg':'assets/florence-hero.jpg';
+    const img=isRome?'rome-hero.jpg':'florence-hero.jpg';
     const parent=isRome?'rome':'florence';
     return `<section class="screen">
       ${hero(img,city,dates,parent,isRome?'rome':'florence')}
@@ -255,7 +255,7 @@
 
   function workScreen(){
     return `<section class="screen">
-      <div class="hero compact"><img src="assets/nerbona-aerial.jpg" alt="Agriturismo Nerbona"><button class="hero-back" onclick="goTop('home')">‹</button><div class="hero-copy"><h1>Work Stay</h1><p>Nerbona · Nov 2 – Nov 7</p></div></div>
+      <div class="hero compact"><img src="nerbona-aerial.jpg" alt="Agriturismo Nerbona"><button class="hero-back" onclick="goTop('home')">‹</button><div class="hero-copy"><h1>Work Stay</h1><p>Nerbona · Nov 2 – Nov 7</p></div></div>
       <div class="list-card">
         ${menuRow('🏡','green','Nerbona Overview','Address, contact, key info',`go('workOverview',{},'work')`)}
         ${menuRow('🖼️','blue','Property Map & Photos','Buildings, parking, laundry',`go('propertyPhotos',{},'work')`)}
@@ -481,13 +481,13 @@
   let propertyPhotoTab='Overview';
   const propertyPhotoTabs=['Overview','Nerbona','La Casina','Parking'];
   const propertyPhotos=[
-    {src:'assets/nerbona-official-layout.jpg',title:'Original official property map',detail:'Official building reference with Italian annotations.',tabs:['Nerbona']},
-    {src:'assets/nerbona-hero.jpg',title:'Nerbona grounds',detail:'Existing property photo from the earlier build.',tabs:['Overview','Nerbona']},
-    {src:'assets/nerbona-hero-clean3.jpg',title:'Pool and grounds',detail:'Existing aerial view of the grounds. Pool closed in November.',tabs:['Overview','Nerbona']},
-    {src:'assets/nerbona-detail-reception.jpg',title:'Reception building',detail:'Official aerial close-up showing reception and apartments.',tabs:['Overview','Nerbona']},
-    {src:'assets/nerbona-detail-villa.jpg',title:'Villa L’Aia',detail:'Official aerial close-up of Villa L’Aia.',tabs:['Overview','Nerbona']},
-    {src:'assets/nerbona-detail-courtyard.jpg',title:'Central buildings',detail:'Official aerial close-up of the central buildings.',tabs:['Overview','Nerbona']},
-    {src:'assets/nerbona-official-orientation.jpg',title:'Property access areas',detail:'Nerbona’s own annotated map of the grounds.',tabs:['Parking']}
+    {src:'nerbona-official-layout.jpg',title:'Original official property map',detail:'Official building reference with Italian annotations.',tabs:['Nerbona']},
+    {src:'nerbona-hero.jpg',title:'Nerbona grounds',detail:'Existing property photo from the earlier build.',tabs:['Overview','Nerbona']},
+    {src:'nerbona-hero-clean3.jpg',title:'Pool and grounds',detail:'Existing aerial view of the grounds. Pool closed in November.',tabs:['Overview','Nerbona']},
+    {src:'nerbona-detail-reception.jpg',title:'Reception building',detail:'Official aerial close-up showing reception and apartments.',tabs:['Overview','Nerbona']},
+    {src:'nerbona-detail-villa.jpg',title:'Villa L’Aia',detail:'Official aerial close-up of Villa L’Aia.',tabs:['Overview','Nerbona']},
+    {src:'nerbona-detail-courtyard.jpg',title:'Central buildings',detail:'Official aerial close-up of the central buildings.',tabs:['Overview','Nerbona']},
+    {src:'nerbona-official-orientation.jpg',title:'Property access areas',detail:'Nerbona’s own annotated map of the grounds.',tabs:['Parking']}
   ];
   window.selectPropertyPhotoTab=tab=>{if(!propertyPhotoTabs.includes(tab))return;propertyPhotoTab=tab;render();};
   window.openPropertyPhoto=i=>{const p=propertyPhotos[i];if(!p)return;showSheet(`<div class="sheet-head"><h2>${esc(p.title)}</h2></div><div class="property-map-zoom"><img src="${p.src}" alt="${esc(p.title)}"></div><p class="small-note">${esc(p.detail)}</p>`);};
@@ -499,8 +499,8 @@
     {n:5,name:'Pool · closed Nov',x:88,y:32},
     {n:6,name:'Villa L’Aia',x:83,y:79}
   ];
-  function propertyMapVisual(){return `<div class="property-visual"><img src="assets/nerbona-official-layout.jpg" alt="Official Nerbona aerial with numbered English building markers">${propertyPins.map(p=>`<span class="property-pin" style="left:${p.x}%;top:${p.y}%" title="${esc(p.name)}">${p.n}</span>`).join('')}<button class="property-map-open" onclick="openPropertyMap()">⤢ Enlarge map</button></div>`;}
-  window.openPropertyMap=()=>showSheet(`<div class="sheet-head"><h2>Nerbona · Building Map</h2></div><p class="small-note">Numbered English markers on Nerbona’s real aerial. Tap a number in the key below to identify the building. The original yellow markings remain part of the source photograph.</p><div class="property-map-zoom"><div class="property-visual"> <img src="assets/nerbona-official-layout.jpg" alt="Official Nerbona aerial">${propertyPins.map(p=>`<span class="property-pin" style="left:${p.x}%;top:${p.y}%">${p.n}</span>`).join('')}</div></div><div class="property-key">${propertyPins.map(p=>`<div><b>${p.n}</b><span>${esc(p.name)}</span></div>`).join('')}</div><p class="small-note">La Casina and guest parking are not identified on this official aerial. Ask reception for exact locations.</p>`);
+  function propertyMapVisual(){return `<div class="property-visual"><img src="nerbona-official-layout.jpg" alt="Official Nerbona aerial with numbered English building markers">${propertyPins.map(p=>`<span class="property-pin" style="left:${p.x}%;top:${p.y}%" title="${esc(p.name)}">${p.n}</span>`).join('')}<button class="property-map-open" onclick="openPropertyMap()">⤢ Enlarge map</button></div>`;}
+  window.openPropertyMap=()=>showSheet(`<div class="sheet-head"><h2>Nerbona · Building Map</h2></div><p class="small-note">Numbered English markers on Nerbona’s real aerial. Tap a number in the key below to identify the building. The original yellow markings remain part of the source photograph.</p><div class="property-map-zoom"><div class="property-visual"> <img src="nerbona-official-layout.jpg" alt="Official Nerbona aerial">${propertyPins.map(p=>`<span class="property-pin" style="left:${p.x}%;top:${p.y}%">${p.n}</span>`).join('')}</div></div><div class="property-key">${propertyPins.map(p=>`<div><b>${p.n}</b><span>${esc(p.name)}</span></div>`).join('')}</div><p class="small-note">La Casina and guest parking are not identified on this official aerial. Ask reception for exact locations.</p>`);
   let propertyExpanded='reception';
   window.togglePropertyOrientation=id=>{propertyExpanded=propertyExpanded===id?'':id;render();};
   function propertyOrientationItem(id,emoji,title,detail){
@@ -659,7 +659,7 @@
   }
 
   function workOverviewScreen(){
-    return `<section class="screen">${topbar('Nerbona Overview')}<div class="photo-hero"><img src="assets/nerbona-aerial.jpg"><div class="caption">Agriturismo Nerbona · Tuscany</div></div><div class="content"><div class="info-row"><div class="emoji">📍</div><div class="copy"><b>${WORK.name}</b><small>${WORK.address}</small><div class="action-row"><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(WORK.address))}')">Navigate</button><button class="pill-btn gray" onclick="copyText('${js(WORK.address)}')">Copy</button><button class="pill-btn gray" onclick="showDriverAddress('${js(WORK.name)}','${js(WORK.address)}')">Show Driver</button></div></div></div><div class="info-row"><div class="emoji">🕓</div><div class="copy"><b>Check-in / Checkout</b><small>Check-in from ${WORK.checkin} · checkout by ${WORK.checkout}</small></div></div><div class="info-row"><div class="emoji">☎️</div><div class="copy"><b>Property contacts</b><small>${WORK.email}<br>Office ${WORK.phone}<br>WhatsApp messages ${WORK.whatsapp}</small></div></div><div class="info-row"><div class="emoji">🤫</div><div class="copy"><b>Quiet hours</b><small>${WORK.quiet}</small></div></div><h3 style="font-family:Georgia,serif">Compact Work Schedule</h3>${WORK_SCHEDULE.map(([d,s])=>`<div class="info-row"><div class="emoji">📅</div><div class="copy"><b>${esc(d)}</b><small>${esc(s)}</small></div></div>`).join('')}<button class="nav-card blue" onclick="go('workTravelDay',{},'work')"><span class="icon">✈️</span><span class="copy">Nov 7 · Travel Home<small>Checkout steps, transfer, flight reminders</small></span></button></div>${bottomNav('work')}</section>`;
+    return `<section class="screen">${topbar('Nerbona Overview')}<div class="photo-hero"><img src="nerbona-aerial.jpg"><div class="caption">Agriturismo Nerbona · Tuscany</div></div><div class="content"><div class="info-row"><div class="emoji">📍</div><div class="copy"><b>${WORK.name}</b><small>${WORK.address}</small><div class="action-row"><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(WORK.address))}')">Navigate</button><button class="pill-btn gray" onclick="copyText('${js(WORK.address)}')">Copy</button><button class="pill-btn gray" onclick="showDriverAddress('${js(WORK.name)}','${js(WORK.address)}')">Show Driver</button></div></div></div><div class="info-row"><div class="emoji">🕓</div><div class="copy"><b>Check-in / Checkout</b><small>Check-in from ${WORK.checkin} · checkout by ${WORK.checkout}</small></div></div><div class="info-row"><div class="emoji">☎️</div><div class="copy"><b>Property contacts</b><small>${WORK.email}<br>Office ${WORK.phone}<br>WhatsApp messages ${WORK.whatsapp}</small></div></div><div class="info-row"><div class="emoji">🤫</div><div class="copy"><b>Quiet hours</b><small>${WORK.quiet}</small></div></div><h3 style="font-family:Georgia,serif">Compact Work Schedule</h3>${WORK_SCHEDULE.map(([d,s])=>`<div class="info-row"><div class="emoji">📅</div><div class="copy"><b>${esc(d)}</b><small>${esc(s)}</small></div></div>`).join('')}<button class="nav-card blue" onclick="go('workTravelDay',{},'work')"><span class="icon">✈️</span><span class="copy">Nov 7 · Travel Home<small>Checkout steps, transfer, flight reminders</small></span></button></div>${bottomNav('work')}</section>`;
   }
 
   function workTravelDayScreen(){
@@ -772,7 +772,7 @@
   function showPlace(id){
     const p=place(id); if(!p)return;
     const isHotel=p.type==='hotel';
-    const photo=isHotel?(p.city==='Rome'?'assets/rome-hero.jpg':'assets/florence-hero.jpg'):'';
+    const photo=isHotel?(p.city==='Rome'?'rome-hero.jpg':'florence-hero.jpg'):'';
     const hotelInfo=isHotel?(p.city==='Rome'?ITALY_TRIP_CORE.hotels.rome:ITALY_TRIP_CORE.hotels.florence):null;
     showSheet(`${isHotel?`<div class="photo-hero" style="margin:0 0 12px"><img src="${photo}" style="height:150px"><div class="caption">${esc(p.city)} lodging</div></div>`:''}<div class="sheet-head"><h2>${esc(p.name)}</h2></div><p>${esc(p.address)}</p>${hotelInfo?`<p class="small-note">${esc(hotelInfo.dates||'')} · ${esc(hotelInfo.note||'')}</p>`:''}${p.note?`<p class="small-note">${esc(p.note)}</p>`:''}<div class="action-row"><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(p.address))}')">🧭 Navigate</button><button class="pill-btn gray" onclick="copyText('${js(p.address)}')">📋 Copy Address</button><button class="pill-btn gray" onclick="showDriver('${p.id}')">🚕 Show Driver</button></div>`);
   }
