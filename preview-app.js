@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-17-integrated-private-vault-v2';
+  const APP_VERSION = '2026-10-17-integrated-private-vault-v3';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,

@@ -1,4 +1,4 @@
-const CACHE='italy-2026-integrated-vault-v2-20261017';
+const CACHE='italy-2026-integrated-vault-v3-20261017';
 const ASSETS=[
   './','./index.html','./private.html','./private-vault.js','./integrated-vault.js','./preview.css','./preview-app.js','./manifest.json',
   './trip-core.js','./trip-itinerary.js','./trip-places.js','./trip-italian.js','./trip-lists.js','./trip-reference.js',
