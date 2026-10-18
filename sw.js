@@ -1,37 +1,34 @@
-/* Italy 2026 offline shell v4. Core app files are installed atomically. */
-const VERSION='italy-2026-offline-v4-20261018';
-const CORE=['./','./index.html','./private.html','./private-vault.js','./integrated-vault.js','./preview.css','./preview-app.js','./manifest.json','./trip-core.js','./trip-itinerary.js','./trip-places.js','./trip-italian.js','./trip-lists.js','./trip-reference.js'];
-const MEDIA=['./app-icon.png','./florence-hero.jpg','./nerbona-aerial.jpg','./nerbona-detail-courtyard.jpg','./nerbona-detail-reception.jpg','./nerbona-detail-villa.jpg','./nerbona-english-labeled-map.jpg','./nerbona-hero-clean.jpg','./nerbona-hero-clean2.jpg','./nerbona-hero-clean3.jpg','./nerbona-hero.jpg','./nerbona-official-layout.jpg','./nerbona-official-orientation.jpg','./nerbona-parking.jpg','./rome-hero.jpg','./rome-preview-hero.jpg'];
+/* Approved Italy 2026 app shell. Offline-safe update; never touches localStorage. */
+const VERSION='italy-2026-approved-v5-20261018';
+const CORE=['./index.html', './private.html', './private-vault.js', './integrated-vault.js', './preview.css', './preview-app.js', './manifest.json', './trip-core.js', './trip-itinerary.js', './trip-places.js', './trip-italian.js', './trip-lists.js', './trip-reference.js'];
+const MEDIA=['./app-icon.png', './florence-hero.jpg', './nerbona-aerial.jpg', './nerbona-detail-courtyard.jpg', './nerbona-detail-reception.jpg', './nerbona-detail-villa.jpg', './nerbona-english-labeled-map.jpg', './nerbona-hero-clean.jpg', './nerbona-hero-clean2.jpg', './nerbona-hero-clean3.jpg', './nerbona-hero.jpg', './nerbona-official-layout.jpg', './nerbona-official-orientation.jpg', './nerbona-parking.jpg', './rome-hero.jpg', './rome-preview-hero.jpg'];
+const scopePath=new URL(self.registration.scope).pathname;
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(VERSION);
- // Do not activate a partial app: JS and HTML must be from the same version.
- await cache.addAll(CORE.map(path=>new Request(path,{cache:'reload'})));
- await Promise.allSettled(MEDIA.map(async path=>{const response=await fetch(new Request(path,{cache:'reload'}));if(response.ok)await cache.put(path,response);}));
+ // Do not activate until every essential HTML/CSS/JS resource is cached.
+ await cache.addAll(CORE.map(p=>new Request(p,{cache:'reload'})));
+ await Promise.allSettled(MEDIA.map(async p=>{const r=await fetch(new Request(p,{cache:'reload'}));if(r.ok)await cache.put(p,r);}));
  await self.skipWaiting();
 })()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
- const names=await caches.keys();await Promise.all(names.filter(n=>n.startsWith('italy-2026-')&&n!==VERSION).map(n=>caches.delete(n)));
+ const names=await caches.keys();
+ await Promise.all(names.filter(n=>n.startsWith('italy-2026-')&&n!==VERSION).map(n=>caches.delete(n)));
  await self.clients.claim();
 })()));
-self.addEventListener('message',event=>{
- if(event.data?.type==='ITALY_CACHE_STATUS')event.source?.postMessage({type:'ITALY_CACHE_STATUS',version:VERSION});
-});
 self.addEventListener('fetch',event=>{
- const request=event.request;
- if(request.method!=='GET')return;
- const url=new URL(request.url);
- if(url.origin!==self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname))return;
- const rel='./'+url.pathname.slice(new URL(self.registration.scope).pathname.length);
- const isCore=CORE.includes(rel)||rel==='./';
- const isMedia=MEDIA.includes(rel);
- if(request.mode==='navigate'){
-   event.respondWith((async()=>{
-     const cache=await caches.open(VERSION);
-     try{const fresh=await fetch(request);if(fresh.ok){await cache.put(request,fresh.clone());return fresh;}}catch{}
-     return await cache.match(request,{ignoreSearch:true}) || await cache.match('./index.html') || new Response('Offline app not installed. Reconnect once and reload.',{status:503,headers:{'Content-Type':'text/plain'}});
-   })());return;
- }
- if(isCore){event.respondWith((async()=>{const cache=await caches.open(VERSION);return await cache.match(rel) || await fetch(request);})());return;}
- if(isMedia){event.respondWith((async()=>{const cache=await caches.open(VERSION);const cached=await cache.match(rel);if(cached)return cached;try{const fresh=await fetch(request);if(fresh.ok)event.waitUntil(cache.put(rel,fresh.clone()));return fresh;}catch{return Response.error();}})());return;}
- event.respondWith(fetch(request).catch(()=>caches.match(request)));
+ const req=event.request;if(req.method!=='GET')return;
+ const url=new URL(req.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(scopePath))return;
+ const path='./'+url.pathname.slice(scopePath.length);
+ const resource=path==='./'?'./index.html':path;
+ if(req.mode==='navigate'){event.respondWith((async()=>{
+  const cache=await caches.open(VERSION);
+  // Online, prefer latest page; offline, use the approved cached HTML.
+  try{const r=await fetch(req);if(r.ok){await cache.put(resource,r.clone());return r;}}catch(e){}
+  return await cache.match(resource)||await cache.match('./index.html')||new Response('Please reconnect once to install the offline app.',{status:503});
+ })());return;}
+ if(CORE.includes(resource)||MEDIA.includes(resource)){event.respondWith((async()=>{
+  const cache=await caches.open(VERSION);const cached=await cache.match(resource);
+  if(cached)return cached;
+  try{const fresh=await fetch(req);if(fresh.ok)await cache.put(resource,fresh.clone());return fresh;}catch(e){return Response.error();}
+ })());}
 });

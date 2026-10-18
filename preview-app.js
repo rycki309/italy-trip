@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-18-offline-shell-v4';
+  const APP_VERSION = '2026-10-18-approved-offline-v5';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -853,14 +853,7 @@
     if(document.querySelector('.house-rules-screen'))restoreHouseRuleChecks();
   }
 
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', async()=>{
-      try {
-        const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
-        await reg.update();
-      } catch(err) { console.warn('Offline installation failed:',err); }
-    });
-  }
+  if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
   window.addEventListener('italy-vault-change',()=>render());
   render();
 })();
