@@ -327,3 +327,13 @@ button{cursor:pointer}
 
 /* Display headings use GFS Didot when installed, with an offline serif fallback. */
 .hero-copy h1,.page-heading h1,.top-title,.wallet-intro h2{font-family:'GFS Didot','Bodoni MT','Didot',Georgia,serif}
+
+/* v12: quiet bottom navigation; keep custom line icons, remove pastel tiles. */
+.bottom-nav button .nav-ico,
+.bottom-nav button:nth-child(1) .nav-ico,
+.bottom-nav button:nth-child(2) .nav-ico,
+.bottom-nav button:nth-child(3) .nav-ico,
+.bottom-nav button:nth-child(4) .nav-ico,
+.bottom-nav button:nth-child(5) .nav-ico{background:transparent;outline:none;color:#64748b}
+.bottom-nav button.active .nav-ico{background:transparent;outline:none;color:#283b55}
+.bottom-nav button.active{color:#283b55;font-weight:800}

@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-20-travel-wallet-v10';
+  const APP_VERSION = '2026-10-20-travel-wallet-v11';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -189,7 +189,7 @@
   window.go = go; window.goTop = goTop; window.back = back; window.copyText = copy; window.openExternal = openExternal;
 
   function bottomNav(active){
-    // One consistent monochrome SVG style, with softly colored icon backgrounds.
+    // One consistent outline SVG style, without colored icon tiles.
     const svg=(body)=>`<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
     const tabs=[
       ['home',svg('<path d="M4 15 16 5l12 10"/><path d="M7 13v14h18V13M13 27v-9h6v9"/>'),'Home'],
