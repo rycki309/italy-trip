@@ -190,7 +190,7 @@
 
   function bottomNav(active){
     const tabs = [
-      ['home','⌂','Home'],['rome','♜','Rome'],['florence','♜','Florence'],['work','⌂','Work'],['more','•••','More']
+      ['home','🏠','Home'],['rome','<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" style="display:block" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 27V14C3 7 9 4 16 4s13 3 13 10v13H3Z"/><path d="M3 13h26M3 20h26"/><path d="M7 13V9m6 4V6m6 7V6m6 7V9"/><path d="M7 20v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4M7 27v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4"/></svg>','Rome'],['florence','<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round"><path d="M3 28h26M7 28V15h18v13M11 15V9h10v6M16 9V3M10 9c0-5 12-5 12 0M13 28v-8h6v8M4 15h24"/></svg>','Florence'],['work','💼','Work'],['more','•••','More']
     ];
     return `<nav class="bottom-nav">${tabs.map(([id,ico,label])=>`<button class="${active===id?'active':''}" onclick="goTop('${id}')"><span class="nav-ico">${ico}</span><span>${label}</span></button>`).join('')}</nav>`;
   }
@@ -213,7 +213,7 @@
     const td=checkedCount(user.tasks,'t-',tasks.length), pd=checkedCount(user.packing,'p-',pack.length);
     const prepPct=Math.round((td/Math.max(1,tasks.length))*100), packPct=Math.round((pd/Math.max(1,pack.length))*100);
     return `<section class="screen">
-      <div class="hero home"><img src="florence-hero.jpg" alt="Italy scenery"><div class="hero-copy"><h1>🇮🇹 Italy</h1><p>Oct 28 – Nov 7, 2026</p></div></div>
+      <div class="hero home"><img src="italy-collage.jpg" alt="Real photographs of Tuscany, Rome, and Florence"><div class="hero-copy"><h1>Italy 2026</h1><p>October 28 – November 7</p></div></div>
       <div class="home-card">
         <div class="countdown-line"><span class="countdown-icon" aria-hidden="true">✈</span><span>${daysToGo()} days to go</span></div>
         <div class="progress-pair">
@@ -236,8 +236,8 @@
 
   function cityScreen(city){
     const isRome=city==='Rome';
-    const dates=isRome?'Oct 28 – Oct 30':'Oct 30 – Nov 2';
-    const img=isRome?'rome-hero.jpg':'florence-hero.jpg';
+    const dates=isRome?'Oct 28 – Oct 31':'Oct 31 – Nov 2';
+    const img=isRome?'rome-photo.jpg':'florence-photo.jpg';
     const parent=isRome?'rome':'florence';
     return `<section class="screen">
       ${hero(img,city,dates,parent,isRome?'rome':'florence')}
@@ -255,7 +255,7 @@
 
   function workScreen(){
     return `<section class="screen">
-      <div class="hero compact"><img src="nerbona-aerial.jpg" alt="Agriturismo Nerbona"><button class="hero-back" onclick="goTop('home')">‹</button><div class="hero-copy"><h1>Work Stay</h1><p>Nerbona · Nov 2 – Nov 7</p></div></div>
+      <div class="hero compact work"><img src="work-group-photo.jpg" alt="Group photo from a previous work trip"><button class="hero-back" onclick="goTop('home')">‹</button><div class="hero-copy"><h1>Work, but make it Italy 🇮🇹</h1><p>Nerbona · November 2–7</p></div></div>
       <div class="list-card">
         ${menuRow('🏡','green','Nerbona Overview','Address, contact, key info',`go('workOverview',{},'work')`)}
         ${menuRow('🖼️','blue','Property Map & Photos','Buildings, parking, laundry',`go('propertyPhotos',{},'work')`)}

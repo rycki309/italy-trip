@@ -1,7 +1,7 @@
 /* Approved Italy 2026 app shell. Offline-safe update; never touches localStorage. */
-const VERSION='italy-2026-approved-v5-20261018';
+const VERSION='italy-2026-final-photos-v8-20261020';
 const CORE=['./index.html', './private.html', './private-vault.js', './integrated-vault.js', './preview.css', './preview-app.js', './manifest.json', './trip-core.js', './trip-itinerary.js', './trip-places.js', './trip-italian.js', './trip-lists.js', './trip-reference.js'];
-const MEDIA=['./app-icon.png', './florence-hero.jpg', './nerbona-aerial.jpg', './nerbona-detail-courtyard.jpg', './nerbona-detail-reception.jpg', './nerbona-detail-villa.jpg', './nerbona-english-labeled-map.jpg', './nerbona-hero-clean.jpg', './nerbona-hero-clean2.jpg', './nerbona-hero-clean3.jpg', './nerbona-hero.jpg', './nerbona-official-layout.jpg', './nerbona-official-orientation.jpg', './nerbona-parking.jpg', './rome-hero.jpg', './rome-preview-hero.jpg'];
+const MEDIA=['./app-icon.png', './florence-hero.jpg', './nerbona-aerial.jpg', './nerbona-detail-courtyard.jpg', './nerbona-detail-reception.jpg', './nerbona-detail-villa.jpg', './nerbona-english-labeled-map.jpg', './nerbona-hero-clean.jpg', './nerbona-hero-clean2.jpg', './nerbona-hero-clean3.jpg', './nerbona-hero.jpg', './nerbona-official-layout.jpg', './nerbona-official-orientation.jpg', './nerbona-parking.jpg', './rome-hero.jpg', './rome-preview-hero.jpg', './italy-collage.jpg', './rome-photo.jpg', './florence-photo.jpg', './tuscany-photo.jpg', './work-group-photo.jpg'];
 const scopePath=new URL(self.registration.scope).pathname;
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(VERSION);
