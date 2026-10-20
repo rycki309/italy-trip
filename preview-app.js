@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-18-approved-offline-v5';
+  const APP_VERSION = '2026-10-20-travel-wallet-v10';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -189,10 +189,16 @@
   window.go = go; window.goTop = goTop; window.back = back; window.copyText = copy; window.openExternal = openExternal;
 
   function bottomNav(active){
-    const tabs = [
-      ['home','🏠','Home'],['rome','<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" style="display:block" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 27V14C3 7 9 4 16 4s13 3 13 10v13H3Z"/><path d="M3 13h26M3 20h26"/><path d="M7 13V9m6 4V6m6 7V6m6 7V9"/><path d="M7 20v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4M7 27v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4"/></svg>','Rome'],['florence','<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round"><path d="M3 28h26M7 28V15h18v13M11 15V9h10v6M16 9V3M10 9c0-5 12-5 12 0M13 28v-8h6v8M4 15h24"/></svg>','Florence'],['work','💼','Work'],['more','•••','More']
+    // One consistent monochrome SVG style, with softly colored icon backgrounds.
+    const svg=(body)=>`<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+    const tabs=[
+      ['home',svg('<path d="M4 15 16 5l12 10"/><path d="M7 13v14h18V13M13 27v-9h6v9"/>'),'Home'],
+      ['rome',svg('<path d="M3 27V14C3 7 9 4 16 4s13 3 13 10v13H3Z"/><path d="M3 13h26M3 20h26"/><path d="M7 13V9m6 4V6m6 7V6m6 7V9"/><path d="M7 20v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4M7 27v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4m3 0v-4a2 2 0 0 1 4 0v4"/>'),'Rome'],
+      ['florence',svg('<path d="M3 28h26M7 28V15h18v13M11 15V9h10v6M16 9V3M10 9c0-5 12-5 12 0M13 28v-8h6v8M4 15h24"/>'),'Florence'],
+      ['work',svg('<rect x="4" y="11" width="24" height="17" rx="3"/><path d="M11 11V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3M4 18c7 5 17 5 24 0M14 20h4"/>'),'Work'],
+      ['more',svg('<circle cx="7" cy="16" r="1.4"/><circle cx="16" cy="16" r="1.4"/><circle cx="25" cy="16" r="1.4"/>'),'More']
     ];
-    return `<nav class="bottom-nav">${tabs.map(([id,ico,label])=>`<button class="${active===id?'active':''}" onclick="goTop('${id}')"><span class="nav-ico">${ico}</span><span>${label}</span></button>`).join('')}</nav>`;
+    return `<nav class="bottom-nav" aria-label="Main navigation">${tabs.map(([id,ico,label])=>`<button class="${active===id?'active':''}" aria-label="${label}" ${active===id?'aria-current="page"':''} onclick="goTop('${id}')"><span class="nav-ico">${ico}</span><span>${label}</span></button>`).join('')}</nav>`;
   }
 
   function topbar(title, right=''){
@@ -270,12 +276,36 @@
     </section>`;
   }
 
+  function documentsScreen(){
+    return `<section class="screen">${topbar('🔐 Travel Documents')}<div class="content"><div class="wallet-intro"><h2>My Travel Wallet</h2><p>Private, encrypted files on this device · available offline after setup.</p></div><div id="travel-docs-root"><p>Loading encrypted documents…</p></div></div>${bottomNav('more')}</section>`;
+  }
+  const AIRPORTS=[
+    ['CLE','Cleveland Hopkins','https://www.clevelandairport.com/'],
+    ['JFK','New York JFK','https://www.jfkairport.com/'],
+    ['FCO','Rome Fiumicino','https://www.adr.it/fiumicino'],
+    ['FLR','Florence Peretola','https://www.aeroporto.firenze.it/'],
+    ['AMS','Amsterdam Schiphol','https://www.schiphol.nl/en/'],
+    ['ATL','Atlanta Hartsfield-Jackson','https://www.atl.com/'],
+    ['DTW','Detroit Metro','https://www.metroairport.com/']
+  ];
+  function travelGuidesScreen(){
+    const hotel=place('rome-hotel'),florence=place('florence-hotel');
+    const transfers=[
+      ['✈️','FCO → Rome hotel','After passport control and baggage claim, follow official taxi or booked-transfer signs. Show the driver your Rome hotel address.',hotel?.address],
+      ['🚆','Rome hotel → Roma Termini','October 31 · aim to arrive early for the 11:50 Italo train. Check the station departure board for the platform.', 'Roma Termini, Piazza dei Cinquecento, Roma'],
+      ['🚕','Firenze S.M.N. → Florence hotel','October 31 · arrive 13:31. Use the official taxi stand or walk only if convenient with luggage.',florence?.address],
+      ['🌿','Florence → Nerbona','November 2 · use the confirmed group transfer if provided; do not assume a pickup point until confirmed.',WORK.address]
+    ];
+    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These instructions work offline. Airport links need internet; save current terminal maps into Travel Documents for true offline viewing.</p></div><h3>Airport maps</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button><button class="pill-btn" onclick="go('documents',{},'more')">Save map PDF</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}<div class="tip">Airport terminal maps are not included until you add the current official PDF or image to your encrypted Travel Documents. Do not rely on a live map offline.</div></div>${bottomNav('more')}</section>`;
+  }
   function moreScreen(){
     return `<section class="screen more-hub">
       ${topbar('More')}
       <div class="list-card more-list">
         ${menuRow('▣','blue','Before Italy','To-do list, documents, prep',`go('tasks',{},'more')`)}
         ${menuRow('🛒','red','Trip Shopping','Souvenirs, gifts, ideas',`go('shopping',{},'more')`)}
+        ${menuRow('🔐','blue','Travel Documents','Encrypted offline files & custom folders',`go('documents',{},'more')`)}
+        ${menuRow('🗺','cyan','Airport & Transfer Guides','Offline reference and map downloads',`go('travelGuides',{},'more')`)}
         ${menuRow('🎟','red','Bookings & Tickets','Flights, hotels, tours, reservations',`go('bookings',{},'more')`)}
         ${menuRow('⬡','cyan','Offline Access','Download maps & info',`go('offline',{},'more')`)}
         ${menuRow('✈','blue','Navigate','Get directions, where I am, drivers',`go('navigate',{},'more')`)}
@@ -624,6 +654,13 @@
     // Web-based Apple Maps destination; never claims an offline download has completed.
     openExternal('https://maps.apple.com/?q='+q);
   };
+  window.checkItalyOffline=async()=>{
+    const el=document.getElementById('italy-offline-results');if(!el)return;el.textContent='Checking saved app resources…';
+    const required=['index.html','preview-app.js','preview.css','travel-documents.js','trip-core.js','rome-photo.jpg','florence-photo.jpg','work-group-photo.jpg'];
+    const found=[];for(const file of required){let ok=false;try{const cachesList=await caches.keys();for(const name of cachesList){if(!name.startsWith('italy-2026-'))continue;const cache=await caches.open(name);if(await cache.match('./'+file)){ok=true;break;}}}catch(e){}found.push([file,ok]);}
+    const vault=!!localStorage.getItem('italy2026-encrypted-vault-v1');let docs='unavailable';try{const count=await window.TravelDocs.counts();docs=count+' encrypted document(s) stored';}catch(e){}
+    el.innerHTML=found.map(([name,ok])=>`<div>${ok?'✅':'⚠️'} ${esc(name)}</div>`).join('')+`<div>${vault?'✅':'⚠️'} Encrypted private vault copy ${vault?'present':'not found on this device'}</div><div>📁 ${esc(docs)}</div><p>Cached resources and stored files do not guarantee the documents decrypt correctly. Open your tickets in airplane mode to finish testing. Apple/Google offline map downloads cannot be checked here.</p>`;
+  };
   function offlineScreen(){
     const tabs=[['maps','Maps'],['phrases','Phrases'],['itineraries','Itineraries'],['tickets','Tickets']];
     const maps=[['Rome','Rome, Italy','Download the Rome area in Apple Maps before departure'],['Florence','Florence, Italy','Download central Florence and surrounding streets'],['Nerbona / Tuscany',WORK.address,'Download the Nerbona, Colle di Val d’Elsa and San Gimignano area']];
@@ -643,9 +680,9 @@
     }else{
       body=`<div class="tip">Booking notes are built into the app. Tickets and PDFs are only available offline if you have saved them on your phone (for example in Files). The app cannot verify external downloads.</div>`+
         item('🎟️','Bookings & Tickets','Flights, hotels, train, attractions and restaurant statuses',`go('bookings',{},'offline')`,'View bookings')+
-        item('📁','Saved ticket PDFs','Open the Files app to check downloaded tickets and confirmation documents',`openExternal('shareddocuments://')`,'Open Files');
+        item('🔐','Encrypted Travel Documents','Open saved tickets, confirmations and airport maps on this device',`go('documents',{},'more')`,'Open wallet');
     }
-    return `<section class="screen">${topbar('Offline Access')}<div class="segment offline-tabs" role="tablist">${tabs.map(([id,label])=>`<button role="tab" aria-selected="${offlineTab===id}" class="${offlineTab===id?'active':''}" onclick="setOfflineTab('${id}')">${label}</button>`).join('')}</div><div class="content"><h3 style="font-family:Georgia,serif">${tabs.find(t=>t[0]===offlineTab)[1]} · Offline Access</h3>${body}<div class="small-note" style="padding:14px 0">Offline-ready app content is different from downloaded Apple Maps and saved PDFs. Test essential resources in airplane mode before departure.</div></div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('Offline Access')}<div class="segment offline-tabs" role="tablist">${tabs.map(([id,label])=>`<button role="tab" aria-selected="${offlineTab===id}" class="${offlineTab===id?'active':''}" onclick="setOfflineTab('${id}')">${label}</button>`).join('')}</div><div class="content"><div class="td-panel"><b>📱 Offline Readiness</b><p class="td-muted">Check this device’s saved app files, photos, private vault and document count.</p><button class="pill-btn" onclick="checkItalyOffline()">Run offline check</button><div id="italy-offline-results" class="td-muted" style="margin-top:10px"></div></div><h3 style="font-family:Georgia,serif">${tabs.find(t=>t[0]===offlineTab)[1]} · Offline Access</h3>${body}<div class="small-note" style="padding:14px 0">Offline-ready app content is different from downloaded Apple Maps and saved PDFs. Test essential resources in airplane mode before departure.</div></div>${bottomNav('more')}</section>`;
   }
 
   function emergencyScreen(){
@@ -841,6 +878,8 @@
       case 'navigate': html=navigateScreen(route.params.city); break;
       case 'money': html=moneyScreen(); break;
       case 'offline': html=offlineScreen(); break;
+      case 'documents': html=documentsScreen(); break;
+      case 'travelGuides': html=travelGuidesScreen(); break;
       case 'emergency': html=emergencyScreen(); break;
       case 'workOverview': html=workOverviewScreen(); break;
       case 'houseRules': html=houseRulesScreen(); break;
@@ -850,6 +889,7 @@
       default: html=homeScreen();
     }
     app.innerHTML=html;
+    if(route.name==='documents') window.TravelDocs?.mount(document.getElementById('travel-docs-root'));
     if(document.querySelector('.house-rules-screen'))restoreHouseRuleChecks();
   }
 
