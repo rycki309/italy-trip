@@ -1,0 +1,1 @@
+Italy 2026 v13: adds offline Italian Menu Decoder under More; retains v12 design, vault, travel wallet, guides and existing lists. Airport map PDFs are NOT bundled. Upload app files to GitHub root; never upload private travel documents. Test online then airplane mode. Do not clear app/browser storage or uninstall the app.

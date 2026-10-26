@@ -296,8 +296,71 @@
       ['🚕','Firenze S.M.N. → Florence hotel','October 31 · arrive 13:31. Use the official taxi stand or walk only if convenient with luggage.',florence?.address],
       ['🌿','Florence → Nerbona','November 2 · use the confirmed group transfer if provided; do not assume a pickup point until confirmed.',WORK.address]
     ];
-    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These instructions work offline. Airport links need internet; save current terminal maps into Travel Documents for true offline viewing.</p></div><h3>Airport maps</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button><button class="pill-btn" onclick="go('documents',{},'more')">Save map PDF</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}<div class="tip">Airport terminal maps are not included until you add the current official PDF or image to your encrypted Travel Documents. Do not rely on a live map offline.</div></div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div><h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
   }
+  const MENU_ITEMS = [
+    ['Cacio e pepe','Pasta with Pecorino Romano cheese and black pepper','Rome · dairy, wheat'],
+    ['Carbonara','Pasta with egg, Pecorino, guanciale (cured pork cheek) and pepper','Rome · pork, egg, dairy, wheat'],
+    ['Amatriciana','Tomato pasta with guanciale (pork) and Pecorino','Rome · pork, dairy, wheat'],
+    ['Gricia','Pasta with guanciale and Pecorino; no tomato','Rome · pork, dairy, wheat'],
+    ['Saltimbocca alla romana','Veal with prosciutto and sage, often cooked with wine','Rome · veal, pork'],
+    ['Supplì','Fried rice croquette, usually with tomato sauce and mozzarella','Rome · dairy; breading may contain wheat'],
+    ['Carciofi alla romana','Artichokes braised with herbs and olive oil','Rome · vegetables'],
+    ['Carciofi alla giudia','Crispy deep-fried artichokes','Rome · fried vegetables'],
+    ['Trippa alla romana','Tripe (animal stomach lining) cooked in tomato sauce','Rome · offal'],
+    ['Coda alla vaccinara','Slow-braised oxtail in tomato sauce','Rome · beef'],
+    ['Bistecca alla Fiorentina','Very thick Tuscan T-bone steak, typically served rare','Florence · beef; often sold by weight'],
+    ['Pappardelle al cinghiale','Wide ribbon pasta with wild boar meat ragù','Tuscany · wild boar, wheat'],
+    ['Ribollita','Hearty Tuscan soup with beans, vegetables and bread','Tuscany · wheat; ask about stock'],
+    ['Pappa al pomodoro','Thick tomato, bread and basil soup','Tuscany · wheat'],
+    ['Pici all’aglione','Thick hand-rolled pasta with garlicky tomato sauce','Tuscany · wheat'],
+    ['Lampredotto','Florentine sandwich made with cow stomach','Florence · offal, wheat'],
+    ['Crostini toscani','Toasted bread topped with a savory chicken-liver spread','Tuscany · liver, wheat'],
+    ['Tagliere','Sharing board of cured meats, cheeses, or both','Often pork and dairy'],
+    ['Bruschetta','Toasted bread, commonly topped with tomato, garlic and olive oil','Wheat'],
+    ['Gnocchi al ragù','Soft potato dumplings with meat sauce','Often wheat, egg; ask about meat'],
+    ['Lasagne al forno','Baked layers of pasta, meat sauce and béchamel','Wheat, dairy; often beef/pork'],
+    ['Melanzane alla parmigiana','Baked eggplant with tomato sauce and cheese','Dairy'],
+    ['Fritto misto','Assorted fried foods; may include seafood','Ask what is included'],
+    ['Polpo','Octopus','Seafood'],['Gamberi','Shrimp or prawns','Shellfish'],
+    ['Vongole','Clams','Shellfish'],['Cozze','Mussels','Shellfish'],
+    ['Acciughe','Anchovies','Fish'],['Baccalà','Salt cod','Fish'],
+    ['Funghi porcini','Porcini mushrooms','Mushrooms'],['Tartufo','Truffle','May be a supplement'],
+    ['Stracciatella','Creamy cheese; also a name for some soups or gelato flavors','Ask which meaning'],
+    ['Burrata','Soft mozzarella-like cheese with creamy center','Dairy'],
+    ['Guanciale','Cured pork cheek','Pork'],['Pancetta','Italian cured pork belly','Pork'],
+    ['Prosciutto crudo','Dry-cured ham, served uncooked','Pork'],
+    ['Salsiccia','Sausage, often pork','Ask which meat'],
+    ['Cinghiale','Wild boar','Meat'],['Vitello','Veal','Meat'],
+    ['Manzo','Beef','Meat'],['Agnello','Lamb','Meat'],
+    ['Contorni','Side dishes, often ordered separately','Menu section'],
+    ['Antipasti','Starters or appetizers','Menu section'],
+    ['Primi','First courses, usually pasta, risotto or soup','Menu section'],
+    ['Secondi','Main courses, typically meat or fish','Menu section'],
+    ['Dolci','Desserts','Menu section'],
+    ['Coperto','Per-person cover charge, often for table setting/bread','Check menu for amount'],
+    ['Servizio','Service charge, if listed','Check whether included'],
+    ['All’etto / per etto','Price per 100 grams; total depends on weight','Common for steak or fish'],
+    ['Al forno','Baked in the oven','Cooking method'],
+    ['Alla griglia','Grilled','Cooking method'],
+    ['Fritto / fritta','Fried','Cooking method'],
+    ['Crudo / cruda','Raw or uncooked','Cooking method'],
+    ['Piccante','Spicy','Flavor'],['Senza','Without','Useful term'],
+    ['Tiramisù','Coffee-soaked layered dessert with mascarpone','Dairy, egg, wheat; coffee'],
+    ['Panna cotta','Set cream dessert, often with fruit sauce','Dairy; often gelatin'],
+    ['Cantucci','Crunchy almond biscuits','Wheat, nuts, egg'],
+    ['Gelato','Italian-style ice cream','Often dairy; check flavors']
+  ];
+  function menuDecoderScreen(){
+    return `<section class="screen">${topbar('🍝 Italian Menu Decoder')}<div class="content"><div class="wallet-intro"><h2>What am I ordering?</h2><p>Search Italian dishes, ingredients and menu words. This built-in guide works offline.</p></div><input class="searchbox" id="menu-decode-search" type="search" placeholder="Try carbonara, steak, pork, tripe…" oninput="filterMenuDecoder(this.value)" aria-label="Search Italian menu terms"><div class="tip">Translations are general descriptions, not guarantees about a restaurant's recipe or allergens. Ask staff if you have an allergy.</div><div id="menu-decode-results"></div><h3>Helpful at the table</h3><div class="info-row"><div class="copy"><b>Che cosa contiene?</b><small>What does it contain?</small><b>Contiene frutta a guscio?</b><small>Does it contain tree nuts?</small><b>Sono allergica a…</b><small>I'm allergic to… (female speaker)</small><b>Avete un menù in inglese?</b><small>Do you have an English menu?</small></div></div><div class="tip">For a whole printed menu, use your phone's Translate camera. Download Italian for offline translation ahead of time if supported; the built-in dictionary needs no connection.</div></div>${bottomNav('more')}</section>`;
+  }
+  function filterMenuDecoder(q=''){
+    const root=document.getElementById('menu-decode-results');if(!root)return;
+    const term=q.trim().toLocaleLowerCase();
+    const matches=MENU_ITEMS.filter(([it,en,note])=>[it,en,note].join(' ').toLocaleLowerCase().includes(term));
+    root.innerHTML=matches.length?matches.map(([it,en,note])=>`<div class="info-row"><div class="emoji">🍽️</div><div class="copy"><b>${esc(it)}</b><small>${esc(en)}</small><small style="color:#866080">${esc(note)}</small></div></div>`).join(''):'<div class="empty">Not in the offline dictionary. Ask your server or use a translator.</div>';
+  }
+  window.filterMenuDecoder=filterMenuDecoder;
   function moreScreen(){
     return `<section class="screen more-hub">
       ${topbar('More')}
@@ -305,7 +368,8 @@
         ${menuRow('▣','blue','Before Italy','To-do list, documents, prep',`go('tasks',{},'more')`)}
         ${menuRow('🛒','red','Trip Shopping','Souvenirs, gifts, ideas',`go('shopping',{},'more')`)}
         ${menuRow('🔐','blue','Travel Documents','Encrypted offline files & custom folders',`go('documents',{},'more')`)}
-        ${menuRow('🗺','cyan','Airport & Transfer Guides','Offline reference and map downloads',`go('travelGuides',{},'more')`)}
+        ${menuRow('🍝','red','Italian Menu Decoder','Search dishes, ingredients & menu terms offline',`go('menuDecoder',{},'more')`)}
+        ${menuRow('🗺','cyan','Airport & Transfer Guides','Offline airport and transfer instructions',`go('travelGuides',{},'more')`)}
         ${menuRow('🎟','red','Bookings & Tickets','Flights, hotels, tours, reservations',`go('bookings',{},'more')`)}
         ${menuRow('⬡','cyan','Offline Access','Download maps & info',`go('offline',{},'more')`)}
         ${menuRow('✈','blue','Navigate','Get directions, where I am, drivers',`go('navigate',{},'more')`)}
@@ -680,7 +744,7 @@
     }else{
       body=`<div class="tip">Booking notes are built into the app. Tickets and PDFs are only available offline if you have saved them on your phone (for example in Files). The app cannot verify external downloads.</div>`+
         item('🎟️','Bookings & Tickets','Flights, hotels, train, attractions and restaurant statuses',`go('bookings',{},'offline')`,'View bookings')+
-        item('🔐','Encrypted Travel Documents','Open saved tickets, confirmations and airport maps on this device',`go('documents',{},'more')`,'Open wallet');
+        item('🔐','Encrypted Travel Documents','Open saved tickets and confirmations on this device',`go('documents',{},'more')`,'Open wallet');
     }
     return `<section class="screen">${topbar('Offline Access')}<div class="segment offline-tabs" role="tablist">${tabs.map(([id,label])=>`<button role="tab" aria-selected="${offlineTab===id}" class="${offlineTab===id?'active':''}" onclick="setOfflineTab('${id}')">${label}</button>`).join('')}</div><div class="content"><div class="td-panel"><b>📱 Offline Readiness</b><p class="td-muted">Check this device’s saved app files, photos, private vault and document count.</p><button class="pill-btn" onclick="checkItalyOffline()">Run offline check</button><div id="italy-offline-results" class="td-muted" style="margin-top:10px"></div></div><h3 style="font-family:Georgia,serif">${tabs.find(t=>t[0]===offlineTab)[1]} · Offline Access</h3>${body}<div class="small-note" style="padding:14px 0">Offline-ready app content is different from downloaded Apple Maps and saved PDFs. Test essential resources in airplane mode before departure.</div></div>${bottomNav('more')}</section>`;
   }
@@ -880,6 +944,7 @@
       case 'offline': html=offlineScreen(); break;
       case 'documents': html=documentsScreen(); break;
       case 'travelGuides': html=travelGuidesScreen(); break;
+      case 'menuDecoder': html=menuDecoderScreen(); break;
       case 'emergency': html=emergencyScreen(); break;
       case 'workOverview': html=workOverviewScreen(); break;
       case 'houseRules': html=houseRulesScreen(); break;
@@ -889,6 +954,7 @@
       default: html=homeScreen();
     }
     app.innerHTML=html;
+    if(route.name==='menuDecoder') filterMenuDecoder('');
     if(route.name==='documents') window.TravelDocs?.mount(document.getElementById('travel-docs-root'));
     if(document.querySelector('.house-rules-screen'))restoreHouseRuleChecks();
   }
