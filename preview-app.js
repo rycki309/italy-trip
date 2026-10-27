@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-20-travel-wallet-v11';
+  const APP_VERSION = '2026-10-27-progress-verified-v21';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -131,18 +131,18 @@
   });
 
   const PREP_EXTRAS = [
-    {when:'1–2 days before',who:'Both',category:'Phone',task:'Free up phone storage',note:'Make room for photos and videos; confirm cloud/photo backup if used.'},
-    {when:'1–2 days before',who:'Rycki',category:'Work',task:'Turn on work auto-reply',note:'Set before leaving for the personal portion of the trip.'},
-    {when:'1–2 days before',who:'Both',category:'Home',task:'Print cat-care instructions',note:'Leave an easy-to-find paper copy for the cat sitter.'},
-    {when:'1–2 days before',who:'Both',category:'Home',task:'Mow lawn',note:'Weather permitting.'}
+    {id:'task-extra-phone-storage',when:'1–2 days before',who:'Both',category:'Phone',task:'Free up phone storage',note:'Make room for photos and videos; confirm cloud/photo backup if used.'},
+    {id:'task-extra-work-autoreply',when:'1–2 days before',who:'Rycki',category:'Work',task:'Turn on work auto-reply',note:'Set before leaving for the personal portion of the trip.'},
+    {id:'task-extra-cat-care',when:'1–2 days before',who:'Both',category:'Home',task:'Print cat-care instructions',note:'Leave an easy-to-find paper copy for the cat sitter.'},
+    {id:'task-extra-mow-lawn',when:'1–2 days before',who:'Both',category:'Home',task:'Mow lawn',note:'Weather permitting.'}
   ];
   PREP_EXTRAS.forEach(x => { if(!ITALY_TRIP_LISTS.preTrip.some(y => y.task === x.task)) ITALY_TRIP_LISTS.preTrip.push(x); });
 
   const PACK_EXTRAS = [
-    {who:'Dennis',category:'Health',item:'Saline nasal spray',qty:'1',where:'Personal item',note:'Bring only if recommended/approved by his surgeon.'},
-    {who:'Dennis',category:'Health',item:'Nasal ointment',qty:'1',where:'Personal item',note:'Bring only if recommended/approved by his surgeon.'},
-    {who:'Dennis',category:'Health',item:'Afrin / oxymetazoline',qty:'1',where:'Personal item',note:'Bring/use only if his surgeon specifically recommends it.'},
-    {who:'Rycki',category:'Work Extension',item:'Laundry detergent pods / sheets',qty:'1–2',where:'Suitcase',note:'Nerbona washing machines are free; detergent is not provided.'}
+    {id:'pack-extra-saline',who:'Dennis',category:'Health',item:'Saline nasal spray',qty:'1',where:'Personal item',note:'Bring only if recommended/approved by his surgeon.'},
+    {id:'pack-extra-ointment',who:'Dennis',category:'Health',item:'Nasal ointment',qty:'1',where:'Personal item',note:'Bring only if recommended/approved by his surgeon.'},
+    {id:'pack-extra-afrin',who:'Dennis',category:'Health',item:'Afrin / oxymetazoline',qty:'1',where:'Personal item',note:'Bring/use only if his surgeon specifically recommends it.'},
+    {id:'pack-extra-laundry',who:'Rycki',category:'Work Extension',item:'Laundry detergent pods / sheets',qty:'1–2',where:'Suitcase',note:'Nerbona washing machines are free; detergent is not provided.'}
   ];
   PACK_EXTRAS.forEach(x => { if(!ITALY_TRIP_LISTS.packing.some(y => y.item === x.item)) ITALY_TRIP_LISTS.packing.push(x); });
 
@@ -172,6 +172,74 @@
   function allPacking(){ return [...ITALY_TRIP_LISTS.packing, ...(user.customPacking || [])]; }
   function allTasks(){ return [...ITALY_TRIP_LISTS.preTrip, ...(user.customTasks || [])]; }
   function checkedCount(obj,prefix,n){ let c=0; for(let i=0;i<n;i++) if(obj[prefix+i]) c++; return c; }
+
+  // v21: immutable item IDs, separate from display text and list position.
+  // Keep all legacy maps and records for possible later recovery.
+  const PROGRESS_BACKUP_KEY = 'italy2026-progress-pre-v19-backup';
+  const V21_BACKUP_KEY = 'italy2026-progress-pre-v21-backup';
+  function stableId(kind, value){
+    const str=kind+'|'+String(value||'').normalize('NFKC').trim().toLowerCase();
+    let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}
+    return kind+'-'+(h>>>0).toString(36);
+  }
+  function oldTaskId(x){return stableId('task',x.task);}
+  function oldPackId(x){return stableId('pack',x.item+'|'+x.who);}
+  function taskId(x){return x.id;}
+  function packId(x){return x.id;}
+  function activityId(date,a){return a.id;}
+  function newCustomId(kind){
+    if(globalThis.crypto?.randomUUID)return kind+'-custom-'+crypto.randomUUID();
+    const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
+    return kind+'-custom-'+Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  function preserveProgressBackup(){
+    try{
+      if(!localStorage.getItem(V21_BACKUP_KEY))localStorage.setItem(V21_BACKUP_KEY,localStorage.getItem(KEY)||'{}');
+      return true;
+    }catch(e){return false;}
+  }
+  function migrateProgress(){
+    if(user.progressV21)return;
+    if(!preserveProgressBackup())return; // Never change saved state without a backup.
+    user.tasksStable ||= {};user.packingStable ||= {};user.activitiesStable ||= {};
+    user.customTasks ||= [];user.customPacking ||= [];
+    // Each custom row gets a unique persistent ID, including identical names.
+    for(const x of user.customTasks)if(!x.id)x.id=newCustomId('task');
+    for(const x of user.customPacking)if(!x.id)x.id=newCustomId('pack');
+    // Copy v19/v20 content-hash checkmarks without deleting original keys.
+    for(const x of allTasks()){
+      const previous=oldTaskId(x);
+      if(allTasks().filter(y=>oldTaskId(y)===previous).length!==1)continue; // Ambiguous duplicate: retain legacy record only.
+      if(user.tasksStable[previous]===true && !Object.hasOwn(user.tasksStable,taskId(x)))user.tasksStable[taskId(x)]=true;
+    }
+    for(const x of allPacking()){
+      const previous=oldPackId(x);
+      if(allPacking().filter(y=>oldPackId(y)===previous).length!==1)continue; // Ambiguous duplicate: retain legacy record only.
+      if(user.packingStable[previous]===true && !Object.hasOwn(user.packingStable,packId(x)))user.packingStable[packId(x)]=true;
+    }
+    // Legacy positional records: migrate only known exact matches, never guess.
+    for(const [index,label] of Object.entries(LEGACY_TASK_IDENTITIES)){
+      const i=Number(index), x=allTasks()[i];
+      if(x && x.task===label && user.tasks?.['t-'+i]===true && !Object.hasOwn(user.tasksStable,taskId(x)))user.tasksStable[taskId(x)]=true;
+    }
+    for(const [index,label] of Object.entries(LEGACY_PACK_IDENTITIES)){
+      const i=Number(index), x=allPacking()[i];
+      if(x && x.item+'|'+x.who===label && user.packing?.['p-'+i]===true && !Object.hasOwn(user.packingStable,packId(x)))user.packingStable[packId(x)]=true;
+    }
+    for(const d of ITALY_TRIP_ITINERARY)for(const [i,a] of d.activities.entries()){
+      const previous=stableId('activity',d.date+'|'+(a.ticket||a.place||'')+'|'+a.title);
+      if(user.activitiesStable[previous]==='done' && !Object.hasOwn(user.activitiesStable,a.id))user.activitiesStable[a.id]='done';
+      const legacy=d.date+'-'+i;
+      if(user.activities?.[legacy]==='done' && LEGACY_ACTIVITY_IDENTITIES[legacy]===a.title && !Object.hasOwn(user.activitiesStable,a.id))user.activitiesStable[a.id]='done';
+    }
+    user.progressV21=true;
+    try{saveUser();}catch(e){user.progressV21=false;}
+  }
+  const LEGACY_TASK_IDENTITIES = {"0": "Verify passports + reservation names", "1": "Confirm Nov 2–7 work offsite logistics", "2": "Plan FCO airport → Rome hotel transfer", "3": "Confirm Nov 2 Florence → work offsite transfer"};
+  const LEGACY_PACK_IDENTITIES = {"0": "Passports|Both", "1": "Photo IDs|Both", "2": "Passport copies/photos|Both", "3": "Flights, hotels + train saved offline|Both", "4": "Attraction tickets / QR codes|Both", "5": "Work address, schedule + contacts|Rycki", "6": "No-foreign-transaction-fee cards|Both", "7": "Debit / ATM card|Both", "8": "Euro cash|Both", "9": "Phones|Both", "10": "Phone charging cables|Both", "11": "Italy Type C/F/L adapters|Both", "12": "Multi-port USB / USB-C charger|Both", "13": "Power banks|Both", "14": "Earbuds / headphones|Both", "15": "Watch + charger|Both", "16": "AirTags / luggage trackers|Both", "17": "Work laptop|Rycki", "18": "Laptop charger|Rycki", "19": "Mouse|Rycki", "20": "Headset / headphones|Rycki", "21": "Security key / MFA token|Rycki", "22": "Laptop sleeve|Rycki", "23": "Notebook + pen|Rycki", "24": "Underwear|Rycki", "25": "Socks|Rycki", "26": "Bras|Rycki", "27": "Sleepwear|Rycki", "28": "Casual tops|Rycki", "29": "Layering tanks / tees|Rycki", "30": "Nicer top|Rycki", "31": "Jeans|Rycki", "32": "Comfortable non-jean bottom|Rycki", "33": "Sweaters / cardigans|Rycki", "34": "Blazer|Rycki", "35": "Primary walking sneakers|Rycki", "36": "Second walking / casual shoes|Rycki", "37": "Zip crossbody|Rycki", "38": "Sunglasses|Rycki", "39": "Scarf|Rycki", "40": "Underwear|Dennis", "41": "Socks|Dennis", "42": "Casual tees / henleys / polos|Dennis", "43": "Nicer shirts|Dennis", "44": "Jeans / chinos|Dennis", "45": "Sweater / quarter-zip|Dennis", "46": "Rain-capable jacket|Dennis", "47": "Sleepwear|Dennis", "48": "Walking shoes|Dennis", "49": "Second casual / nicer shoes|Dennis", "50": "Compact umbrella|Both", "51": "Packing cubes|Both", "52": "Zip bags|Both", "53": "Luggage tags|Both", "54": "Foldable tote|Both", "55": "Toothbrushes + toothpaste|Both", "56": "Deodorant|Both", "57": "Shampoo / conditioner / body wash|Both", "58": "Skincare|Rycki", "59": "Makeup + remover|Rycki", "60": "Hairbrush + hair products|Rycki", "61": "Glasses + case|Rycki", "62": "Lip balm|Both", "63": "Tissues|Both", "64": "Hand sanitizer|Both", "65": "Sunscreen|Both", "66": "Prescription medications|Both", "67": "Pain reliever|Both", "68": "Antacid / stomach medicine|Both", "69": "Anti-diarrheal|Both", "70": "Motion-sickness medicine|Both", "71": "Allergy medicine|Both", "72": "Bandages|Both", "73": "Blister patches / moleskin|Both", "74": "Compression socks|Both", "75": "Eye masks|Both", "76": "Earplugs|Both", "77": "Plane snacks|Both", "78": "Reusable water bottles|Both", "79": "Laundry detergent sheets|Rycki", "80": "Laundry bag|Rycki", "81": "Stain pen / wipes|Rycki", "82": "Work-appropriate outfits through Nov 7|Rycki", "83": "Saline nasal spray|Dennis", "84": "Nasal ointment|Dennis", "85": "Afrin / oxymetazoline|Dennis", "86": "Laundry detergent pods / sheets|Rycki"};
+  const LEGACY_ACTIVITY_IDENTITIES = {"2026-10-28-0": "Arrive in Rome + get to hotel", "2026-10-28-1": "Hotel rest", "2026-10-28-2": "Short Prati wander", "2026-10-28-3": "Be.Re. + Trapizzino", "2026-10-28-4": "Early night", "2026-10-31-0": "Checkout + get to Roma Termini", "2026-10-31-1": "Train to Florence", "2026-10-31-2": "Taxi to Hotel Milu + decompress", "2026-10-31-3": "Duomo exterior", "2026-10-31-4": "Piazza della Signoria", "2026-10-31-5": "Ponte Vecchio", "2026-10-31-6": "Oltrarno / Santo Spirito wander", "2026-10-31-7": "Rione Brewpub — dinner + beer", "2026-11-02-0": "Breakfast + pack", "2026-11-02-1": "Dennis → Florence Airport", "2026-11-02-2": "Rycki → work retreat near Colle di Val d’Elsa"};
+
+  migrateProgress();
   function daysToGo(){ const trip = new Date('2026-10-28T12:00:00'); const now = new Date(); return Math.max(0,Math.ceil((trip - now)/86400000)); }
   function appleMapsUrl(address){ return `https://maps.apple.com/?daddr=${encodeURIComponent(address)}`; }
   function copy(text){ navigator.clipboard?.writeText(text); toast('Copied ✓'); }
@@ -216,7 +284,7 @@
 
   function homeScreen(){
     const tasks=allTasks(), pack=allPacking();
-    const td=checkedCount(user.tasks,'t-',tasks.length), pd=checkedCount(user.packing,'p-',pack.length);
+    const td=tasks.filter(x=>user.tasksStable?.[taskId(x)]).length, pd=pack.filter(x=>user.packingStable?.[packId(x)]).length;
     const prepPct=Math.round((td/Math.max(1,tasks.length))*100), packPct=Math.round((pd/Math.max(1,pack.length))*100);
     return `<section class="screen">
       <div class="hero home"><img src="italy-collage.jpg" alt="Real photographs of Tuscany, Rome, and Florence"><div class="hero-copy"><h1>Italy 2026</h1><p>October 28 – November 7</p></div></div>
@@ -387,7 +455,7 @@
     const phraseHits=query?ITALY_TRIP_ITALIAN.filter(p=>`${p.italian} ${p.english} ${p.category}`.toLowerCase().includes(query)).slice(0,10):[];
     const taskHits=query?allTasks().map((x,i)=>({x,i})).filter(({x})=>`${x.task} ${x.category||''}`.toLowerCase().includes(query)).slice(0,8):[];
     const tools=[['Currency Converter','money'],['Emergency Info','emergency'],['Offline Access','offline'],['Packing','packing'],['Before Italy','tasks'],['Bookings & Tickets','bookings'],['Navigate','navigate'],['Work Stay','work']].filter(x=>x[0].toLowerCase().includes(query));
-    return `<section class="screen">${topbar('Search Italy App')}<div class="phrase-search"><input class="searchbox" value="${esc(q||'')}" placeholder="bathroom, train, Pantheon, doctor…" onkeydown="if(event.key==='Enter')runAppSearch(this.value)"></div><div class="content">${!query?'<div class="empty">Search places, phrases, prep items and tools.</div>':''}${placeHits.length?'<h3 style="font-family:Georgia,serif">Places</h3>'+placeHits.map(p=>`<div class="info-row"><div class="emoji">📍</div><div class="copy"><b>${esc(p.name)}</b><small>${esc(p.address)}</small><small class="nav-distance" data-to="${p.id}" data-from="${i>0?planned[i-1].id:''}">${i>0?'Calculating distance…':'First stop'}</small><div class="action-row"><button class="pill-btn" onclick="showPlace('${p.id}')">Details</button></div></div></div>`).join(''):''}${phraseHits.length?'<h3 style="font-family:Georgia,serif">Italian</h3>'+phraseHits.map(p=>phraseRow(p)).join(''):''}${taskHits.length?'<h3 style="font-family:Georgia,serif">Before Italy</h3>'+taskHits.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.tasks['t-'+i]?'checked':''} onchange="toggleTask(${i},this.checked)"><span>${esc(x.task)}</span></label>`).join(''):''}${tools.length?'<h3 style="font-family:Georgia,serif">Tools</h3>'+tools.map(([label,dest])=>`<button class="nav-card" onclick="go('${dest}',{},'more')"><span class="icon">›</span><span class="copy">${label}</span></button>`).join(''):''}${query && !placeHits.length&&!phraseHits.length&&!taskHits.length&&!tools.length?'<div class="empty">No built-in result. Try Navigate for a deliberate Apple Maps search.</div>':''}</div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('Search Italy App')}<div class="phrase-search"><input class="searchbox" value="${esc(q||'')}" placeholder="bathroom, train, Pantheon, doctor…" onkeydown="if(event.key==='Enter')runAppSearch(this.value)"></div><div class="content">${!query?'<div class="empty">Search places, phrases, prep items and tools.</div>':''}${placeHits.length?'<h3 style="font-family:Georgia,serif">Places</h3>'+placeHits.map(p=>`<div class="info-row"><div class="emoji">📍</div><div class="copy"><b>${esc(p.name)}</b><small>${esc(p.address)}</small><small class="nav-distance" data-to="${p.id}" data-from="${i>0?planned[i-1].id:''}">${i>0?'Calculating distance…':'First stop'}</small><div class="action-row"><button class="pill-btn" onclick="showPlace('${p.id}')">Details</button></div></div></div>`).join(''):''}${phraseHits.length?'<h3 style="font-family:Georgia,serif">Italian</h3>'+phraseHits.map(p=>phraseRow(p)).join(''):''}${taskHits.length?'<h3 style="font-family:Georgia,serif">Before Italy</h3>'+taskHits.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.tasksStable[taskId(x)]?'checked':''} onchange="toggleTask(${allTasks().indexOf(x)},this.checked)"><span>${esc(x.task)}</span></label>`).join(''):''}${tools.length?'<h3 style="font-family:Georgia,serif">Tools</h3>'+tools.map(([label,dest])=>`<button class="nav-card" onclick="go('${dest}',{},'more')"><span class="icon">›</span><span class="copy">${label}</span></button>`).join(''):''}${query && !placeHits.length&&!phraseHits.length&&!taskHits.length&&!tools.length?'<div class="empty">No built-in result. Try Navigate for a deliberate Apple Maps search.</div>':''}</div>${bottomNav('more')}</section>`;
   }
   window.runAppSearch=q=>{historyStack.push(route);route={name:'search',params:{q},parent:'more'};render();window.scrollTo(0,0);};
 
@@ -419,12 +487,12 @@
     if(!days.length) return `<section class="screen">${topbar('Itinerary')}<div class="empty">No days available.</div></section>`;
     const selected=viewDay(days.find(d=>d.date===itinerarySelected[city])||days[0]);
     const activityHtml=selected.activities.map((a,i)=>{
-      const globalKey=selected.date+'-'+i, state=user.activities[globalKey]||'pending';
+      const globalKey=selected.date+'-'+i, state=user.activitiesStable[activityId(selected.date,a)]||'pending';
       const rest=a.easy==='protect-rest';
       const suggestion=user.easyDay?(rest?'🟢 PROTECT THIS BREAK':a.easy==='taxi'?'🔵 TAXI / TRANSIT RECOMMENDED':a.easy==='skip-first'?'🟠 OPTIONAL':a.type==='optional'?'🟡 OPTIONAL · SHORTEN IF TIRED':'🟢 KEEP · PRIORITY'):'';
       const klass=user.easyDay?(a.easy==='skip-first'?'rest-optional':rest?'rest-protect':a.easy==='taxi'?'rest-transit':'rest-keep'):'';
       const previous=selected.activities.slice(0,i).reverse().find(x=>x.place);
-      return `<div class="rest-activity ${klass}"><label class="check-row"><input type="checkbox" ${state==='done'?'checked':''} onchange="setActivity('${globalKey}',this.checked)"><span><b>${esc(a.time?`${a.time} · ${a.title}`:a.title)}</b><div class="meta">${esc(a.period||'Flexible')}${a.type==='optional'?' · OPTIONAL':''}</div>${suggestion?`<div class="rest-advice">${suggestion}</div>`:''}${a.note?`<div class="meta">${esc(a.note)}</div>`:''}${a.place?`<button type="button" class="pill-btn gray" onclick="event.preventDefault();showActivityPlace('${a.place}','${previous?.place||''}')">Details · distance from previous stop</button>`:''}</span></label></div>`;
+      return `<div class="rest-activity ${klass}"><label class="check-row"><input type="checkbox" ${state==='done'?'checked':''} onchange="setActivity('${activityId(selected.date,a)}',this.checked)"><span><b>${esc(a.time?`${a.time} · ${a.title}`:a.title)}</b><div class="meta">${esc(a.period||'Flexible')}${a.type==='optional'?' · OPTIONAL':''}</div>${suggestion?`<div class="rest-advice">${suggestion}</div>`:''}${a.note?`<div class="meta">${esc(a.note)}</div>`:''}${a.place?`<button type="button" class="pill-btn gray" onclick="event.preventDefault();showActivityPlace('${a.place}','${previous?.place||''}')">Details · distance from previous stop</button>`:''}</span></label></div>`;
     }).join('');
     return `<section class="screen">${topbar(`${city} Itinerary`)}<div class="content"><div class="day-picker">${days.map(d=>`<button class="${selected.date===d.date?'active':''}" onclick="selectItineraryDay('${city}','${d.date}')">${formatDay(d.date)}</button>`).join('')}</div><div class="info-row"><div class="emoji">🌿</div><div class="copy"><b>Rest Mode</b><small>Color-code priorities, optional stops, rest breaks and taxi/transit alternatives. Nothing disappears.</small></div><button class="pill-btn ${user.easyDay?'green':'gray'}" onclick="toggleEasyDay()">${user.easyDay?'ON':'OFF'}</button></div><div class="packing-group"><div class="packing-head"><span>🗓️</span>${formatDay(selected.date)}<small>${esc(selected.title)}</small></div>${activityHtml}</div><div class="tip">Times are flexible except booked transport or timed tickets. Switch days above anytime.</div></div>${bottomNav(city==='Rome'?'rome':'florence')}</section>`;
   }
@@ -468,7 +536,7 @@
     catch(e){extra.textContent=`From ${prev.name}: distance unavailable offline. Open Apple Maps for the walking route.`;}
   };
   window.selectItineraryDay=(city,date)=>{itinerarySelected[city]=date;render();};
-  window.setActivity=(key,done)=>{user.activities[key]=done?'done':'pending';saveUser();render();};
+  window.setActivity=(key,done)=>{user.activitiesStable[key]=done?'done':'pending';saveUser();render();};
 
   function packingScreen(){
     const all=allPacking();
@@ -480,23 +548,23 @@
       if(packingFilter==='Personal') return x.category!=='Work Extension' && x.who!=='Dennis';
       return true;
     });
-    const done=filtered.filter(z=>user.packing['p-'+z.i]).length;
+    const done=filtered.filter(z=>user.packingStable[packId(z.x)]).length;
     const groups=[...new Set(filtered.map(z=>z.x.category))];
     return `<section class="screen">${topbar('🧳 Packing')}
       <div class="segment">${filters.map(f=>`<button class="${packingFilter===f?'active':''}" onclick="setPackFilter('${f}')">${f}</button>`).join('')}</div>
       <div class="content"><div class="progress-line"><span>${done} / ${filtered.length} packed</span><small>${Math.round(done/Math.max(1,filtered.length)*100)}%</small></div><div class="bar"><i style="width:${done/Math.max(1,filtered.length)*100}%"></i></div>
-      ${groups.map(g=>{const rows=filtered.filter(z=>z.x.category===g); const gd=rows.filter(z=>user.packing['p-'+z.i]).length; return `<div class="packing-group"><div class="packing-head"><span>${packingEmoji(g)}</span>${esc(g)}<small>${gd} / ${rows.length} ›</small></div>${rows.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.packing['p-'+i]?'checked':''} onchange="togglePacking(${i},this.checked)"><span><b>${esc(x.item)}</b>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</span></label>`).join('')}<button class="add-row" onclick="addPacking('${esc(g)}')">＋ Add Item</button></div>`}).join('')}</div>
+      ${groups.map(g=>{const rows=filtered.filter(z=>z.x.category===g); const gd=rows.filter(z=>user.packingStable[packId(z.x)]).length; return `<div class="packing-group"><div class="packing-head"><span>${packingEmoji(g)}</span>${esc(g)}<small>${gd} / ${rows.length} ›</small></div>${rows.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.packingStable[packId(x)]?'checked':''} onchange="togglePacking(${all.indexOf(x)},this.checked)"><span><b>${esc(x.item)}</b>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</span></label>`).join('')}<button class="add-row" onclick="addPacking('${esc(g)}')">＋ Add Item</button></div>`}).join('')}</div>
       ${bottomNav('more')}</section>`;
   }
   function packingEmoji(g){ const m={'Documents':'🪪','Money':'💳','Electronics':'📱','Work Extension':'💼','Clothes':'👕','Shared':'🧳','Toiletries':'🧴','Health':'💊','Travel Day':'✈️'}; return m[g]||'🧳'; }
   window.setPackFilter=f=>{packingFilter=f;render();};
-  window.togglePacking=(i,v)=>{user.packing['p-'+i]=v;saveUser();render();};
+  window.togglePacking=(i,v)=>{const x=allPacking()[i];if(!x)return;user.packingStable[packId(x)]=v;saveUser();render();};
 
   function tasksScreen(){
-    const a=allTasks(); const done=checkedCount(user.tasks,'t-',a.length);
-    return `<section class="screen">${topbar('Before Italy')}<div class="content"><div class="progress-line"><span>${done} / ${a.length} prep completed</span><small>${Math.round(done/Math.max(1,a.length)*100)}%</small></div><div class="bar"><i style="width:${done/Math.max(1,a.length)*100}%"></i></div>${a.map((x,i)=>`<label class="check-row"><input type="checkbox" ${user.tasks['t-'+i]?'checked':''} onchange="toggleTask(${i},this.checked)"><span><b>${esc(x.task)}</b><div class="meta">${esc(x.when||x.timing||'')} · ${esc(x.who||'')}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</span></label>`).join('')}<button class="add-row" onclick="addTask()">＋ Add Item</button></div>${bottomNav('more')}</section>`;
+    const a=allTasks(); const done=a.filter(x=>user.tasksStable[taskId(x)]).length;
+    return `<section class="screen">${topbar('Before Italy')}<div class="content"><div class="progress-line"><span>${done} / ${a.length} prep completed</span><small>${Math.round(done/Math.max(1,a.length)*100)}%</small></div><div class="bar"><i style="width:${done/Math.max(1,a.length)*100}%"></i></div>${a.map((x,i)=>`<label class="check-row"><input type="checkbox" ${user.tasksStable[taskId(x)]?'checked':''} onchange="toggleTask(${i},this.checked)"><span><b>${esc(x.task)}</b><div class="meta">${esc(x.when||x.timing||'')} · ${esc(x.who||'')}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</span></label>`).join('')}<button class="add-row" onclick="addTask()">＋ Add Item</button></div>${bottomNav('more')}</section>`;
   }
-  window.toggleTask=(i,v)=>{user.tasks['t-'+i]=v;saveUser();render();};
+  window.toggleTask=(i,v)=>{const x=allTasks()[i];if(!x)return;user.tasksStable[taskId(x)]=v;saveUser();render();};
 
   function privateInline(key, fallback='🔒 Unlock to view') {
     const value=window.ItalyVault?.get(key);
@@ -874,8 +942,26 @@
     return `<section class="screen">${topbar('During Your Stay')}<div class="segment work-subtabs">${['Basics','Facilities','Recycling'].map(t=>`<button class="${duringTab===t?'active':''}" onclick="setDuringTab('${t}')">${t}</button>`).join('')}</div><div class="content">${body}<div class="action-row"><button class="pill-btn" onclick="go('houseRules',{},'work')">📋 House Rules</button><button class="pill-btn gray" onclick="go('emergency',{},'work')">🆘 Emergency Info</button></div></div>${bottomNav('work')}</section>`;
   }
 
+  window.exportProgressBackup=()=>{
+    const keys=[V21_BACKUP_KEY,'italy2026-progress-pre-v20-backup',PROGRESS_BACKUP_KEY,KEY];
+    const out={exportedAt:new Date().toISOString(),appVersion:APP_VERSION,progress:{},backups:{}};
+    for(const k of keys){
+      const raw=localStorage.getItem(k);if(!raw)continue;
+      try{
+        const data=JSON.parse(raw);
+        const safe={};
+        for(const field of ['activities','tasks','packing','activitiesStable','tasksStable','packingStable','progressV19','progressV21'])if(Object.hasOwn(data,field))safe[field]=data[field];
+        if(k===KEY){out.progress=safe;out.customTasks=(data.customTasks||[]).map(x=>({id:x.id,task:x.task}));out.customPacking=(data.customPacking||[]).map(x=>({id:x.id,item:x.item,who:x.who}));}
+        else out.backups[k]=safe;
+      }catch(e){out.backups[k]={error:'Could not read backup'};}
+    }
+    const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download='italy-checklist-progress-backup.json';document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  };
   function settingsScreen(){
-    return `<section class="screen">${topbar('Settings')}<div class="content"><div class="info-row"><div class="emoji">💗</div><div class="copy"><b>Rest Mode</b><small>Highlights rest/taxi/skip-first suggestions without removing plans.</small></div><button class="pill-btn ${user.easyDay?'green':'gray'}" onclick="toggleEasyDay()">${user.easyDay?'ON':'OFF'}</button></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b><a href="#" onclick="ItalyVault.open();return false">Unlock / Sync Private Details</a></b><small>Google sign-in and encrypted offline copy.</small></div></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b>Private notes stay on this device</b><small>Do not place flight confirmation numbers or private reservation codes in the public GitHub files.</small></div></div><div class="info-row"><div class="emoji">📱</div><div class="copy"><b>App version</b><small>${APP_VERSION}</small></div></div><button class="nav-card" onclick="confirmReset()"><span class="icon">♻️</span><span class="copy">Reset local progress<small>Protected by confirmation</small></span></button></div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('Settings')}<div class="content"><div class="info-row"><div class="emoji">💗</div><div class="copy"><b>Rest Mode</b><small>Highlights rest/taxi/skip-first suggestions without removing plans.</small></div><button class="pill-btn ${user.easyDay?'green':'gray'}" onclick="toggleEasyDay()">${user.easyDay?'ON':'OFF'}</button></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b><a href="#" onclick="ItalyVault.open();return false">Unlock / Sync Private Details</a></b><small>Google sign-in and encrypted offline copy.</small></div></div><div class="info-row"><div class="emoji">🔒</div><div class="copy"><b>Private notes stay on this device</b><small>Do not place flight confirmation numbers or private reservation codes in the public GitHub files.</small></div></div><div class="info-row"><div class="emoji">📱</div><div class="copy"><b>App version</b><small>${APP_VERSION}</small></div></div><div class="info-row"><div class="emoji">💾</div><div class="copy"><b>Export checklist recovery file</b><small>Downloads checklist history only, not your private documents or vault.</small></div><button class="pill-btn" onclick="exportProgressBackup()">Export</button></div><div class="tip">Original checklist records and backups are retained. Some older checkmarks cannot be assigned confidently.</div></div>${bottomNav('more')}</section>`;
   }
   window.toggleEasyDay=()=>{user.easyDay=!user.easyDay;saveUser();render();};
 
@@ -904,8 +990,8 @@
     const mask=document.createElement('div');mask.className='modal-mask';mask.innerHTML=`<div class="sheet"><div class="sheet-grabber"></div><div style="display:flex;justify-content:flex-end"><button class="xbtn" onclick="this.closest('.modal-mask').remove()">×</button></div>${html}</div>`;mask.addEventListener('click',e=>{if(e.target===mask)mask.remove()});document.body.appendChild(mask);
   }
 
-  function addTask(){ showInputSheet('Add Before Italy item','Task',value=>{user.customTasks.push({when:'Added by you',who:'Both',category:'Custom',task:value});saveUser();render();}); }
-  function addPacking(cat){ showInputSheet(`Add to ${cat}`,'Item',value=>{user.customPacking.push({who:'Custom',category:cat,item:value,qty:''});saveUser();render();}); }
+  function addTask(){ showInputSheet('Add Before Italy item','Task',value=>{user.customTasks.push({id:newCustomId('task'),when:'Added by you',who:'Both',category:'Custom',task:value});saveUser();render();}); }
+  function addPacking(cat){ showInputSheet(`Add to ${cat}`,'Item',value=>{user.customPacking.push({id:newCustomId('pack'),who:'Custom',category:cat,item:value,qty:''});saveUser();render();}); }
   function addShopping(){ showInputSheet('Add Trip Shopping item','Item',value=>{user.shopping.push({text:value,done:false});saveUser();render();}); }
   window.addTask=addTask; window.addPacking=addPacking; window.addShopping=addShopping;
   function showInputSheet(title,label,cb){
@@ -915,7 +1001,7 @@
   window.saveSheetInput=()=>{const el=document.getElementById('sheetInput');const v=el?.value.trim();if(!v)return;window._sheetCb?.(v);document.querySelector('.modal-mask')?.remove();};
 
   window.confirmReset=()=>showSheet(`<div class="sheet-head"><h2>Reset local progress?</h2></div><p>This clears checkmarks, custom items, favorites and saved preferences on this device.</p><button class="nav-card coral" onclick="doReset()"><span class="icon">⚠️</span><span class="copy">Yes, reset everything</span></button>`);
-  window.doReset=()=>{localStorage.removeItem(KEY);user=loadUser();document.querySelector('.modal-mask')?.remove();render();toast('Local progress reset');};
+  window.doReset=()=>{document.querySelector('.modal-mask')?.remove();toast('Reset disabled to protect your travel progress');};
 
   function formatDay(date){ return new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
   function js(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' '); }

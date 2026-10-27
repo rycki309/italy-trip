@@ -1,0 +1,1 @@
+Italy app v21: Preserve existing installed app and local data. Upload extracted files to GitHub. Do not clear website data, uninstall, or reset. In Settings use Export checklist recovery file before making more changes. Some historical checkmarks cannot be confidently restored.
