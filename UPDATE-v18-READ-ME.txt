@@ -1,0 +1,5 @@
+Italy app v18 — final polish, October 27, 2026
+
+Changes: refreshed HTML cache-busting version labels; updated service worker cache version; changed Open Baladin and Rione Brewpub checklist entries to optional/unreserved; corrected restaurant booking status badges for walk-in suggestions. No itinerary changes, no changes to vault or Travel Documents, and no private ticket data in public files.
+
+Upload the files from this ZIP to the GitHub Pages repository root, replacing existing files. Do not uninstall the Home Screen app or clear Safari website data. Once deployed, open https://rycki309.github.io/italy-trip/?v=18 in Safari while online, then check your installed app.

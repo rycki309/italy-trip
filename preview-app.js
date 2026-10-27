@@ -79,10 +79,10 @@
   ];
 
   const RESTAURANT_BOOKINGS = [
-    {name:'Open Baladin Roma',date:'Oct 30 · ~6:00–6:30 PM',status:'need',label:'Reserve for 2',place:'open-baladin',site:'https://pubs.baladin.it/en/restaurant-craft-beer-hamburger/via-degli-specchi-6-roma/',reserve:'https://www.sevenrooms.com/explore/openbaladinroma/reservations/create/search/'},
-    {name:'Rione Brewpub Firenze',date:'Oct 31 · ~7:00 PM',status:'need',label:'Reserve for 2',place:'rione',site:'https://www.rionefirenze.com/'},
-    {name:'Be.Re. + Trapizzino',date:'Oct 28 · easy arrival night',status:'booked',label:'Walk-in planned',place:'bere'},
-    {name:'Ma Che Siete Venuti A Fà',date:'Oct 29 · optional',status:'booked',label:'Walk-in only',place:'mache'},
+    {name:'Open Baladin Roma',date:'Oct 30 · ~6:00–6:30 PM',status:'optional',label:'Optional dinner · not reserved',place:'open-baladin',site:'https://pubs.baladin.it/en/restaurant-craft-beer-hamburger/via-degli-specchi-6-roma/',reserve:'https://www.sevenrooms.com/explore/openbaladinroma/reservations/create/search/'},
+    {name:'Rione Brewpub Firenze',date:'Oct 31 · ~7:00 PM',status:'optional',label:'Optional dinner · not reserved',place:'rione',site:'https://www.rionefirenze.com/'},
+    {name:'Be.Re. + Trapizzino',date:'Oct 28 · easy arrival night',status:'optional',label:'Walk-in idea · no reservation',place:'bere'},
+    {name:'Ma Che Siete Venuti A Fà',date:'Oct 29 · optional',status:'optional',label:'Optional walk-in · no reservation',place:'mache'},
     {name:'Archea Brewery',date:'Florence backup',status:'problem',label:'Casual stop / booking unconfirmed',place:'archea'},
     {name:'Chianti Brew Fighters',date:'Florence backup',status:'problem',label:'Reserve if chosen for dinner',place:'chianti-brew'},
     {name:'Alibi Craft Beer & Kitchen',date:'Florence backup',status:'problem',label:'Booking policy unverified',place:'alibi'}
