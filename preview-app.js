@@ -410,9 +410,14 @@
   }
 
   function itineraryScreen(city){
-    const days=ITALY_TRIP_ITINERARY.filter(d=>d.city===city);
+    const days=ITALY_TRIP_ITINERARY.filter(d=>d.city===city || (city==='Rome' && d.date==='2026-10-31'));
+    // One shared Oct 31 itinerary record: Rome shows checkout and train departure,
+    // Florence shows the full travel day. Activity completion keys remain shared.
+    const viewDay=d=>(city==='Rome' && d.date==='2026-10-31')
+      ? {...d,title:'Rome checkout → Florence train',activities:d.activities.filter(a=>a.period==='morning')}
+      : d;
     if(!days.length) return `<section class="screen">${topbar('Itinerary')}<div class="empty">No days available.</div></section>`;
-    const selected=days.find(d=>d.date===itinerarySelected[city])||days[0];
+    const selected=viewDay(days.find(d=>d.date===itinerarySelected[city])||days[0]);
     const activityHtml=selected.activities.map((a,i)=>{
       const globalKey=selected.date+'-'+i, state=user.activities[globalKey]||'pending';
       const rest=a.easy==='protect-rest';

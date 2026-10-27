@@ -1,0 +1,1 @@
+v14: Oct 31 appears in both Rome and Florence itinerary tabs. Rome shows morning checkout and train; Florence retains the complete travel day. Uses the same itinerary record and completion state; no changes to local documents, private vault, or storage. Upload all extracted files to the same GitHub repo.
