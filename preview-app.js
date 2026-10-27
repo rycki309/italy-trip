@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-27-travel-ready-v23';
+  const APP_VERSION = '2026-10-27-booking-access-v24';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -375,6 +375,17 @@
     ];
     return `<div class="td-panel"><h3>✈️ First-time flyer: what to do next</h3><p>Times below are airport-local. Gates and terminals are <b>not confirmed</b> in this offline app; check the airline app and airport screens.</p>${stages.map(([name,body],i)=>`<details class="flight-step" ${i===0?'open':''}><summary>${i+1}. ${esc(name)}</summary><p>${esc(body)}</p></details>`).join('')}<div class="action-row"><button class="pill-btn" onclick="go('workTravelDay',{},'work')">Rycki · Nov 7 flight legs</button><button class="pill-btn gray" onclick="go('bookings',{},'more')">Rycki & Dennis · bookings</button><button class="pill-btn gray" onclick="go('documents',{},'more')">Boarding passes & PDFs</button></div></div>`;
   }
+  function routeSpecificFlightGuide(){
+    const steps=[
+      ['Rycki + Dennis · outbound · Oct 27–28','At Cleveland (CLE), check in with the operating airline. Verify your exact flight legs, connection airport, boarding times and baggage tags against the airline reservation. At your connection, follow the airline’s transfer signs and check the next gate. At the first Schengen airport, expect passport control; at Rome (FCO), follow baggage claim and customs signs. Your complete outbound flight numbers are not verified in this offline app.'],
+      ['Dennis · return · Nov 2','At Florence (FLR), check in and verify the flight numbers, connection airport, checked-bag destination and gate using his airline booking. At a European connection, follow Transfer signs; Schengen exit passport control may occur at the last Schengen airport. At the first U.S. airport, expect immigration, customs, possible bag recheck and another security screening before the Cleveland flight. The exact return legs and layover are not verified here.'],
+      ['Rycki · Nov 7 · Florence to Amsterdam','FLR → AMS · DL 9525, operated by KLM Cityhopper · departs 1:05 PM, arrives 3:15 PM (local times). Check in with the operating airline, drop checked luggage if needed, pass security, and confirm your gate on screens. Amsterdam is your connection to a non-Schengen flight.'],
+      ['Rycki · Nov 7 · Amsterdam connection','Scheduled connection: 1 hr 55 min. Follow Transfer / Connecting Flights signs to DL 9374 (operated by KLM). Expect Schengen exit passport control on the way to the U.S.-bound departure area; additional checks depend on the airport. Verify your gate immediately. Flight departs 5:10 PM local time.'],
+      ['Rycki · Nov 7 · Atlanta connection','Arrive ATL 8:40 PM local time on DL 9374. Scheduled connection: 2 hr 30 min. Follow U.S. immigration and customs instructions; ask whether checked bags must be collected and rechecked, then follow signs for connecting flights and security. DL 1320 to Cleveland is scheduled for 11:10 PM local time.'],
+      ['Rycki · Nov 8 · Cleveland arrival','DL 1320 is scheduled to arrive at CLE at 12:57 AM Sunday, Nov 8. Follow baggage claim signs, confirm the carousel, and arrange your ride. Arrival and gate times can change.']
+    ];
+    return `<div class="td-panel"><h3>🧭 Your actual travel days · step by step</h3><p>All times are local to each airport. Live gates and terminals must be checked in the airline app. Missing booking details are explicitly marked unverified.</p>${steps.map(([title,body])=>`<details class="flight-step"><summary>${esc(title)}</summary><p>${esc(body)}</p></details>`).join('')}<div class="action-row"><button class="pill-btn" onclick="go('bookings',{},'more')">Find private confirmations</button><button class="pill-btn gray" onclick="go('documents',{},'more')">Open boarding passes</button><button class="pill-btn gray" onclick="go('workTravelDay',{},'work')">Nov 7 flight details</button></div></div>`;
+  }
   function travelGuidesScreen(){
     const hotel=place('rome-hotel'),florence=place('florence-hotel');
     const transfers=[
@@ -383,7 +394,7 @@
       ['🚕','Firenze S.M.N. → Florence hotel','October 31 · arrive 13:31. Use the official taxi stand or walk only if convenient with luggage.',florence?.address],
       ['🌿','Florence → Nerbona','November 2 · use the confirmed group transfer if provided; do not assume a pickup point until confirmed.',WORK.address]
     ];
-    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div>${beginnerFlightGuide()}<h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div>${routeSpecificFlightGuide()}${beginnerFlightGuide()}<h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
   }
   const MENU_ITEMS = [
     ['Cacio e pepe','Pasta with Pecorino Romano cheese and black pepper','Rome · dairy, wheat'],
@@ -478,8 +489,8 @@
     add('🚆','Rome → Florence train','October 31 · 11:50 AM · Roma Termini → Firenze SMN','italo 8914 coach seat train ticket booking departure arrival', 'trainDay');
     add('🏨','Rome hotel','Oct 28–31 · Via Candia 41','rome hotel address accommodation check in little heaven suri suites', 'bookings');
     add('🏨','Florence hotel','Oct 31–Nov 2 · Via de’ Tornabuoni 8','florence hotel address milu accommodation check in', 'bookings');
-    add('🎟️','Pantheon booking','Oct 29 · 11:00 AM · entry instructions and tickets','pantheon viator audio guide tour ticket whatsapp', 'bookings');
-    add('🎟️','Colosseum tour','Oct 30 · meet 10:50 AM · tour 11:10 AM','colosseum forum palatine city walkers meeting point guide viator', 'bookings');
+    add('🎟️','Pantheon booking','Oct 29 · 12:00 PM · operator-confirmed entry','pantheon viator audio guide tour ticket whatsapp', 'bookings');
+    add('🎟️','Colosseum tour','Oct 30 · meet 10:40 AM · tour 11:00 AM','colosseum forum palatine city walkers meeting point guide viator', 'bookings');
     add('📍','Nerbona address & contacts','Work stay · Nov 2–7','work house host telephone phone contact property', 'workOverview');
     add('📶','Wi-Fi and house instructions','Network details, laundry, property information','wifi internet password laundry nerbona house rules', 'duringStay');
     add('🚗','Airport and transfer guides','Departure, arrival and ground transportation','airport driver transfer taxi flight check in travel home', 'travelGuides');
@@ -641,6 +652,14 @@
     const found=Object.entries(items).filter(([k])=>terms.some(t=>k.toLowerCase().includes(t)) && /confirm|booking|reservation|reference|ticket|pnr/i.test(k));
     return found.map(([k,v])=>`<small>🔐 ${esc(k)}: <span class="private-value">${esc(v)}</span></small>`).join('');
   }
+  function privateBookingQuickAccess(){
+    const entries=Object.entries(window.ItalyVault?.all()||{});
+    const matches=entries.filter(([k,v])=>/flight|airline|delta|dennis|rycki|hotel|rome|florence|milu|suri|little.heaven|confirmation|booking|pnr|reference/i.test(k) && String(v).trim());
+    const unique=[];const seen=new Set();
+    for(const [k,v] of matches){const token=k.toLowerCase().replace(/[^a-z0-9]/g,'')+'|'+String(v);if(!seen.has(token)){seen.add(token);unique.push([k,v]);}}
+    return `<div class="td-panel"><h3>🔑 Find your confirmation numbers</h3><p>Unlocked private flight and hotel information appears here. These values are never added to the public website.</p>${window.ItalyVault?.isUnlocked()?unique.length?unique.map(([k,v],i)=>`<div class="info-row"><div class="copy"><b>${esc(k)}</b><small class="private-value">${esc(v)}</small></div><button class="pill-btn gray" onclick="copyPrivateBooking(${i})">Copy</button></div>`).join(''):'<p>No matching flight or hotel fields were found in the private Sheet. Open Travel Documents to check your saved confirmations, or review the private Sheet field names.</p>':'<button class="pill-btn" onclick="ItalyVault.open()">🔒 Unlock private booking details</button>'}<div class="action-row"><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Open saved confirmations</button><button class="pill-btn gray" onclick="go('travelGuides',{},'more')">✈️ Airport walkthrough</button></div></div>`;
+  }
+  window.copyPrivateBooking=i=>{const entries=Object.entries(window.ItalyVault?.all()||{});const matches=entries.filter(([k,v])=>/flight|airline|delta|dennis|rycki|hotel|rome|florence|milu|suri|little.heaven|confirmation|booking|pnr|reference/i.test(k) && String(v).trim());const unique=[];const seen=new Set();for(const [k,v] of matches){const token=k.toLowerCase().replace(/[^a-z0-9]/g,'')+'|'+String(v);if(!seen.has(token)){seen.add(token);unique.push([k,v]);}}if(unique[i])copyText(String(unique[i][1]));};
   function bookingsScreen(city){
     const tabs=['All','Flights','Hotels','Trains','Tours','Restaurants'];
     const base=[
@@ -648,15 +667,15 @@
       {kind:'Hotels',icon:'🏨',name:'Rome Hotel',date:'Oct 28–31',sub:ITALY_TRIP_CORE.hotels.rome.name,status:'booked',place:'rome-hotel'},
       {kind:'Trains',icon:'🚆',name:'Rome → Florence',date:'Oct 31 · 11:50 AM',sub:'Roma Termini → Firenze SMN · booked',status:'booked',place:'termini'},
       {kind:'Hotels',icon:'🏨',name:'Florence Hotel',date:'Oct 31–Nov 2',sub:ITALY_TRIP_CORE.hotels.florence.name,status:'booked',place:'florence-hotel'},
-      {kind:'Tours',icon:'🏛️',name:'Colosseum + Forum + Palatine guided tour',date:'Oct 30 · 11:10 AM (meet 10:50)',sub:'Paid & confirmed · English guide · 2 adults · bring IDs',status:'booked',place:'colosseum'},
-      {kind:'Tours',icon:'🏛️',name:'Pantheon + audio guide',date:'Oct 29 · 11:00 AM',sub:'Paid & confirmed · 2 adults · watch email/WhatsApp for entry ticket',status:'booked',place:'pantheon'},
+      {kind:'Tours',icon:'🏛️',name:'Colosseum + Forum + Palatine guided tour',date:'Oct 30 · 11:00 AM (meet 10:40)',sub:'Operator confirmed new time · original voucher valid · 2 adults · bring IDs',status:'booked',place:'colosseum'},
+      {kind:'Tours',icon:'🏛️',name:'Pantheon + audio guide',date:'Oct 29 · 12:00 PM',sub:'Operator confirmed noon entry · 2 adults · check email/WhatsApp for ticket',status:'booked',place:'pantheon'},
       {kind:'Tours',icon:'🌳',name:'Boboli Gardens (optional)',date:'Nov 1 · no reservation',sub:'Only if you both want a garden walk; not booked',status:'optional',place:'boboli'},
       {kind:'Flights',icon:'✈️',name:'Dennis Flight Home',date:'Nov 2',sub:'Florence Airport',status:'booked'},
       {kind:'Flights',icon:'✈️',name:'Rycki Flight Home',date:'Nov 7',sub:'Florence Airport',status:'booked'}
     ];
     RESTAURANT_BOOKINGS.forEach(r=>base.push({kind:'Restaurants',icon:'🍴',name:r.name,date:r.date,sub:r.label,status:r.status,place:r.place,site:r.site}));
     const filtered=base.filter(x=>(bookingFilter==='All'||x.kind===bookingFilter) && (!city || !x.place || place(x.place)?.city===city || x.kind==='Flights' || x.kind==='Hotels'));
-    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><button class="pill-btn" onclick="go('travelGuides',{},'more')">✈️ Airport step-by-step guide</button><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Travel Documents</button><h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${bookingPrivate(x.kind,x.name)}${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
+    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><button class="pill-btn" onclick="go('travelGuides',{},'more')">✈️ Airport step-by-step guide</button><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Travel Documents</button>${privateBookingQuickAccess()}<h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${bookingPrivate(x.kind,x.name)}${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
   }
   window.setBookingFilter=t=>{bookingFilter=t;render();};
 
