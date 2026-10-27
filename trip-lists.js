@@ -1,10 +1,9 @@
 window.ITALY_TRIP_LISTS={
 
 bookingStatuses:[
-{id:"colosseum",name:"Colosseum + Arena",date:"Oct 29",status:"need",label:"🔴 Need to book",price:"€24/person",note:"Aim for about 10 AM. Official Full Experience + Arena preferred."},
-{id:"pantheon",name:"Pantheon",date:"Oct 30",status:"problem",label:"🟡 Attempted / problem",price:"€7/person",note:"Desired around 11:15 AM. Previous card payment declined; retry."},
-{id:"accademia",name:"Accademia Gallery",date:"Nov 1",status:"verify",label:"🟡 Verify rules",price:"First-Sunday rules may apply",note:"Nov 1 is also All Saints' Day. Verify holiday hours/rules."},
-{id:"boboli",name:"Boboli Gardens",date:"Nov 1",status:"optional",label:"🟡 Wait / optional",price:"About €10–13/person",note:"We WANT to do this if Dennis is feeling okay."},
+{id:"colosseum",name:"Colosseum, Roman Forum + Palatine Hill guided tour",date:"Oct 30 · 11:10 AM",status:"booked",label:"🟢 Paid & confirmed",price:"Paid via Viator",note:"English guide for 2 adults; arrive by 10:50 AM at Largo Gaetana Agnesi 5. Bring IDs. Do not assume Arena Floor/Underground access."},
+{id:"pantheon",name:"Pantheon skip-the-line entry + audio guide",date:"Oct 29 · 11:00 AM",status:"booked",label:"🟢 Paid & confirmed",price:"Paid via Viator",note:"2 adults. Operator will send direct-entry ticket via WhatsApp and email; bring headphones."},
+{id:"boboli",name:"Boboli Gardens",date:"Nov 1",status:"optional",label:"🟡 Wait / optional",price:"About €10–13/person",note:"Optional garden walk only if you both want it; no booking required in advance."},
 {id:"train",name:"Rome → Florence train",date:"Oct 31",status:"booked",label:"🟢 Booked",note:"11:50 AM Roma Termini → Firenze S.M.N.; arrive about 1:31 PM."}
 ],
 
@@ -13,9 +12,8 @@ preTrip:[
 {when:"ASAP",who:"Rycki",category:"Work",task:"Confirm Nov 2–7 work offsite logistics"},
 {when:"ASAP",who:"Both",category:"Transportation",task:"Plan FCO airport → Rome hotel transfer"},
 {when:"ASAP",who:"Rycki",category:"Transportation",task:"Confirm Nov 2 Florence → work offsite transfer"},
-{when:"ASAP",who:"Both",category:"Activities",task:"Finish Colosseum booking"},
-{when:"ASAP",who:"Both",category:"Activities",task:"Retry Pantheon booking"},
-{when:"ASAP",who:"Both",category:"Activities",task:"Verify Accademia Nov 1 rules/hours"},
+{when:"Before Oct 30",who:"Both",category:"Activities",task:"Save Colosseum Viator voucher offline; check both names/birth dates and bring photo IDs"},
+{when:"Before Oct 29",who:"Both",category:"Activities",task:"Watch WhatsApp/email for Pantheon direct-entry tickets; save offline and pack headphones"},
 {when:"ASAP",who:"Both",category:"Phone",task:"Finalize international phone/data plan"},
 {when:"2–3 weeks before",who:"Both",category:"Health",task:"Refill prescriptions"},
 {when:"2–3 weeks before",who:"Both",category:"Home",task:"Finalize cat care"},

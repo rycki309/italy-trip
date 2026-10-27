@@ -393,8 +393,8 @@
 
   function overviewScreen(){
     const items=[
-      ['Oct 28','✈️ Arrive Rome · easy Prati night'],['Oct 29','🏛️ Colosseum · Trastevere'],['Oct 30','⛲ Navona · Pantheon · Trevi · Open Baladin'],
-      ['Oct 31','🚆 Rome → Florence · Rione Brewpub'],['Nov 1','🖼️ Accademia · Boboli · Piazzale Michelangelo'],['Nov 2','✈️ Dennis home · Rycki → Nerbona'],
+      ['Oct 28','✈️ Arrive Rome · easy Prati night'],['Oct 29','🏛️ Pantheon · Navona · Trevi · Spanish Steps'],['Oct 30','🏛️ Colosseum tour · Forum · rest · optional evening'],
+      ['Oct 31','🚆 Rome → Florence · Rione Brewpub'],['Nov 1','🍝 Florence wandering · pasta maybe · sunset views'],['Nov 2','✈️ Dennis home · Rycki → Nerbona'],
       ['Nov 2–7','💼 Tuscany work stay'],['Nov 7','✈️ Rycki flies home']
     ];
     return `<section class="screen">${topbar('Trip Overview')}<div class="content"><button class="nav-card blue" onclick="go('arrival',{},'home')"><span class="icon">🛬</span><span class="copy">Arrival Day Helper<small>FCO → hotel → rest → easy Prati night</small></span></button><button class="nav-card green" style="margin-top:8px" onclick="go('trainDay',{},'home')"><span class="icon">🚆</span><span class="copy">Rome → Florence Train Day<small>Hotel → Termini → Firenze SMN → Hotel Milu</small></span></button>${items.map(([d,t])=>`<div class="info-row"><div class="emoji">${t.slice(0,2)}</div><div class="copy"><b>${d}</b><small>${esc(t.slice(3))}</small></div></div>`).join('')}</div>${bottomNav('home')}</section>`;
@@ -516,10 +516,9 @@
       {kind:'Hotels',icon:'🏨',name:'Rome Hotel',date:'Oct 28–31',sub:ITALY_TRIP_CORE.hotels.rome.name,status:'booked',place:'rome-hotel'},
       {kind:'Trains',icon:'🚆',name:'Rome → Florence',date:'Oct 31 · 11:50 AM',sub:'Roma Termini → Firenze SMN · booked',status:'booked',place:'termini'},
       {kind:'Hotels',icon:'🏨',name:'Florence Hotel',date:'Oct 31–Nov 2',sub:ITALY_TRIP_CORE.hotels.florence.name,status:'booked',place:'florence-hotel'},
-      {kind:'Tours',icon:'🏛️',name:'Colosseum + Arena',date:'Oct 29 · aim ~10 AM',sub:'Need to book · official Full Experience + Arena preferred',status:'need',place:'colosseum'},
-      {kind:'Tours',icon:'🏛️',name:'Pantheon',date:'Oct 30 · ~11:15 AM',sub:'Attempted / payment problem · retry',status:'problem',place:'pantheon'},
-      {kind:'Tours',icon:'🖼️',name:'Accademia Gallery',date:'Nov 1',sub:'Verify first-Sunday / holiday rules before trip',status:'problem',place:'accademia'},
-      {kind:'Tours',icon:'🌳',name:'Boboli Gardens',date:'Nov 1 · optional but wanted',sub:'Skip only if Dennis is not up to it',status:'problem',place:'boboli'},
+      {kind:'Tours',icon:'🏛️',name:'Colosseum + Forum + Palatine guided tour',date:'Oct 30 · 11:10 AM (meet 10:50)',sub:'Paid & confirmed · English guide · 2 adults · bring IDs',status:'booked',place:'colosseum'},
+      {kind:'Tours',icon:'🏛️',name:'Pantheon + audio guide',date:'Oct 29 · 11:00 AM',sub:'Paid & confirmed · 2 adults · watch email/WhatsApp for entry ticket',status:'booked',place:'pantheon'},
+      {kind:'Tours',icon:'🌳',name:'Boboli Gardens (optional)',date:'Nov 1 · no reservation',sub:'Only if you both want a garden walk; not booked',status:'optional',place:'boboli'},
       {kind:'Flights',icon:'✈️',name:'Dennis Flight Home',date:'Nov 2',sub:'Florence Airport',status:'booked'},
       {kind:'Flights',icon:'✈️',name:'Rycki Flight Home',date:'Nov 7',sub:'Florence Airport',status:'booked'}
     ];

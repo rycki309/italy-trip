@@ -84,26 +84,17 @@ window.ITALY_TRIP_ROUTES=[
 
 {date:"2026-10-28",from:"rome-hotel",to:"bere",mode:"walk",time:"~10 min",note:"Easy walk. Hotel is close if you want to call it a night."},
 
-{date:"2026-10-29",from:"rome-hotel",to:"colosseum",mode:"metro",time:"30–45 min",steps:"Ottaviano Metro A → Termini. Change to Metro B toward Laurentina → Colosseo."},
-
-{date:"2026-10-29",from:"colosseum",to:"trastevere",mode:"taxi preferred",time:"~15–25 min",note:"Taxi saves energy."},
-
-{date:"2026-10-29",from:"trastevere",to:"mache",mode:"walk",time:"~5 min"},
-
-{date:"2026-10-29",from:"trastevere",to:"rome-hotel",mode:"taxi preferred",time:"~20–35 min"},
-
-{date:"2026-10-30",from:"rome-hotel",to:"navona",mode:"taxi preferred",time:"~15–25 min",note:"Saves a 30–35 minute walk."},
-
-{date:"2026-10-30",from:"navona",to:"pantheon",mode:"walk",time:"5–7 min"},
-
-{date:"2026-10-30",from:"pantheon",to:"trevi",mode:"walk",time:"10–12 min"},
-
-{date:"2026-10-30",from:"trevi",to:"spanish-steps",mode:"walk",time:"10–12 min"},
-
-{date:"2026-10-30",from:"spanish-steps",to:"rome-hotel",mode:"taxi preferred",time:"~15–25 min",note:"Protect the afternoon hotel reset."},
-
-{date:"2026-10-30",from:"rome-hotel",to:"open-baladin",mode:"taxi preferred",time:"~15–25 min"},
-
+{date:"2026-10-29",from:"rome-hotel",to:"pantheon",mode:"taxi preferred",time:"~15–30 min",note:"Allow extra time for traffic and ticket instructions."},
+{date:"2026-10-29",from:"pantheon",to:"navona",mode:"walk",time:"5–7 min"},
+{date:"2026-10-29",from:"navona",to:"trevi",mode:"walk",time:"~15–20 min"},
+{date:"2026-10-29",from:"trevi",to:"spanish-steps",mode:"walk",time:"10–12 min"},
+{date:"2026-10-29",from:"spanish-steps",to:"rome-hotel",mode:"taxi preferred",time:"~15–25 min",note:"Protect hotel rest."},
+{date:"2026-10-30",from:"rome-hotel",to:"colosseum",mode:"metro",time:"30–45 min",steps:"Ottaviano Metro A → Termini; change to Metro B toward Laurentina → Colosseo. Meet at upper exit, Largo Gaetana Agnesi 5."},
+{date:"2026-10-30",from:"colosseum",to:"rome-hotel",mode:"taxi preferred",time:"~20–35 min",note:"After tour and lunch, protect rest."},
+{date:"2026-10-30",from:"rome-hotel",to:"trastevere",mode:"taxi preferred",time:"~20–35 min",note:"Optional evening only."},
+{date:"2026-10-30",from:"trastevere",to:"mache",mode:"walk",time:"~5 min"},
+{date:"2026-10-30",from:"trastevere",to:"rome-hotel",mode:"taxi preferred",time:"~20–35 min"},
+{date:"2026-10-30",from:"rome-hotel",to:"open-baladin",mode:"taxi preferred",time:"~15–25 min",note:"Alternative to Trastevere dinner."},
 {date:"2026-10-30",from:"open-baladin",to:"rome-hotel",mode:"taxi preferred",time:"~20–35 min"},
 
 {date:"2026-10-31",from:"rome-hotel",to:"termini",mode:"taxi preferred",note:"Best with luggage. Metro A Ottaviano → Termini is backup."},
@@ -122,9 +113,9 @@ window.ITALY_TRIP_ROUTES=[
 
 {date:"2026-10-31",from:"rione",to:"florence-hotel",mode:"walk or taxi",time:"17–20 min walk",note:"Taxi if tired."},
 
-{date:"2026-11-01",from:"florence-hotel",to:"accademia",mode:"walk or taxi",time:"15–18 min walk"},
+{date:"2026-11-01",from:"florence-hotel",to:"duomo",mode:"walk",time:"5–10 min"},
 
-{date:"2026-11-01",from:"accademia",to:"florence-hotel",mode:"walk or taxi",time:"15–18 min walk",note:"Return for protected hotel rest."},
+{date:"2026-11-01",from:"duomo",to:"signoria",mode:"walk",time:"8–10 min"},
 
 {date:"2026-11-01",from:"florence-hotel",to:"boboli",mode:"taxi preferred",time:"~10–15 min"},
 

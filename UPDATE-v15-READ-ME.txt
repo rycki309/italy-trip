@@ -1,0 +1,10 @@
+Italy 2026 v15 — confirmed Rome bookings update
+
+Oct 29: Pantheon, 11:00 AM, 2 adults, English audio guide. Watch WhatsApp/email for actual direct-entry ticket; bring headphones.
+Oct 30: Colosseum, Roman Forum & Palatine Hill, 11:10 AM, 2 adults, English guide. Meet at Largo Gaetana Agnesi 5 by 10:50 AM, with IDs. Tour duration ~2.5 hours.
+
+Removed stale booking warnings and booking-to-do tasks. Shifted flexible sights to avoid conflicting with booked tours. Preserved Oct 31 shared Rome/Florence train day, menu decoder, vault and document storage.
+
+PRIVATE: booking references, vouchers and receipts are intentionally NOT in the public GitHub ZIP. Add the original Pantheon and Colosseum voucher PDFs to the encrypted Travel Documents on your phone. The two Colosseum voucher uploads are duplicates of the same booking.
+
+Do not clear Safari data or uninstall the app.
