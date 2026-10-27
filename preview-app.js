@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-27-progress-verified-v21';
+  const APP_VERSION = '2026-10-27-travel-ready-v23';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -282,6 +282,11 @@
     return `<button class="menu-row" onclick="${onclick}">${iconTile(color,icon)}<span class="menu-copy"><b>${esc(title)}</b><small>${esc(sub)}</small></span><span class="chev">›</span></button>`;
   }
 
+  function quickAccess(){
+    const links=[['🔎','Search everything','search'],['✈️','Flight walkthrough','travelGuides'],['📄','Travel Documents','documents'],['🏨','Hotels & addresses','bookings'],['🚆','Train tickets','trainDay'],['🎟️','Tours & meeting points','bookings'],['🆘','Emergency help','emergency'],['📋','Packing & prep','packing']];
+    return `<div class="quick-access"><h2>Find it fast</h2><p>Tap a shortcut or search the whole trip.</p><button class="quick-search" onclick="go('search',{},'home')">🔎 Search flights, Dennis, Wi-Fi, tickets, places…</button><div class="quick-grid">${links.slice(1).map(([icon,label,dest])=>`<button onclick="go('${dest}',{},'home')"><span>${icon}</span><b>${label}</b></button>`).join('')}</div></div>`;
+  }
+
   function homeScreen(){
     const tasks=allTasks(), pack=allPacking();
     const td=tasks.filter(x=>user.tasksStable?.[taskId(x)]).length, pd=pack.filter(x=>user.packingStable?.[packId(x)]).length;
@@ -296,6 +301,7 @@
         </div>
         <div class="update-note">Your progress saves on this device</div>
       </div>
+      ${quickAccess()}
       <div class="stack">
         <button class="nav-card coral" onclick="go('overview',{},'home')"><span class="icon">🗓️</span><span class="copy">Trip Overview<small>Oct 28 → Nov 7 at a glance</small></span></button>
         <button class="nav-card aqua" onclick="go('navigate',{},'home')"><span class="icon">🗺️</span><span class="copy">Navigate<small>Street map, destinations and train information</small></span></button>
@@ -356,6 +362,19 @@
     ['ATL','Atlanta Hartsfield-Jackson','https://www.atl.com/'],
     ['DTW','Detroit Metro','https://www.metroairport.com/']
   ];
+  function beginnerFlightGuide(){
+    const stages=[
+      ['24 hours before','Open the airline app and check in. Confirm passenger name, flight numbers, baggage rules, connection times and any schedule changes. Save boarding passes to your phone and take screenshots as a backup.'],
+      ['Before leaving','Keep passports, phones, medication and chargers in your carry-on. For international flights, aim to reach the airport about 3 hours before departure unless the airline advises otherwise.'],
+      ['At the departure airport','Find the airline check-in or bag-drop signs. If you have checked luggage, verify its final destination with the agent. Follow Departures → Security; have your boarding pass and passport accessible.'],
+      ['After security','Look up your flight number on airport monitors and the airline app. Find the terminal and gate; they may change. Go to the gate before boarding begins, not merely before takeoff.'],
+      ['Boarding','Listen for your boarding group or zone. Scan your boarding pass, show your passport if requested, find your row and seat, and stow bags as instructed.'],
+      ['International connections','Follow Connections/Transfer signs, not Baggage Claim unless directed. Passport control may occur at the first Schengen airport when entering Europe or the last Schengen airport when leaving. Security screening may be repeated; follow local signs.'],
+      ['First airport in the United States','Expect U.S. passport/immigration inspection, customs, and potentially collecting and rechecking your checked bag before another security screening. Follow the airline and airport instructions.'],
+      ['If something changes','A gate, terminal, boarding time, or flight can change. Airline app and airport monitors take priority over this offline guide. If a connection is at risk, speak to the airline transfer desk immediately.']
+    ];
+    return `<div class="td-panel"><h3>✈️ First-time flyer: what to do next</h3><p>Times below are airport-local. Gates and terminals are <b>not confirmed</b> in this offline app; check the airline app and airport screens.</p>${stages.map(([name,body],i)=>`<details class="flight-step" ${i===0?'open':''}><summary>${i+1}. ${esc(name)}</summary><p>${esc(body)}</p></details>`).join('')}<div class="action-row"><button class="pill-btn" onclick="go('workTravelDay',{},'work')">Rycki · Nov 7 flight legs</button><button class="pill-btn gray" onclick="go('bookings',{},'more')">Rycki & Dennis · bookings</button><button class="pill-btn gray" onclick="go('documents',{},'more')">Boarding passes & PDFs</button></div></div>`;
+  }
   function travelGuidesScreen(){
     const hotel=place('rome-hotel'),florence=place('florence-hotel');
     const transfers=[
@@ -364,7 +383,7 @@
       ['🚕','Firenze S.M.N. → Florence hotel','October 31 · arrive 13:31. Use the official taxi stand or walk only if convenient with luggage.',florence?.address],
       ['🌿','Florence → Nerbona','November 2 · use the confirmed group transfer if provided; do not assume a pickup point until confirmed.',WORK.address]
     ];
-    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div><h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
+    return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div>${beginnerFlightGuide()}<h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
   }
   const MENU_ITEMS = [
     ['Cacio e pepe','Pasta with Pecorino Romano cheese and black pepper','Rome · dairy, wheat'],
@@ -433,6 +452,7 @@
     return `<section class="screen more-hub">
       ${topbar('More')}
       <div class="list-card more-list">
+        ${menuRow('🔎','blue','Search Everything','Find flights, Dennis, hotels, Wi-Fi, tickets and more',`go('search',{},'more')`)}
         ${menuRow('▣','blue','Before Italy','To-do list, documents, prep',`go('tasks',{},'more')`)}
         ${menuRow('🛒','red','Trip Shopping','Souvenirs, gifts, ideas',`go('shopping',{},'more')`)}
         ${menuRow('🔐','blue','Travel Documents','Encrypted offline files & custom folders',`go('documents',{},'more')`)}
@@ -449,13 +469,39 @@
   }
 
 
+  function searchEntries(){
+    const entries=[];
+    const add=(icon,title,detail,terms,dest,params={})=>entries.push({icon,title,detail,terms:`${title} ${detail} ${terms}`.toLowerCase(),dest,params});
+    add('✈️','Dennis — flights & confirmation','Departure and return bookings; private confirmation in unlocked travel details','dennis delta confirmation number flight reservation pnr ticket', 'bookings');
+    add('✈️','Rycki — flights & confirmation','Flight bookings and private details','rycki flight delta confirmation number ticket', 'bookings');
+    add('🔐','Travel Documents','Open saved encrypted tickets, PDFs and receipts','pdf passport voucher flight hotel confirmation dennis rycki document wallet', 'documents');
+    add('🚆','Rome → Florence train','October 31 · 11:50 AM · Roma Termini → Firenze SMN','italo 8914 coach seat train ticket booking departure arrival', 'trainDay');
+    add('🏨','Rome hotel','Oct 28–31 · Via Candia 41','rome hotel address accommodation check in little heaven suri suites', 'bookings');
+    add('🏨','Florence hotel','Oct 31–Nov 2 · Via de’ Tornabuoni 8','florence hotel address milu accommodation check in', 'bookings');
+    add('🎟️','Pantheon booking','Oct 29 · 11:00 AM · entry instructions and tickets','pantheon viator audio guide tour ticket whatsapp', 'bookings');
+    add('🎟️','Colosseum tour','Oct 30 · meet 10:50 AM · tour 11:10 AM','colosseum forum palatine city walkers meeting point guide viator', 'bookings');
+    add('📍','Nerbona address & contacts','Work stay · Nov 2–7','work house host telephone phone contact property', 'workOverview');
+    add('📶','Wi-Fi and house instructions','Network details, laundry, property information','wifi internet password laundry nerbona house rules', 'duringStay');
+    add('🚗','Airport and transfer guides','Departure, arrival and ground transportation','airport driver transfer taxi flight check in travel home', 'travelGuides');
+    add('🗓️','Daily itinerary','Rome and Florence day-by-day plans','today tomorrow schedule activities itinerary time', 'overview');
+    add('🧳','Packing list','Your checked and unchecked items','suitcase packing luggage clothes', 'packing');
+    add('📋','Before Italy checklist','Preparation tasks and saved progress','tasks preparation todo', 'tasks');
+    add('🆘','Emergency contacts','Emergency number and assistance','police hospital doctor medical pharmacy help emergency', 'emergency');
+    add('💶','Currency converter','EUR ↔ USD','euro money exchange cash', 'money');
+    add('🍝','Italian menu decoder','Food translations and ingredients','restaurant food translate menu allergy', 'menuDecoder');
+    add('🗺️','Maps and directions','Destinations and navigation','maps location navigate driving walking', 'navigate');
+    ITALY_TRIP_ITINERARY.forEach(day=>day.activities.forEach(a=>add('🗓️',a.title,`${day.date} · ${day.city}${a.time?' · '+a.time:''}`,`${a.note||''} ${a.place||''} ${day.title}`, 'itinerary',{city:day.city})));
+    ITALY_TRIP_PLACES.forEach(p=>add('📍',p.name,p.address||'',`${p.city||''} ${p.note||''}`, 'place',{id:p.id}));
+    return entries;
+  }
   function appSearchScreen(q){
-    const query=(q||'').trim().toLowerCase();
-    const placeHits=query?ITALY_TRIP_PLACES.filter(p=>`${p.name} ${p.address} ${p.note||''}`.toLowerCase().includes(query)).slice(0,8):[];
-    const phraseHits=query?ITALY_TRIP_ITALIAN.filter(p=>`${p.italian} ${p.english} ${p.category}`.toLowerCase().includes(query)).slice(0,10):[];
-    const taskHits=query?allTasks().map((x,i)=>({x,i})).filter(({x})=>`${x.task} ${x.category||''}`.toLowerCase().includes(query)).slice(0,8):[];
-    const tools=[['Currency Converter','money'],['Emergency Info','emergency'],['Offline Access','offline'],['Packing','packing'],['Before Italy','tasks'],['Bookings & Tickets','bookings'],['Navigate','navigate'],['Work Stay','work']].filter(x=>x[0].toLowerCase().includes(query));
-    return `<section class="screen">${topbar('Search Italy App')}<div class="phrase-search"><input class="searchbox" value="${esc(q||'')}" placeholder="bathroom, train, Pantheon, doctor…" onkeydown="if(event.key==='Enter')runAppSearch(this.value)"></div><div class="content">${!query?'<div class="empty">Search places, phrases, prep items and tools.</div>':''}${placeHits.length?'<h3 style="font-family:Georgia,serif">Places</h3>'+placeHits.map(p=>`<div class="info-row"><div class="emoji">📍</div><div class="copy"><b>${esc(p.name)}</b><small>${esc(p.address)}</small><small class="nav-distance" data-to="${p.id}" data-from="${i>0?planned[i-1].id:''}">${i>0?'Calculating distance…':'First stop'}</small><div class="action-row"><button class="pill-btn" onclick="showPlace('${p.id}')">Details</button></div></div></div>`).join(''):''}${phraseHits.length?'<h3 style="font-family:Georgia,serif">Italian</h3>'+phraseHits.map(p=>phraseRow(p)).join(''):''}${taskHits.length?'<h3 style="font-family:Georgia,serif">Before Italy</h3>'+taskHits.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.tasksStable[taskId(x)]?'checked':''} onchange="toggleTask(${allTasks().indexOf(x)},this.checked)"><span>${esc(x.task)}</span></label>`).join(''):''}${tools.length?'<h3 style="font-family:Georgia,serif">Tools</h3>'+tools.map(([label,dest])=>`<button class="nav-card" onclick="go('${dest}',{},'more')"><span class="icon">›</span><span class="copy">${label}</span></button>`).join(''):''}${query && !placeHits.length&&!phraseHits.length&&!taskHits.length&&!tools.length?'<div class="empty">No built-in result. Try Navigate for a deliberate Apple Maps search.</div>':''}</div>${bottomNav('more')}</section>`;
+    const query=(q||'').trim().toLocaleLowerCase();
+    const words=query.split(/\s+/).filter(Boolean);
+    const matches=words.length?searchEntries().filter(x=>words.every(w=>x.terms.includes(w))).slice(0,45):[];
+    const phrases=words.length?ITALY_TRIP_ITALIAN.filter(p=>words.every(w=>`${p.italian} ${p.english} ${p.category}`.toLocaleLowerCase().includes(w))).slice(0,6):[];
+    const tasks=words.length?allTasks().filter(x=>words.every(w=>`${x.task} ${x.category||''}`.toLocaleLowerCase().includes(w))).slice(0,6):[];
+    const suggestions=['Dennis','confirmation','train','hotel','Pantheon','Wi-Fi','airport','tickets'];
+    return `<section class="screen">${topbar('Search everything')}<div class="content"><form class="global-search-form" onsubmit="event.preventDefault();runAppSearch(document.getElementById('global-search').value)"><input id="global-search" class="searchbox" type="search" value="${esc(q||'')}" placeholder="Search anything about your trip…" aria-label="Search trip information"><button type="submit" class="pill-btn">Search</button></form>${!words.length?`<p>Popular searches</p><div class="search-suggestions">${suggestions.map(w=>`<button onclick="runAppSearch('${js(w)}')">${esc(w)}</button>`).join('')}</div>`:''}${matches.length?`<h3>Trip information (${matches.length})</h3>${matches.map(x=>`<button class="search-result" onclick="${x.dest==='place'?`showPlace('${js(x.params.id)}')`:`go('${x.dest}',${JSON.stringify(x.params).replace(/"/g,'&quot;')},'more')`}"><span>${x.icon}</span><span><b>${esc(x.title)}</b><small>${esc(x.detail)}</small></span><span>›</span></button>`).join('')}`:''}${tasks.length?`<h3>Preparation tasks</h3>${tasks.map(x=>`<button class="search-result" onclick="go('tasks',{},'more')"><span>☑️</span><span><b>${esc(x.task)}</b><small>Open checklist</small></span><span>›</span></button>`).join('')}`:''}${phrases.length?`<h3>Italian phrases</h3>${phrases.map(x=>phraseRow(x)).join('')}`:''}${words.length&&!matches.length&&!tasks.length&&!phrases.length?'<p>No matching trip information. Try a shorter word or another name.</p>':''}<div class="tip">🔒 Private confirmation numbers and document contents are not indexed here. Search opens the relevant bookings or encrypted Travel Documents, so private information stays on your device.</div></div>${bottomNav('more')}</section>`;
   }
   window.runAppSearch=q=>{historyStack.push(route);route={name:'search',params:{q},parent:'more'};render();window.scrollTo(0,0);};
 
@@ -538,6 +584,23 @@
   window.selectItineraryDay=(city,date)=>{itinerarySelected[city]=date;render();};
   window.setActivity=(key,done)=>{user.activitiesStable[key]=done?'done':'pending';saveUser();render();};
 
+  function legacyPackingRecovery(){
+    const legacy=user.packing||{};
+    const matched=allPacking().filter((x,i)=>legacy['p-'+i]===true && LEGACY_PACK_IDENTITIES[i]===x.item+'|'+x.who && user.packingStable?.[packId(x)]!==true);
+    const total=Object.values(legacy).filter(v=>v===true).length;
+    if(!total)return '';
+    return `<div class="td-panel"><b>🛟 Earlier packing progress found: ${total} checked records</b><p>These are older saved checkmarks. ${matched.length} can be matched to today's items by both original position and item name. Nothing will change without your approval. If you previously had 91/91, some records may belong to a different list version.</p><button class="pill-btn gray" onclick="exportProgressBackup()">Export backup first</button> ${matched.length?`<button class="pill-btn" onclick="recoverLegacyPacking()">Restore ${matched.length} matched items</button>`:''}</div>`;
+  }
+  window.recoverLegacyPacking=()=>{
+    if(!confirm('Restore only older packing records whose position AND item name match? Existing checks will not be removed.'))return;
+    if(!preserveProgressBackup()){toast('Backup could not be saved; no changes made');return;}
+    const snapshot=JSON.stringify(user);
+    const key='italy2026-progress-pre-v23-recovery';
+    try{if(!localStorage.getItem(key))localStorage.setItem(key,snapshot);}catch(e){toast('Storage unavailable; no changes made');return;}
+    let count=0;
+    allPacking().forEach((x,i)=>{if(user.packing?.['p-'+i]===true && LEGACY_PACK_IDENTITIES[i]===x.item+'|'+x.who && user.packingStable?.[packId(x)]!==true){user.packingStable[packId(x)]=true;count++;}});
+    try{saveUser();toast(`${count} matched items restored`);render();}catch(e){user=JSON.parse(snapshot);toast('Could not save recovery; original data preserved');}
+  };
   function packingScreen(){
     const all=allPacking();
     const filters=['All','Personal','Work Stay','Dennis'];
@@ -553,6 +616,7 @@
     return `<section class="screen">${topbar('🧳 Packing')}
       <div class="segment">${filters.map(f=>`<button class="${packingFilter===f?'active':''}" onclick="setPackFilter('${f}')">${f}</button>`).join('')}</div>
       <div class="content"><div class="progress-line"><span>${done} / ${filtered.length} packed</span><small>${Math.round(done/Math.max(1,filtered.length)*100)}%</small></div><div class="bar"><i style="width:${done/Math.max(1,filtered.length)*100}%"></i></div>
+      ${legacyPackingRecovery()}
       ${groups.map(g=>{const rows=filtered.filter(z=>z.x.category===g); const gd=rows.filter(z=>user.packingStable[packId(z.x)]).length; return `<div class="packing-group"><div class="packing-head"><span>${packingEmoji(g)}</span>${esc(g)}<small>${gd} / ${rows.length} ›</small></div>${rows.map(({x,i})=>`<label class="check-row"><input type="checkbox" ${user.packingStable[packId(x)]?'checked':''} onchange="togglePacking(${all.indexOf(x)},this.checked)"><span><b>${esc(x.item)}</b>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</span></label>`).join('')}<button class="add-row" onclick="addPacking('${esc(g)}')">＋ Add Item</button></div>`}).join('')}</div>
       ${bottomNav('more')}</section>`;
   }
@@ -592,7 +656,7 @@
     ];
     RESTAURANT_BOOKINGS.forEach(r=>base.push({kind:'Restaurants',icon:'🍴',name:r.name,date:r.date,sub:r.label,status:r.status,place:r.place,site:r.site}));
     const filtered=base.filter(x=>(bookingFilter==='All'||x.kind===bookingFilter) && (!city || !x.place || place(x.place)?.city===city || x.kind==='Flights' || x.kind==='Hotels'));
-    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${bookingPrivate(x.kind,x.name)}${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
+    return `<section class="screen">${topbar('Bookings & Tickets')}<div class="booking-tabs">${tabs.map(t=>`<button class="${bookingFilter===t?'active':''}" onclick="setBookingFilter('${t}')">${t}</button>`).join('')}</div><div class="content"><button class="pill-btn" onclick="go('travelGuides',{},'more')">✈️ Airport step-by-step guide</button><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Travel Documents</button><h3 style="font-family:Georgia,serif;margin:4px 0 10px">Upcoming Bookings</h3>${filtered.map(x=>`<div class="booking-row"><div class="iconbox">${x.icon}</div><div class="copy"><b>${esc(x.name)}</b><small>${esc(x.date)}</small><small><span class="status-dot ${x.status==='booked'?'green':x.status==='need'?'red':''}"></span>${esc(x.sub)}</small>${bookingPrivate(x.kind,x.name)}${x.site||x.reserve?`<div class="action-row">${x.reserve?`<button class="pill-btn" onclick="openExternal('${js(x.reserve)}')">Reserve Table</button>`:''}${x.site?`<button class="pill-btn gray" onclick="openExternal('${js(x.site)}')">Website</button>`:''}</div>`:''}</div>${x.place?`<button class="pill-btn" onclick="showPlace('${x.place}')">Details</button>`:''}</div>`).join('')}</div>${bottomNav(route.parent==='rome'?'rome':route.parent==='florence'?'florence':route.parent==='home'?'home':'more')}</section>`;
   }
   window.setBookingFilter=t=>{bookingFilter=t;render();};
 
@@ -943,7 +1007,7 @@
   }
 
   window.exportProgressBackup=()=>{
-    const keys=[V21_BACKUP_KEY,'italy2026-progress-pre-v20-backup',PROGRESS_BACKUP_KEY,KEY];
+    const keys=['italy2026-progress-pre-v23-recovery',V21_BACKUP_KEY,'italy2026-progress-pre-v20-backup',PROGRESS_BACKUP_KEY,KEY];
     const out={exportedAt:new Date().toISOString(),appVersion:APP_VERSION,progress:{},backups:{}};
     for(const k of keys){
       const raw=localStorage.getItem(k);if(!raw)continue;
