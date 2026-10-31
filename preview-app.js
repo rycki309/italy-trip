@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-27-booking-access-v24';
+  const APP_VERSION = '2026-10-31-dennis-home-v27';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -301,6 +301,7 @@
         </div>
         <div class="update-note">Your progress saves on this device</div>
       </div>
+      <div class="stack"><button class="nav-card coral" onclick="go('dennisHome',{},'home')"><span class="icon">✈️</span><span class="copy">Dennis Goes Home<small>Nov 2 · what to do next, airports, customs & help · offline</small></span></button></div>
       ${quickAccess()}
       <div class="stack">
         <button class="nav-card coral" onclick="go('overview',{},'home')"><span class="icon">🗓️</span><span class="copy">Trip Overview<small>Oct 28 → Nov 7 at a glance</small></span></button>
@@ -463,6 +464,7 @@
     return `<section class="screen more-hub">
       ${topbar('More')}
       <div class="list-card more-list">
+        ${menuRow('✈️','blue','Dennis Goes Home','Four airports, customs, declarations, phrases · offline',`go('dennisHome',{},'more')`)}
         ${menuRow('🔎','blue','Search Everything','Find flights, Dennis, hotels, Wi-Fi, tickets and more',`go('search',{},'more')`)}
         ${menuRow('▣','blue','Before Italy','To-do list, documents, prep',`go('tasks',{},'more')`)}
         ${menuRow('🛒','red','Trip Shopping','Souvenirs, gifts, ideas',`go('shopping',{},'more')`)}
@@ -1087,12 +1089,80 @@
   window.doReset=()=>{document.querySelector('.modal-mask')?.remove();toast('Reset disabled to protect your travel progress');};
 
   function formatDay(date){ return new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+
+  // Dennis return guide: static, offline information. No personal confirmation codes in public source.
+  const DENNIS_STAGES = [
+    {id:'prep',icon:'🚕',title:'1 · Hotel → Florence airport',sub:'Before leaving · Nov 2',steps:[
+      ['Night before','Ask Hotel Milù to book an early licensed taxi to Florence Airport (FLR / Aeroporto di Firenze-Peretola). Verify pickup time with the hotel and the current airline itinerary; aim to be at the airport about 3 hours before an international itinerary.'],
+      ['Keep these with you','Passport, phone, charger, wallet, essential medicine, airline details, and any gift or food receipts go in your carry-on. Keep power banks in your carry-on.'],
+      ['Hotel address','Hotel Milù · Via de’ Tornabuoni 8, 50123 Firenze FI, Italia. Ask the hotel for the taxi meeting point: the historic center may have restricted vehicle access.'],
+      ['Show the driver','Buongiorno. Devo andare all’aeroporto di Firenze, al terminal partenze. Per favore. = Hello. I need to go to Florence airport, departures. Please.']
+    ]},
+    {id:'flr',icon:'🛫',title:'2 · Florence (FLR)',sub:'Check in · bag drop · security',steps:[
+      ['Find the airline counter','Look at Departures screens for the operating airline of the Florence → Paris flight. The airline on your booking may differ from the airline flying the plane.'],
+      ['Check in and bags','Show passport and reservation. Request boarding passes for every leg. Ask: “Is my bag tagged to Cleveland, CLE?” Save the baggage receipt.'],
+      ['Security','Follow Partenze / Departures and Controlli di sicurezza / Security. Take out liquids/electronics only if signs or staff require it.'],
+      ['Board','Read the flight number and destination on the departure monitors. Go to the assigned gate; check it again because gates change.']
+    ]},
+    {id:'cdg',icon:'🇫🇷',title:'3 · Paris (CDG) connection',sub:'Transfer · passport exit check',steps:[
+      ['Stay in connections','Follow yellow Correspondances / Flight Connections signs; do NOT follow Sortie / Exit or Baggage Claim unless airline staff direct you.'],
+      ['Find the next flight','Check monitors for the Detroit (DTW) flight number and departure gate. Do not assume a terminal or gate from an old screenshot.'],
+      ['Passport control','Florence to Paris is within Schengen; leaving Paris for the U.S. generally involves Schengen exit passport control and possibly additional security. Follow connection signs and staff instructions.'],
+      ['Baggage','If bags were tagged through to Cleveland, normally do not collect them in Paris. Ask airline staff if your tickets are separate or your baggage tag says otherwise.'],
+      ['Phrase to show','Je suis en correspondance pour Detroit. Où est ma porte d’embarquement ? = I am connecting to Detroit. Where is my gate?']
+    ]},
+    {id:'dtw',icon:'🛂',title:'4 · Detroit (DTW) · U.S. entry',sub:'Immigration · customs · recheck · security',steps:[
+      ['1. Passport / immigration','Follow International Arrivals / Passport Control. Have your U.S. passport ready. If asked: “I’m a U.S. citizen returning from vacation in Italy, and I’m connecting to Cleveland.” Answer truthfully.'],
+      ['2. Declare what you brought','Tell the officer about purchases, gifts, food (including packaged candy), plants/agricultural items, and alcohol. Keep receipts. If unsure, declare it and ask. Complete the declaration method requested at the airport (officer, kiosk/app or paper).'],
+      ['3. Collect your suitcase','Follow Baggage Claim, locate the carousel for the arriving international flight, and TAKE your checked bag even if its tag says CLE.'],
+      ['4. Clear customs','Take all baggage through the customs exit/inspection as directed. An officer may ask to inspect items; that is normal. Do not hide or discard declaration information.'],
+      ['5. Recheck suitcase','After customs, find Connecting Flights / Baggage Recheck and hand the bag over at the designated airline transfer belt or counter. Confirm it is tagged CLE.'],
+      ['6. Security again','Follow Connecting Flights / TSA Security, pass screening, check Cleveland flight gate on monitors and go there.'],
+      ['If delayed','If the flight to Cleveland might be missed, ask the airline transfer desk for rebooking before leaving the secured area.']
+    ]},
+    {id:'cle',icon:'🏠',title:'5 · Cleveland (CLE)',sub:'Final flight · baggage · home',steps:[
+      ['Land','Follow Baggage Claim / Ground Transportation. You normally will NOT do customs or U.S. immigration again in Cleveland after clearing it in Detroit.'],
+      ['Get your bag','Find the carousel for the Detroit → Cleveland flight. If your checked bag does not appear, report it to the airline baggage service before leaving the airport; retain the baggage-tag receipt.'],
+      ['Meet pickup','Confirm your ride and pickup level/location with the person collecting you. Airport arrangements can change.']
+    ]}
+  ];
+  const DENNIS_DECLARATIONS=[
+    ['Packaged candy, chocolate or snacks','Declare food to CBP even if sealed. Keep original packaging and receipts. Permission to bring it in is determined by CBP.'],
+    ['Wine, Moscato or other alcohol','Declare alcohol and quantities. Check airline liquid/baggage limits and U.S./Ohio rules; being duty-free does not mean it can be omitted from declaration.'],
+    ['Gifts, souvenirs and clothes','Report purchases/gifts acquired abroad, and keep approximate values and receipts; the officer determines any duty.'],
+    ['Meat, fruit, seeds, plants or cheese','Do not assume these are allowed. Declare all food and agricultural items; some are prohibited even if packed or purchased at an airport.'],
+    ['Cash or monetary instruments','More than $10,000 combined in currency/covered monetary instruments entering the U.S. requires a separate report. Ask CBP if it applies.'],
+    ['Prescription medications','Carry medicines in labeled/original packaging where practical and report them when requested. Follow applicable import rules.']
+  ];
+  const DENNIS_HELP=[
+    ['I cannot find my gate.','Non trovo il mio gate. / Je ne trouve pas ma porte d’embarquement.'],
+    ['I am connecting to Cleveland via Detroit.','Ho una coincidenza per Cleveland via Detroit. / J’ai une correspondance pour Cleveland via Detroit.'],
+    ['Can you help me?','Può aiutarmi, per favore? / Pouvez-vous m’aider, s’il vous plaît ?'],
+    ['I missed my connecting flight.','Ho perso la coincidenza. / J’ai raté ma correspondance.'],
+    ['Where is the baggage recheck?','Dov’è il banco per riconsegnare il bagaglio? / Où dois-je redéposer mon bagage ?']
+  ];
+  function dennisDone(){try{return JSON.parse(localStorage.getItem('italy2026-dennis-v25-checks')||'{}')}catch(e){return {}}}
+  window.dennisToggle=(k,checked)=>{const x=dennisDone();x[k]=checked;localStorage.setItem('italy2026-dennis-v25-checks',JSON.stringify(x));render()};
+  window.dennisReset=()=>{if(confirm('Reset Dennis’s travel progress?')){localStorage.removeItem('italy2026-dennis-v25-checks');render()}};
+  function dennisChecklist(stage){const done=dennisDone();return stage.steps.map(([heading,body],i)=>{const key=stage.id+'-'+i;return `<div class="dennis-task"><label><input type="checkbox" ${done[key]?'checked':''} onchange="dennisToggle('${key}',this.checked)"><b>${esc(heading)}</b></label><p>${esc(body)}</p></div>`}).join('')}
+  function dennisHomeScreen(){const current=DENNIS_STAGES.find(x=>x.id===route.params.stage);const done=dennisDone();const total=DENNIS_STAGES.reduce((n,x)=>n+x.steps.length,0);const count=Object.values(done).filter(Boolean).length;return `<section class="screen">${topbar('✈️ Dennis Goes Home')}<div class="content dennis-content">
+    <div class="wallet-intro"><h2>Home to Cleveland 🏠</h2><p>Monday, November 2 · Florence → Paris → Detroit → Cleveland<br>Short steps. Offline instructions. No guessing gates.</p></div>
+    <div class="dennis-banner"><b>What do I do next?</b><small>Tap your current airport below · ${count}/${total} steps checked</small><div class="dennis-meter"><span style="width:${100*count/total}%"></span></div></div>
+    <div class="tip"><b>Flight details:</b> Open Bookings & Tickets → unlocked private confirmations for Dennis’s Delta reservation. The previously planned flight times are NOT verified here. Confirm operating airlines, flights, departure time, gate, and baggage tag before travel. Never rely on the public app for boarding passes.</div>
+    ${DENNIS_STAGES.map(x=>`<button class="dennis-stage ${current?.id===x.id?'selected':''}" onclick="go('dennisHome',{stage:'${x.id}'},'home')"><span>${x.icon}</span><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><span>›</span></button>`).join('')}
+    ${current?`<div class="dennis-details"><h3>${esc(current.title)}</h3>${dennisChecklist(current)}<button class="pill-btn gray" onclick="go('dennisHome',{},'home')">← All airports</button></div>`:''}
+    <details class="flight-step"><summary>🧾 Customs: what must I declare?</summary><div class="dennis-details"><p><b>Yes: declare all food and agricultural items; report purchases, gifts, and alcohol truthfully.</b> An officer decides admissibility and duties. Ask if unsure.</p>${DENNIS_DECLARATIONS.map(([a,b])=>`<p><b>${esc(a)}</b><br>${esc(b)}</p>`).join('')}<p><b>Example:</b> “I bought packaged candy, a bottle of wine, and some souvenirs in Italy. I have receipts if you need them.” Only say this if accurate.</p></div></details>
+    <details class="flight-step"><summary>💬 Show an airport employee · phrases</summary><div class="dennis-details">${DENNIS_HELP.map(([a,b])=>`<p><b>${esc(a)}</b><br>${esc(b)}</p>`).join('')}</div></details>
+    <details class="flight-step"><summary>🆘 If something goes wrong</summary><div class="dennis-details"><p><b>Missed flight / delay:</b> Ask the operating airline’s transfer desk for the next confirmed flight and a new boarding pass. Do not buy a replacement without checking airline rebooking.</p><p><b>Missing bag:</b> Keep the baggage-tag receipt; report it at the airline baggage desk before exiting.</p><p><b>Lost passport:</b> Notify airport police/airline immediately. Contact the nearest U.S. embassy or consulate for emergency passport help.</p><p><b>Medical emergency:</b> In Italy/France call 112. In the U.S. call 911.</p><p><b>Phone offline:</b> Your instructions stay in this app after it has been loaded and tested. Ask airline staff for live gate/rebooking details.</p></div></details>
+    <div class="action-row"><button class="pill-btn" onclick="go('bookings',{},'more')">🔐 Private bookings</button><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Saved documents</button><button class="pill-btn gray" onclick="go('offline',{},'more')">📱 Offline check</button><button class="pill-btn gray" onclick="dennisReset()">Reset checks</button></div><div class="small-note">No private confirmation numbers are embedded in public website files. Gates and travel rules may change. Source: U.S. CBP and airline guidance; confirm live operations with airport staff.</div></div>${bottomNav('home')}</section>`;}
+
   function js(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' '); }
 
   function render(){
     let html='';
     switch(route.name){
       case 'home': html=homeScreen(); break;
+      case 'dennisHome': html=dennisHomeScreen(); break;
       case 'rome': html=cityScreen('Rome'); break;
       case 'florence': html=cityScreen('Florence'); break;
       case 'work': html=workScreen(); break;
