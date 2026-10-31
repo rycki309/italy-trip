@@ -1,0 +1,1 @@
+Dennis v29: expanded airport walkthroughs, 16 full-screen show-to-staff translation cards, detailed customs, baggage exceptions, emergencies. Prior itinerary, work and private vault preserved. No live flight verification. Test on phone in Airplane Mode after deployment.
