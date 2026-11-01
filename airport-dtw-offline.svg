@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 1198" role="img">
+<rect width="780" height="1198" fill="#f8fafc"/>
+<text x="32" y="63" font-family="Arial" font-size="33" font-weight="bold" fill="#193954">DETROIT — INTERNATIONAL ARRIVAL</text>
+<text x="32" y="104" font-family="Arial" font-size="22" fill="#475569">Paris flight → Cleveland flight</text>
+<rect x="28" y="125" width="724" height="60" rx="12" fill="#fff2cf"/><text x="44" y="150" font-size="19" font-family="Arial" font-weight="bold" fill="#714d0f">ENGLISH ROUTE GUIDE — NOT A FLOOR PLAN</text><text x="44" y="173" font-size="17" font-family="Arial" fill="#714d0f">Confirm bag destination at Florence check-in.</text>
+<rect x="30" y="202" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="250" r="28" fill="#1a5d78"/><text x="76" y="259" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">1</text>
+<text x="125" y="244" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">FOLLOW INTERNATIONAL ARRIVALS</text>
+<text x="125" y="279" font-family="Arial" font-size="19" fill="#475569">Go to Passport Control / U.S. Citizens</text>
+<path d="M390 320 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 337 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="350" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="398" r="28" fill="#1a5d78"/><text x="76" y="407" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">2</text>
+<text x="125" y="392" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">PASSPORT CONTROL</text>
+<text x="125" y="427" font-family="Arial" font-size="19" fill="#475569">Show passport; answer questions truthfully</text>
+<path d="M390 468 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 485 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="498" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="546" r="28" fill="#1a5d78"/><text x="76" y="555" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">3</text>
+<text x="125" y="540" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">CUSTOMS AND BAGGAGE</text>
+<text x="125" y="575" font-family="Arial" font-size="19" fill="#475569">Declare items; follow CBP/airline bag instructions</text>
+<path d="M390 616 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 633 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="646" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="694" r="28" fill="#1a5d78"/><text x="76" y="703" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">4</text>
+<text x="125" y="688" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">RECHECK BAG IF REQUIRED</text>
+<text x="125" y="723" font-family="Arial" font-size="19" fill="#475569">Use airline connecting baggage desk if directed</text>
+<path d="M390 764 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 781 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="794" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="842" r="28" fill="#1a5d78"/><text x="76" y="851" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">5</text>
+<text x="125" y="836" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">SECURITY FOR NEXT FLIGHT</text>
+<text x="125" y="871" font-family="Arial" font-size="19" fill="#475569">Follow Connections / TSA Security signs</text>
+<path d="M390 912 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 929 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="942" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="990" r="28" fill="#1a5d78"/><text x="76" y="999" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">6</text>
+<text x="125" y="984" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">CLEVELAND DEPARTURE GATE</text>
+<text x="125" y="1019" font-family="Arial" font-size="19" fill="#475569">Find CLE flight on screen and walk to gate</text>
+<text x="32" y="1138" font-size="19" font-family="Arial" font-weight="bold" fill="#ad4a26">BAG COLLECTION RULES DEPEND ON CURRENT HANDLING.</text>
+<text x="32" y="1170" font-size="16" font-family="Arial" fill="#64748b">Always follow current airline signs, screens and airport staff.</text>
+</svg>

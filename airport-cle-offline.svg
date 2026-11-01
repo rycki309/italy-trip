@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 902" role="img">
+<rect width="780" height="902" fill="#f8fafc"/>
+<text x="32" y="63" font-family="Arial" font-size="33" font-weight="bold" fill="#193954">CLEVELAND — GATE TO HOME</text>
+<text x="32" y="104" font-family="Arial" font-size="22" fill="#475569">Final arrival at CLE</text>
+<rect x="28" y="125" width="724" height="60" rx="12" fill="#fff2cf"/><text x="44" y="150" font-size="19" font-family="Arial" font-weight="bold" fill="#714d0f">ENGLISH ROUTE GUIDE — NOT A FLOOR PLAN</text><text x="44" y="173" font-size="17" font-family="Arial" fill="#714d0f">Use airport arrival signs for final pickup.</text>
+<rect x="30" y="202" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="250" r="28" fill="#1a5d78"/><text x="76" y="259" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">1</text>
+<text x="125" y="244" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">EXIT AIRCRAFT</text>
+<text x="125" y="279" font-family="Arial" font-size="19" fill="#475569">Follow Baggage Claim / Ground Transportation signs</text>
+<path d="M390 320 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 337 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="350" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="398" r="28" fill="#1a5d78"/><text x="76" y="407" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">2</text>
+<text x="125" y="392" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">GET CHECKED SUITCASE</text>
+<text x="125" y="427" font-family="Arial" font-size="19" fill="#475569">Confirm assigned carousel on baggage screens</text>
+<path d="M390 468 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 485 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="498" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="546" r="28" fill="#1a5d78"/><text x="76" y="555" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">3</text>
+<text x="125" y="540" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">IF SUITCASE IS MISSING</text>
+<text x="125" y="575" font-family="Arial" font-size="19" fill="#475569">Report at airline baggage desk before leaving</text>
+<path d="M390 616 v23" stroke="#277e8b" stroke-width="5"/><path d="M378 633 l12 12 l12 -12" fill="none" stroke="#277e8b" stroke-width="5"/>
+<rect x="30" y="646" width="720" height="116" rx="14" fill="white" stroke="#93b2c3" stroke-width="2"/>
+<circle cx="76" cy="694" r="28" fill="#1a5d78"/><text x="76" y="703" font-family="Arial" font-size="26" fill="white" font-weight="bold" text-anchor="middle">4</text>
+<text x="125" y="688" font-family="Arial" font-size="26" font-weight="bold" fill="#14344a">MEET YOUR RIDE</text>
+<text x="125" y="723" font-family="Arial" font-size="19" fill="#475569">Confirm passenger pickup location with driver</text>
+<text x="32" y="842" font-size="19" font-family="Arial" font-weight="bold" fill="#ad4a26">END OF TRIP — KEEP PASSPORT AND PHONE SECURE.</text>
+<text x="32" y="874" font-size="16" font-family="Arial" fill="#64748b">Always follow current airline signs, screens and airport staff.</text>
+</svg>
