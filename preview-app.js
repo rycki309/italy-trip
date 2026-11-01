@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'italy2026-v2-user';
-  const APP_VERSION = '2026-10-31-dennis-detailed-v29';
+  const APP_VERSION = '2026-11-01-dennis-release-v45';
   const DEFAULT_USER = {
     activities:{}, tasks:{}, packing:{}, customTasks:[], customPacking:[], customBookings:[],
     shopping:[], favorites:{}, remembered:[], easyDay:false, exchangeRate:1.17,
@@ -66,12 +66,12 @@
   ].map(([type,icon,name,km,note,address])=>({type,icon,name,km,distance:km===null?'Distance not listed':`${km} km (${(km*0.621371).toFixed(1)} mi)`,note,address,verifiedAddress: /(?:\bVia\b|\bViale\b|\bPiazza\b|\bStrada Provinciale\b)/.test(address)}));
 
   const RESTROOMS = [
-    {city:'Rome',area:'Vatican / Prati',name:'Public restroom — Vatican / Prati area',address:'Piazza della Città Leonina, Roma RM, Italy',note:'Useful around Vatican/Prati. Check posted hours and fee on arrival.'},
-    {city:'Rome',area:'Colosseum',name:'Colosseum-area restroom',address:'Piazza del Colosseo, Roma RM, Italy',note:'Use attraction facilities when available; café backup nearby.'},
-    {city:'Rome',area:'Historic center',name:'Piazza Navona-area restroom',address:'Via Giuseppe Zanardelli, Roma RM, Italy',note:'Useful on the Navona → Pantheon route. Verify posted hours.'},
-    {city:'Rome',area:'Spanish Steps',name:'Spanish Steps-area restroom',address:'Piazza di Spagna, Roma RM, Italy',note:'Useful near the Spanish Steps. Verify posted hours.'},
-    {city:'Rome',area:'Trastevere',name:'Trastevere restroom backup',address:'Piazza di Santa Maria in Trastevere, Roma RM, Italy',note:'Restaurant/café facilities are the easiest backup while seated.'},
-    {city:'Rome',area:'Station',name:'Roma Termini restrooms',address:'Piazza dei Cinquecento, Roma RM, Italy',note:'Station restroom option for train day.'},
+
+
+
+
+
+
     {city:'Florence',area:'SMN',name:'Public Toilet — Santa Maria Novella',address:'Piazza di Santa Maria Novella 18, 50123 Firenze FI, Italy',note:'Official city facility. Verify hours/fee before relying on it.'},
     {city:'Florence',area:'Central Florence',name:'Central Florence restroom backup',address:'Via della Stufa, 50123 Firenze FI, Italy',note:'Public restroom option in the center; verify posted hours/fee.'},
     {city:'Florence',area:'Boboli',name:'Boboli / Pitti restroom option',address:"Piazza de' Pitti 1, 50125 Firenze FI, Italy",note:'Use attraction facilities when open.'},
@@ -79,16 +79,11 @@
   ];
 
   const RESTAURANT_BOOKINGS = [
-    {name:'Open Baladin Roma',date:'Oct 30 · ~6:00–6:30 PM',status:'optional',label:'Optional dinner · not reserved',place:'open-baladin',site:'https://pubs.baladin.it/en/restaurant-craft-beer-hamburger/via-degli-specchi-6-roma/',reserve:'https://www.sevenrooms.com/explore/openbaladinroma/reservations/create/search/'},
-    {name:'Rione Brewpub Firenze',date:'Oct 31 · ~7:00 PM',status:'optional',label:'Optional dinner · not reserved',place:'rione',site:'https://www.rionefirenze.com/'},
-    {name:'Be.Re. + Trapizzino',date:'Oct 28 · easy arrival night',status:'optional',label:'Walk-in idea · no reservation',place:'bere'},
-    {name:'Ma Che Siete Venuti A Fà',date:'Oct 29 · optional',status:'optional',label:'Optional walk-in · no reservation',place:'mache'},
-    {name:'Archea Brewery',date:'Florence backup',status:'problem',label:'Casual stop / booking unconfirmed',place:'archea'},
-    {name:'Chianti Brew Fighters',date:'Florence backup',status:'problem',label:'Reserve if chosen for dinner',place:'chianti-brew'},
-    {name:'Alibi Craft Beer & Kitchen',date:'Florence backup',status:'problem',label:'Booking policy unverified',place:'alibi'}
-  ];
-
-  const EXTRA_PHRASES = [
+    {name:'Rione Brewpub Firenze',date:'Oct 31 · optional',status:'optional',label:'Not reserved',place:'rione',site:'https://www.rionefirenze.com/'},
+    {name:'Archea Brewery',date:'Florence backup',status:'optional',label:'Booking unconfirmed',place:'archea'},
+    {name:'Chianti Brew Fighters',date:'Florence backup',status:'optional',label:'Booking unconfirmed',place:'chianti-brew'},
+    {name:'Alibi Craft Beer & Kitchen',date:'Florence backup',status:'optional',label:'Booking unconfirmed',place:'alibi'}
+  ];  const EXTRA_PHRASES = [
     ['Restaurant','Posso vedere il menù?','POHS-soh veh-DEH-reh eel meh-NOO','Can I see the menu?'],
     ['Restaurant','Avete birre locali?','ah-VEH-teh BEER-reh loh-KAH-lee','Do you have local beers?'],
     ['Restaurant','Una birra chiara, per favore','OO-nah BEER-rah KYAH-rah pehr fah-VOH-reh','A pale/light beer, please'],
@@ -109,15 +104,11 @@
     ['Work','Dov’è la reception?','doh-VEH lah reh-SEP-shon','Where is reception?'],
     ['Work','Dov’è la lavatrice?','doh-VEH lah lah-vah-TREE-cheh','Where is the washing machine?'],
     ['Work','A che ora ci incontriamo?','ah keh OH-rah chee een-kon-TRYAH-moh','What time are we meeting?'],
-    ['Sightseeing','Abbiamo i biglietti per il Colosseo','ahb-BYAH-moh ee bee-LYEHT-tee pehr eel koh-loh-SEH-oh','We have tickets for the Colosseum'],
-    ['Sightseeing','Dov’è l’ingresso per il Colosseo?','doh-VEH leen-GREHS-soh pehr eel koh-loh-SEH-oh','Where is the Colosseum entrance?'],
-    ['Sightseeing','Abbiamo i biglietti per il Pantheon','ahb-BYAH-moh ee bee-LYEHT-tee pehr eel PAN-teh-on','We have tickets for the Pantheon'],
     ['Sightseeing','Dov’è l’ingresso?','doh-VEH leen-GREHS-soh','Where is the entrance?'],
     ['Sightseeing','A che ora chiude?','ah keh OH-rah KYOO-deh','What time does it close?'],
     ['Train','Andiamo a Firenze Santa Maria Novella','ahn-DYAH-moh ah fee-REN-tseh SAHN-tah mah-REE-ah noh-VEHL-lah','We are going to Firenze Santa Maria Novella'],
     ['Train','Il nostro treno parte alle undici e cinquanta','eel NOH-stroh TREH-noh PAR-teh AHL-leh OON-dee-chee eh cheen-KWAHN-tah','Our train leaves at 11:50'],
     ['Taxi','Ci porti al nostro hotel, per favore','chee POR-tee al NOH-stroh oh-TEHL pehr fah-VOH-reh','Please take us to our hotel'],
-    ['Taxi','Ci porti a Via Candia quarantuno, per favore','chee POR-tee ah VEE-ah KAHN-dee-ah kwah-RAHN-too-noh pehr fah-VOH-reh','Please take us to Via Candia 41'],
     ['Taxi','Ci porti a Via de’ Tornabuoni otto, per favore','chee POR-tee ah VEE-ah deh tor-nah-BWOH-nee OHT-toh pehr fah-VOH-reh','Please take us to Via de’ Tornabuoni 8'],
     ['Work','Siamo ospiti ad Agriturismo Nerbona','SYAH-moh OH-spee-tee ad ah-gree-too-REEZ-moh nehr-BOH-nah','We are guests at Agriturismo Nerbona'],
     ['Work','Può indicarmi il parcheggio degli ospiti?','pwoh een-dee-KAR-mee eel par-KEHJ-joh deh-lyee OH-spee-tee','Can you show me the guest parking?'],
@@ -250,7 +241,7 @@
     historyStack.push(route);
     route = {name,params,parent:parent || route.parent || name};
     render();
-    if(name==='dennisHome' && params.stage){
+    if((name==='dennisHome'||name==='rome') && params.stage){
       const target=document.getElementById('dennis-selected-instructions');
       if(target) target.scrollIntoView({block:'start',behavior:'instant'});
       else window.scrollTo(0,0);
@@ -296,7 +287,7 @@
     const td=tasks.filter(x=>user.tasksStable?.[taskId(x)]).length, pd=pack.filter(x=>user.packingStable?.[packId(x)]).length;
     const prepPct=Math.round((td/Math.max(1,tasks.length))*100), packPct=Math.round((pd/Math.max(1,pack.length))*100);
     return `<section class="screen">
-      <div class="hero home"><img src="italy-collage.jpg" alt="Real photographs of Tuscany, Rome, and Florence"><div class="hero-copy"><h1>Italy 2026</h1><p>October 28 – November 7</p></div></div>
+      <div class="hero home"><img src="italy-collage.jpg" alt="Photographs of Italy and Tuscany"><div class="hero-copy"><h1>Italy 2026</h1><p>October 28 – November 7</p></div></div>
       <div class="home-card">
         <div class="countdown-line"><span class="countdown-icon" aria-hidden="true">✈</span><span>${daysToGo()} days to go</span></div>
         <div class="progress-pair">
@@ -320,9 +311,10 @@
   }
 
   function cityScreen(city){
+    if(city==='Rome')return dennisHomeScreen();
     const isRome=city==='Rome';
     const dates=isRome?'Oct 28 – Oct 31':'Oct 31 – Nov 2';
-    const img=isRome?'rome-photo.jpg':'florence-photo.jpg';
+    const img='florence-photo.jpg';
     const parent=isRome?'rome':'florence';
     return `<section class="screen">
       ${hero(img,city,dates,parent,isRome?'rome':'florence')}
@@ -361,7 +353,7 @@
   const AIRPORTS=[
     ['CLE','Cleveland Hopkins','https://www.clevelandairport.com/'],
     ['JFK','New York JFK','https://www.jfkairport.com/'],
-    ['FCO','Rome Fiumicino','https://www.adr.it/fiumicino'],
+    
     ['FLR','Florence Peretola','https://www.aeroporto.firenze.it/'],
     ['AMS','Amsterdam Schiphol','https://www.schiphol.nl/en/'],
     ['ATL','Atlanta Hartsfield-Jackson','https://www.atl.com/'],
@@ -382,8 +374,7 @@
   }
   function routeSpecificFlightGuide(){
     const steps=[
-      ['Rycki + Dennis · outbound · Oct 27–28','At Cleveland (CLE), check in with the operating airline. Verify your exact flight legs, connection airport, boarding times and baggage tags against the airline reservation. At your connection, follow the airline’s transfer signs and check the next gate. At the first Schengen airport, expect passport control; at Rome (FCO), follow baggage claim and customs signs. Your complete outbound flight numbers are not verified in this offline app.'],
-      ['Dennis · return · Nov 2','At Florence (FLR), check in and verify the flight numbers, connection airport, checked-bag destination and gate using his airline booking. At a European connection, follow Transfer signs; Schengen exit passport control may occur at the last Schengen airport. At the first U.S. airport, expect immigration, customs, possible bag recheck and another security screening before the Cleveland flight. The exact return legs and layover are not verified here.'],
+      ['Dennis · return · Nov 2','At Florence (FLR), check in and verify the flight numbers, connection airport, checked-bag destination and gate using his airline booking. At a European connection, follow Transfer signs; Schengen exit passport control may occur at the last Schengen airport. At the first U.S. airport, expect immigration, customs, possible bag recheck and another security screening before the Cleveland flight. The verified screenshot shows DL8565 FLR–CDG, DL0229 CDG–DTW, and DL4954 DTW–CLE; recheck all gates and times on travel day.'],
       ['Rycki · Nov 7 · Florence to Amsterdam','FLR → AMS · DL 9525, operated by KLM Cityhopper · departs 1:05 PM, arrives 3:15 PM (local times). Check in with the operating airline, drop checked luggage if needed, pass security, and confirm your gate on screens. Amsterdam is your connection to a non-Schengen flight.'],
       ['Rycki · Nov 7 · Amsterdam connection','Scheduled connection: 1 hr 55 min. Follow Transfer / Connecting Flights signs to DL 9374 (operated by KLM). Expect Schengen exit passport control on the way to the U.S.-bound departure area; additional checks depend on the airport. Verify your gate immediately. Flight departs 5:10 PM local time.'],
       ['Rycki · Nov 7 · Atlanta connection','Arrive ATL 8:40 PM local time on DL 9374. Scheduled connection: 2 hr 30 min. Follow U.S. immigration and customs instructions; ask whether checked bags must be collected and rechecked, then follow signs for connecting flights and security. DL 1320 to Cleveland is scheduled for 11:10 PM local time.'],
@@ -392,26 +383,14 @@
     return `<div class="td-panel"><h3>🧭 Your actual travel days · step by step</h3><p>All times are local to each airport. Live gates and terminals must be checked in the airline app. Missing booking details are explicitly marked unverified.</p>${steps.map(([title,body])=>`<details class="flight-step"><summary>${esc(title)}</summary><p>${esc(body)}</p></details>`).join('')}<div class="action-row"><button class="pill-btn" onclick="go('bookings',{},'more')">Find private confirmations</button><button class="pill-btn gray" onclick="go('documents',{},'more')">Open boarding passes</button><button class="pill-btn gray" onclick="go('workTravelDay',{},'work')">Nov 7 flight details</button></div></div>`;
   }
   function travelGuidesScreen(){
-    const hotel=place('rome-hotel'),florence=place('florence-hotel');
+    const florence=place('florence-hotel');
     const transfers=[
-      ['✈️','FCO → Rome hotel','After passport control and baggage claim, follow official taxi or booked-transfer signs. Show the driver your Rome hotel address.',hotel?.address],
-      ['🚆','Rome hotel → Roma Termini','October 31 · aim to arrive early for the 11:50 Italo train. Check the station departure board for the platform.', 'Roma Termini, Piazza dei Cinquecento, Roma'],
       ['🚕','Firenze S.M.N. → Florence hotel','October 31 · arrive 13:31. Use the official taxi stand or walk only if convenient with luggage.',florence?.address],
       ['🌿','Florence → Nerbona','November 2 · use the confirmed group transfer if provided; do not assume a pickup point until confirmed.',WORK.address]
     ];
     return `<section class="screen">${topbar('🗺 Airport & Transfer Guides')}<div class="content"><div class="wallet-intro"><h2>Easy Travel Days</h2><p>These transfer instructions are available offline. Official airport websites require internet.</p></div>${routeSpecificFlightGuide()}${beginnerFlightGuide()}<h3>Airport information</h3>${AIRPORTS.map(([code,name,url])=>`<div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>${code} · ${name}</b><small>Gate assignments and routes may change. Check the airline app on travel day.</small><div class="action-row"><button class="pill-btn gray" onclick="openExternal('${url}')">Official airport website ↗</button></div></div></div>`).join('')}<h3>Transfers · show the driver</h3>${transfers.map(([icon,title,desc,address])=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(desc)}</small>${address?`<small><b>${esc(address)}</b></small><div class="action-row"><button class="pill-btn gray" onclick="copyText('${js(address)}')">Copy address</button><button class="pill-btn" onclick="showDriverAddress('${js(title)}','${js(address)}')">Show driver</button></div>`:''}</div></div>`).join('')}</div>${bottomNav('more')}</section>`;
   }
   const MENU_ITEMS = [
-    ['Cacio e pepe','Pasta with Pecorino Romano cheese and black pepper','Rome · dairy, wheat'],
-    ['Carbonara','Pasta with egg, Pecorino, guanciale (cured pork cheek) and pepper','Rome · pork, egg, dairy, wheat'],
-    ['Amatriciana','Tomato pasta with guanciale (pork) and Pecorino','Rome · pork, dairy, wheat'],
-    ['Gricia','Pasta with guanciale and Pecorino; no tomato','Rome · pork, dairy, wheat'],
-    ['Saltimbocca alla romana','Veal with prosciutto and sage, often cooked with wine','Rome · veal, pork'],
-    ['Supplì','Fried rice croquette, usually with tomato sauce and mozzarella','Rome · dairy; breading may contain wheat'],
-    ['Carciofi alla romana','Artichokes braised with herbs and olive oil','Rome · vegetables'],
-    ['Carciofi alla giudia','Crispy deep-fried artichokes','Rome · fried vegetables'],
-    ['Trippa alla romana','Tripe (animal stomach lining) cooked in tomato sauce','Rome · offal'],
-    ['Coda alla vaccinara','Slow-braised oxtail in tomato sauce','Rome · beef'],
     ['Bistecca alla Fiorentina','Very thick Tuscan T-bone steak, typically served rare','Florence · beef; often sold by weight'],
     ['Pappardelle al cinghiale','Wide ribbon pasta with wild boar meat ragù','Tuscany · wild boar, wheat'],
     ['Ribollita','Hearty Tuscan soup with beans, vegetables and bread','Tuscany · wheat; ask about stock'],
@@ -493,14 +472,11 @@
     add('✈️','Rycki — flights & confirmation','Flight bookings and private details','rycki flight delta confirmation number ticket', 'bookings');
     add('🔐','Travel Documents','Open saved encrypted tickets, PDFs and receipts','pdf passport voucher flight hotel confirmation dennis rycki document wallet', 'documents');
     add('🚆','Rome → Florence train','October 31 · 11:50 AM · Roma Termini → Firenze SMN','italo 8914 coach seat train ticket booking departure arrival', 'trainDay');
-    add('🏨','Rome hotel','Oct 28–31 · Via Candia 41','rome hotel address accommodation check in little heaven suri suites', 'bookings');
     add('🏨','Florence hotel','Oct 31–Nov 2 · Via de’ Tornabuoni 8','florence hotel address milu accommodation check in', 'bookings');
-    add('🎟️','Pantheon booking','Oct 29 · 12:00 PM · operator-confirmed entry','pantheon viator audio guide tour ticket whatsapp', 'bookings');
-    add('🎟️','Colosseum tour','Oct 30 · meet 10:40 AM · tour 11:00 AM','colosseum forum palatine city walkers meeting point guide viator', 'bookings');
     add('📍','Nerbona address & contacts','Work stay · Nov 2–7','work house host telephone phone contact property', 'workOverview');
     add('📶','Wi-Fi and house instructions','Network details, laundry, property information','wifi internet password laundry nerbona house rules', 'duringStay');
     add('🚗','Airport and transfer guides','Departure, arrival and ground transportation','airport driver transfer taxi flight check in travel home', 'travelGuides');
-    add('🗓️','Daily itinerary','Rome and Florence day-by-day plans','today tomorrow schedule activities itinerary time', 'overview');
+    add('🗓️','Daily itinerary','Florence day-by-day plans','today tomorrow schedule activities itinerary time', 'overview');
     add('🧳','Packing list','Your checked and unchecked items','suitcase packing luggage clothes', 'packing');
     add('📋','Before Italy checklist','Preparation tasks and saved progress','tasks preparation todo', 'tasks');
     add('🆘','Emergency contacts','Emergency number and assistance','police hospital doctor medical pharmacy help emergency', 'emergency');
@@ -517,23 +493,22 @@
     const matches=words.length?searchEntries().filter(x=>words.every(w=>x.terms.includes(w))).slice(0,45):[];
     const phrases=words.length?ITALY_TRIP_ITALIAN.filter(p=>words.every(w=>`${p.italian} ${p.english} ${p.category}`.toLocaleLowerCase().includes(w))).slice(0,6):[];
     const tasks=words.length?allTasks().filter(x=>words.every(w=>`${x.task} ${x.category||''}`.toLocaleLowerCase().includes(w))).slice(0,6):[];
-    const suggestions=['Dennis','confirmation','train','hotel','Pantheon','Wi-Fi','airport','tickets'];
+    const suggestions=['Dennis','confirmation','train','hotel','Paris','Wi-Fi','airport','tickets'];
     return `<section class="screen">${topbar('Search everything')}<div class="content"><form class="global-search-form" onsubmit="event.preventDefault();runAppSearch(document.getElementById('global-search').value)"><input id="global-search" class="searchbox" type="search" value="${esc(q||'')}" placeholder="Search anything about your trip…" aria-label="Search trip information"><button type="submit" class="pill-btn">Search</button></form>${!words.length?`<p>Popular searches</p><div class="search-suggestions">${suggestions.map(w=>`<button onclick="runAppSearch('${js(w)}')">${esc(w)}</button>`).join('')}</div>`:''}${matches.length?`<h3>Trip information (${matches.length})</h3>${matches.map(x=>`<button class="search-result" onclick="${x.dest==='place'?`showPlace('${js(x.params.id)}')`:`go('${x.dest}',${JSON.stringify(x.params).replace(/"/g,'&quot;')},'more')`}"><span>${x.icon}</span><span><b>${esc(x.title)}</b><small>${esc(x.detail)}</small></span><span>›</span></button>`).join('')}`:''}${tasks.length?`<h3>Preparation tasks</h3>${tasks.map(x=>`<button class="search-result" onclick="go('tasks',{},'more')"><span>☑️</span><span><b>${esc(x.task)}</b><small>Open checklist</small></span><span>›</span></button>`).join('')}`:''}${phrases.length?`<h3>Italian phrases</h3>${phrases.map(x=>phraseRow(x)).join('')}`:''}${words.length&&!matches.length&&!tasks.length&&!phrases.length?'<p>No matching trip information. Try a shorter word or another name.</p>':''}<div class="tip">🔒 Private confirmation numbers and document contents are not indexed here. Search opens the relevant bookings or encrypted Travel Documents, so private information stays on your device.</div></div>${bottomNav('more')}</section>`;
   }
   window.runAppSearch=q=>{historyStack.push(route);route={name:'search',params:{q},parent:'more'};render();window.scrollTo(0,0);};
 
   function overviewScreen(){
     const items=[
-      ['Oct 28','✈️ Arrive Rome · easy Prati night'],['Oct 29','🏛️ Pantheon · Navona · Trevi · Spanish Steps'],['Oct 30','🏛️ Colosseum tour · Forum · rest · optional evening'],
-      ['Oct 31','🚆 Rome → Florence · Rione Brewpub'],['Nov 1','🍝 Florence wandering · pasta maybe · sunset views'],['Nov 2','✈️ Dennis home · Rycki → Nerbona'],
+      
+      ['Nov 1','🌸 Florence Day 2 · David, Boboli, sunset'],['Nov 2','✈️ Dennis home · Rycki → Nerbona'],
       ['Nov 2–7','💼 Tuscany work stay'],['Nov 7','✈️ Rycki flies home']
     ];
-    return `<section class="screen">${topbar('Trip Overview')}<div class="content"><button class="nav-card blue" onclick="go('arrival',{},'home')"><span class="icon">🛬</span><span class="copy">Arrival Day Helper<small>FCO → hotel → rest → easy Prati night</small></span></button><button class="nav-card green" style="margin-top:8px" onclick="go('trainDay',{},'home')"><span class="icon">🚆</span><span class="copy">Rome → Florence Train Day<small>Hotel → Termini → Firenze SMN → Hotel Milu</small></span></button>${items.map(([d,t])=>`<div class="info-row"><div class="emoji">${t.slice(0,2)}</div><div class="copy"><b>${d}</b><small>${esc(t.slice(3))}</small></div></div>`).join('')}</div>${bottomNav('home')}</section>`;
+    return `<section class="screen">${topbar('Trip Overview')}<div class="content"><button class="nav-card blue" onclick="go('rome',{},'rome')"><span class="icon">🛬</span><span class="copy">Dennis Goes Home<small>Flights, airport maps and assistance</small></span></button><button class="nav-card green" style="margin-top:8px" onclick="go('trainDay',{},'home')"><span class="icon">🚆</span><span class="copy">Rome → Florence Train Day<small>Hotel → Termini → Firenze SMN → Hotel Milu</small></span></button>${items.map(([d,t])=>`<div class="info-row"><div class="emoji">${t.slice(0,2)}</div><div class="copy"><b>${d}</b><small>${esc(t.slice(3))}</small></div></div>`).join('')}</div>${bottomNav('home')}</section>`;
   }
 
   function arrivalScreen(){
-    const hotel=place('rome-hotel');
-    return `<section class="screen">${topbar('Arrival Day Helper')}<div class="content"><div class="info-row"><div class="emoji">✈️</div><div class="copy"><b>1 · Arrive at FCO</b><small>Immigration/bags, then take the easiest transfer to the hotel. Keep the day intentionally light.</small></div></div><div class="info-row"><div class="emoji">🚕</div><div class="copy"><b>2 · Get to the Rome hotel</b><small>${esc(hotel.address)}</small><div class="action-row"><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(hotel.address))}')">Navigate</button><button class="pill-btn gray" onclick="showDriver('rome-hotel')">Show Driver</button></div></div></div><div class="info-row"><div class="emoji">🛏️</div><div class="copy"><b>3 · Check in + real rest</b><small>Hydrate, unpack essentials, shower, and let Dennis recover from the travel day.</small></div></div><div class="info-row"><div class="emoji">🍺</div><div class="copy"><b>4 · Only if you both feel okay</b><small>Short Prati wander + Be.Re./Trapizzino. Early night is absolutely fine.</small><div class="action-row"><button class="pill-btn" onclick="showPlace('bere')">Be.Re. details</button></div></div></div><div class="tip"><b>Recovery rule:</b> Arrival day is not a sightseeing day. The win is getting settled without overdoing it.</div></div>${bottomNav('home')}</section>`;
+    return dennisHomeScreen();
   }
 
   function trainDayScreen(){
@@ -669,12 +644,10 @@
   function bookingsScreen(city){
     const tabs=['All','Flights','Hotels','Trains','Tours','Restaurants'];
     const base=[
-      {kind:'Flights',icon:'✈️',name:'Flight to Rome',date:'Oct 28, 2026',sub:'Booked · private confirmation stays device-only',status:'booked'},
-      {kind:'Hotels',icon:'🏨',name:'Rome Hotel',date:'Oct 28–31',sub:ITALY_TRIP_CORE.hotels.rome.name,status:'booked',place:'rome-hotel'},
+      
+      
       {kind:'Trains',icon:'🚆',name:'Rome → Florence',date:'Oct 31 · 11:50 AM',sub:'Roma Termini → Firenze SMN · booked',status:'booked',place:'termini'},
       {kind:'Hotels',icon:'🏨',name:'Florence Hotel',date:'Oct 31–Nov 2',sub:ITALY_TRIP_CORE.hotels.florence.name,status:'booked',place:'florence-hotel'},
-      {kind:'Tours',icon:'🏛️',name:'Colosseum + Forum + Palatine guided tour',date:'Oct 30 · 11:00 AM (meet 10:40)',sub:'Operator confirmed new time · original voucher valid · 2 adults · bring IDs',status:'booked',place:'colosseum'},
-      {kind:'Tours',icon:'🏛️',name:'Pantheon + audio guide',date:'Oct 29 · 12:00 PM',sub:'Operator confirmed noon entry · 2 adults · check email/WhatsApp for ticket',status:'booked',place:'pantheon'},
       {kind:'Tours',icon:'🌳',name:'Boboli Gardens (optional)',date:'Nov 1 · no reservation',sub:'Only if you both want a garden walk; not booked',status:'optional',place:'boboli'},
       {kind:'Flights',icon:'✈️',name:'Dennis Flight Home',date:'Nov 2',sub:'Florence Airport',status:'booked'},
       {kind:'Flights',icon:'✈️',name:'Rycki Flight Home',date:'Nov 7',sub:'Florence Airport',status:'booked'}
@@ -842,9 +815,9 @@
   }
 
   function navigateScreen(city){
-    const planned=city ? ITALY_TRIP_PLACES.filter(p=>p.city===city && ['sight','area','hotel','station','airport'].includes(p.type)).slice(0,8) : [place('colosseum'),place('navona'),place('rome-hotel'),place('florence-hotel')].filter(Boolean);
+    const planned=city ? ITALY_TRIP_PLACES.filter(p=>p.city===city && ['sight','area','hotel','station','airport'].includes(p.type)).slice(0,8) : [place('florence-hotel'),place('flr')].filter(Boolean);
     const bbox=city==='Rome'?'12.456,41.883,12.517,41.916':city==='Florence'?'11.234,43.759,11.275,43.789':'11.22,43.75,11.29,43.80';
-    return `<section class="screen">${topbar('Navigate')}<div class="phrase-search"><input class="searchbox" placeholder="Search destinations" onkeydown="if(event.key==='Enter')searchPlaces(this.value)"></div><div class="segment"><button class="${!city?'active':''}" onclick="go('navigate',{},'home')">Home</button><button onclick="showWorkPlace()">Nerbona</button><button class="${city==='Rome'?'active':''}" onclick="go('navigate',{city:'Rome'},'rome')">Rome</button><button class="${city==='Florence'?'active':''}" onclick="go('navigate',{city:'Florence'},'florence')">Florence</button></div><div id="numbered-map" class="street-map" data-city="${esc(city||'Florence')}"><iframe title="Street map of ${esc(city||'Florence')}" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik"></iframe></div><div class="small-note" style="padding:0 16px">Street map requires internet. For directions, use Apple Maps from a destination below.</div><div class="tip" style="margin:10px 16px">🚆 <b>Booked:</b> Roma Termini → Firenze S.M.N. · Oct 31 · 11:50–approximately 13:31. <div class="action-row"><button class="pill-btn" onclick="openExternal('https://www.trenitalia.com/en.html')">Trenitalia routes & times ↗</button><button class="pill-btn gray" onclick="openExternal('https://www.italotreno.com/en')">Italo routes & times ↗</button></div><small>Live timetables need internet. Recheck schedules, service changes and platforms before travel.</small></div><div class="content">${planned.map((p,i)=>`<div class="info-row"><div class="copy"><b>${esc(p.name)}</b><small>${esc(p.address)}</small><small class="nav-distance" data-to="${p.id}" data-from="${i>0?planned[i-1].id:''}">${i>0?'Calculating distance…':'First stop'}</small><div class="action-row"><button class="pill-btn" onclick="showPlace('${p.id}')">Details</button><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(p.address))}')">Apple Maps</button><button class="pill-btn gray" onclick="showDriver('${p.id}')">Show Driver</button></div></div></div>`).join('')}</div><div class="where-card"><div class="loc">●</div><div class="copy"><b>Where Am I?</b><small>${lastPosition?`${lastPosition.lat.toFixed(5)}, ${lastPosition.lng.toFixed(5)}`:'Tap to get your current location'}</small></div><button class="go-btn" onclick="whereAmI()">➤</button></div>${bottomNav(route.parent==='home'?'home':city==='Rome'?'rome':city==='Florence'?'florence':'more')}</section>`;
+    return `<section class="screen">${topbar('Navigate')}<div class="phrase-search"><input class="searchbox" placeholder="Search destinations" onkeydown="if(event.key==='Enter')searchPlaces(this.value)"></div><div class="segment"><button class="${!city?'active':''}" onclick="go('navigate',{},'home')">Home</button><button onclick="showWorkPlace()">Nerbona</button><button class="${city==='Florence'?'active':''}" onclick="go('navigate',{city:'Florence'},'florence')">Florence</button></div><div id="numbered-map" class="street-map" data-city="${esc(city||'Florence')}"><iframe title="Street map of ${esc(city||'Florence')}" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik"></iframe></div><div class="small-note" style="padding:0 16px">Street map requires internet. For directions, use Apple Maps from a destination below.</div><div class="tip" style="margin:10px 16px">🚆 <b>Booked:</b> Roma Termini → Firenze S.M.N. · Oct 31 · 11:50–approximately 13:31. <div class="action-row"><button class="pill-btn" onclick="openExternal('https://www.trenitalia.com/en.html')">Trenitalia routes & times ↗</button><button class="pill-btn gray" onclick="openExternal('https://www.italotreno.com/en')">Italo routes & times ↗</button></div><small>Live timetables need internet. Recheck schedules, service changes and platforms before travel.</small></div><div class="content">${planned.map((p,i)=>`<div class="info-row"><div class="copy"><b>${esc(p.name)}</b><small>${esc(p.address)}</small><small class="nav-distance" data-to="${p.id}" data-from="${i>0?planned[i-1].id:''}">${i>0?'Calculating distance…':'First stop'}</small><div class="action-row"><button class="pill-btn" onclick="showPlace('${p.id}')">Details</button><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(p.address))}')">Apple Maps</button><button class="pill-btn gray" onclick="showDriver('${p.id}')">Show Driver</button></div></div></div>`).join('')}</div><div class="where-card"><div class="loc">●</div><div class="copy"><b>Where Am I?</b><small>${lastPosition?`${lastPosition.lat.toFixed(5)}, ${lastPosition.lng.toFixed(5)}`:'Tap to get your current location'}</small></div><button class="go-btn" onclick="whereAmI()">➤</button></div>${bottomNav(route.parent==='home'?'home':city==='Rome'?'rome':city==='Florence'?'florence':'more')}</section>`;
   }
 
   async function fillNavigationDistances(){
@@ -881,14 +854,14 @@
   };
   window.checkItalyOffline=async()=>{
     const el=document.getElementById('italy-offline-results');if(!el)return;el.textContent='Checking saved app resources…';
-    const required=['index.html','preview-app.js','preview.css','travel-documents.js','trip-core.js','rome-photo.jpg','florence-photo.jpg','work-group-photo.jpg'];
+    const required=['index.html','preview-app.js','preview.css','travel-documents.js','trip-core.js','florence-photo.jpg','work-group-photo.jpg'];
     const found=[];for(const file of required){let ok=false;try{const cachesList=await caches.keys();for(const name of cachesList){if(!name.startsWith('italy-2026-'))continue;const cache=await caches.open(name);if(await cache.match('./'+file)){ok=true;break;}}}catch(e){}found.push([file,ok]);}
     const vault=!!localStorage.getItem('italy2026-encrypted-vault-v1');let docs='unavailable';try{const count=await window.TravelDocs.counts();docs=count+' encrypted document(s) stored';}catch(e){}
     el.innerHTML=found.map(([name,ok])=>`<div>${ok?'✅':'⚠️'} ${esc(name)}</div>`).join('')+`<div>${vault?'✅':'⚠️'} Encrypted private vault copy ${vault?'present':'not found on this device'}</div><div>📁 ${esc(docs)}</div><p>Cached resources and stored files do not guarantee the documents decrypt correctly. Open your tickets in airplane mode to finish testing. Apple/Google offline map downloads cannot be checked here.</p>`;
   };
   function offlineScreen(){
     const tabs=[['maps','Maps'],['phrases','Phrases'],['itineraries','Itineraries'],['tickets','Tickets']];
-    const maps=[['Rome','Rome, Italy','Download the Rome area in Apple Maps before departure'],['Florence','Florence, Italy','Download central Florence and surrounding streets'],['Nerbona / Tuscany',WORK.address,'Download the Nerbona, Colle di Val d’Elsa and San Gimignano area']];
+    const maps=[['Florence','Florence, Italy','Download central Florence and surrounding streets'],['Nerbona / Tuscany',WORK.address,'Download the Nerbona, Colle di Val d’Elsa and San Gimignano area']];
     const item=(icon,title,subtitle,action,label='Open')=>`<div class="info-row"><div class="emoji">${icon}</div><div class="copy"><b>${esc(title)}</b><small>${esc(subtitle)}</small><div class="action-row"><button class="pill-btn" onclick="${action}">${label} →</button></div></div></div>`;
     let body='';
     if(offlineTab==='maps'){
@@ -899,7 +872,7 @@
         item('💬','All Italian phrases','Search English or Italian, including hidden phrases',`go('italian',{},'offline')`,'Browse phrases');
     }else if(offlineTab==='itineraries'){
       body=`<div class="tip">Saved itineraries and Rest Mode use built-in trip information and your device-local preferences. Live maps and routing still require connectivity.</div>`+
-        item('🏛️','Rome itinerary','Select any day and review the schedule',`go('itinerary',{city:'Rome'},'offline')`,'View Rome')+
+        
         item('🌸','Florence itinerary','Select any day; use Rest Mode to prioritize breaks',`go('itinerary',{city:'Florence'},'offline')`,'View Florence')+
         item('🏡','Work Stay','Nerbona information and work schedule',`go('work',{},'offline')`,'View Work');
     }else{
@@ -1063,8 +1036,8 @@
   function showPlace(id){
     const p=place(id); if(!p)return;
     const isHotel=p.type==='hotel';
-    const photo=isHotel?(p.city==='Rome'?'rome-hero.jpg':'florence-hero.jpg'):'';
-    const hotelInfo=isHotel?(p.city==='Rome'?ITALY_TRIP_CORE.hotels.rome:ITALY_TRIP_CORE.hotels.florence):null;
+    const photo=isHotel?'florence-hero.jpg':'';
+    const hotelInfo=isHotel?ITALY_TRIP_CORE.hotels.florence:null;
     showSheet(`${isHotel?`<div class="photo-hero" style="margin:0 0 12px"><img src="${photo}" style="height:150px"><div class="caption">${esc(p.city)} lodging</div></div>`:''}<div class="sheet-head"><h2>${esc(p.name)}</h2></div><p>${esc(p.address)}</p>${hotelInfo?`<p class="small-note">${esc(hotelInfo.dates||'')} · ${esc(hotelInfo.note||'')}</p>`:''}${p.note?`<p class="small-note">${esc(p.note)}</p>`:''}<div class="action-row"><button class="pill-btn" onclick="openExternal('${js(appleMapsUrl(p.address))}')">🧭 Navigate</button><button class="pill-btn gray" onclick="copyText('${js(p.address)}')">📋 Copy Address</button><button class="pill-btn gray" onclick="showDriver('${p.id}')">🚕 Show Driver</button></div>`);
   }
   window.showPlace=showPlace;
@@ -1097,7 +1070,7 @@
   // Dennis's extended offline airport guide. No PNR, passport or personal identifiers in public source.
   const DENNIS_STAGES = [
     {id:'prep',icon:'🚕',title:'1 · Hotel → Florence airport',sub:'Night before · taxi · departure',steps:[
-      ['The night before: verify the flights','In the Delta or operating airline app, check Florence (FLR) departure time, Paris (CDG) connection, Detroit (DTW) flight, Cleveland (CLE) flight, and operating carriers. Screenshot all legs. Check in online if possible. Obtain boarding passes or be ready to get printed ones. Flight times in the original plan are NOT verified here.'],
+      ['The night before: verify the flights','In the Delta or operating airline app, check Florence (FLR) departure time, Paris (CDG) connection, Detroit (DTW) flight, Cleveland (CLE) flight, and operating carriers. Screenshot all legs. Check in online if possible. Obtain boarding passes or be ready to get printed ones. Latest Delta screenshot: November 2 departure 6:50 AM, Air France-operated DL8565. Recheck for schedule changes and obtain boarding passes.'],
       ['Book a taxi with the hotel','Ask Hotel Milù reception tonight for a licensed taxi. Hotel: Via de’ Tornabuoni 8, 50123 Firenze. Destination: Aeroporto di Firenze-Peretola (FLR), Departures / Partenze. Confirm the pickup meeting point, total fare/payment and time. Historic-center traffic restrictions may affect pickup location.'],
       ['Decide when to leave','Florence airport recommends arriving at least 2 hours before departure; follow the operating airline’s deadline if earlier. For an early international connection, build extra buffer for luggage, check-in and traffic. Confirm departure time FIRST, then work backward. Do not assume the taxi pickup time from this guide.'],
       ['Pack tonight, not in the morning','Passport, phone, airline booking, boarding passes, wallet, medications, glasses, charging cable, power bank and customs receipts should be accessible. Power banks and spare lithium batteries belong in carry-on, not checked baggage. Keep valuables and necessities in your personal item.'],
@@ -1106,7 +1079,7 @@
       ['At the airport curb','Get out at Partenze / Departures. Take all your luggage. If no signs are clear, show the Florence Airport phrase card below to a worker.']
     ]},
     {id:'flr',icon:'🛫',title:'2 · Florence (FLR)',sub:'Check-in → bag drop → security → gate',steps:[
-      ['Find Departures / Partenze','Enter the airport and follow Partenze / Departures. Look at the flight information displays for the FLR → Paris flight number, departure time and operating airline; do not choose a desk based only on the Delta marketing flight number.'],
+      ['Find Departures / Partenze','Enter the airport and follow Partenze / Departures. Look at the flight information displays for the FLR → Paris flight number, departure time and operating airline; this flight is operated by AIR FRANCE (DL8565). Look for Air France check-in or the counter assigned on the FLR flight screens, NOT an assumed Delta counter.'],
       ['Find check-in / bag drop','If checking a suitcase, find the operating airline’s check-in or bag-drop counter on the monitor. Have passport and reservation ready. If no mobile boarding pass was issued, ask for printed boarding passes for all available legs.'],
       ['Confirm the bag destination','Watch the agent print the baggage tag. Ask whether it is tagged CLE (Cleveland). Keep the detachable baggage claim receipt; photograph it. Ask directly what to do with the bag at DTW and whether any special through-baggage handling applies.'],
       ['Verify each boarding pass','Read passenger name, flight number, date, airport, scheduled boarding time and gate if assigned. If a later boarding pass cannot be issued, ask which airline transfer desk can print it at the connection.'],
@@ -1118,8 +1091,8 @@
     {id:'cdg',icon:'🇫🇷',title:'3 · Paris (CDG) connection',sub:'Yellow connection signs · passport exit',steps:[
       ['Before landing','Check the next flight number and destination DTW on your saved itinerary. Have passport and boarding pass accessible. Stay seated until instructed to exit.'],
       ['Follow the RIGHT signs','After exiting the aircraft, follow YELLOW Correspondances / Flight Connections signs. Do NOT follow Sortie / Exit or Bagages / Baggage Claim unless staff explicitly directs you.'],
-      ['Read the departure screens','Find your Paris → Detroit flight number, scheduled departure, terminal/area and gate. Gates are live information: never rely on a saved gate number. Follow the airport’s yellow connection route for that gate.'],
-      ['Allow for transfer procedures','Depending on arrival/departure gates, follow signage for shuttle/trains, security screening and border control. Florence → Paris is intra-Schengen; Paris → Detroit exits the Schengen area, so expect passport exit control at CDG.'],
+      ['Read the departure screens','Current screenshot shows Delta DL0229, 10:30 AM, Terminal 2E Gate K52 (K gates). Find DL0229 on the live departures monitor and verify its current terminal/area/gate. Gates are live information: never rely on a saved gate number. Follow the airport’s yellow connection route for that gate.'],
+      ['Allow for transfer procedures','Depending on arrival/departure gates, follow signage for shuttle/trains, security screening and border control. Florence → Paris is intra-Schengen; Paris → Detroit exits the Schengen area, so expect passport exit control at CDG. Current screenshot: Arrive Terminal 2F at 8:45 AM, depart Terminal 2E K52 at 10:30 AM on Delta-operated DL0229. Gate can change.'],
       ['At passport control','Join the lane staff direct you to for your passport. Present passport and boarding pass. The officer may ask about destination; say you are flying to Detroit and connecting to Cleveland. Do not take pictures at passport control.'],
       ['Baggage in Paris','If your luggage was checked through and the airline told you to transfer airside, normally you do not reclaim it here. If your bag tag is not through-checked or you have separate tickets, confirm with airline staff instead.'],
       ['Find the Detroit gate','Check monitors again after border/security procedures. Walk to the gate promptly; large CDG transfers can take time. Confirm destination and flight number on the gate screen before waiting.'],
@@ -1133,7 +1106,7 @@
       ['Step 5: customs / agriculture inspection','With any required suitcase, proceed where the customs officer directs. Declare items honestly, including items that may be restricted. Officers may inspect baggage and may take prohibited agricultural items. Do not conceal items or argue that airport duty-free purchases are exempt from declaration.'],
       ['Step 6: recheck if instructed','If you reclaimed the bag, follow Connecting Flights / Baggage Recheck after customs and give it to the designated airline belt/counter. Keep the baggage-tag receipt and confirm it continues to CLE. If staff says recheck is unnecessary, follow their instructions.'],
       ['Step 7: security again','Follow Connecting Flights / TSA Security as directed. Normally U.S. connecting passengers re-enter security after customs. Follow TSA instructions; do not assume European security rules apply.'],
-      ['Step 8: find Cleveland flight','Find DTW → CLE on the live departures screens. Use flight number rather than destination alone where possible. Go to the gate, confirm the gate display, and watch for changes.'],
+      ['Step 8: find Cleveland flight','Find DL4954 (operated by ENDEAVOR AIR / DELTA CONNECTION), scheduled 5:40 PM, currently DTW McNamara gate C11, on the live departures screens. Use flight number rather than destination alone where possible. Go to the gate, confirm the gate display, and watch for changes.'],
       ['Step 9: if delayed or missing the flight','If immigration/customs/baggage delays threaten your CLE flight, show airline staff your complete itinerary and ask for the next confirmed connection. Do not exit the airport until you understand the new flight and baggage plan.']
     ]},
     {id:'cle',icon:'🏠',title:'5 · Cleveland (CLE)',sub:'Baggage claim · pickup · home',steps:[
@@ -1155,36 +1128,369 @@
     ['Truthful sample answer','“I bought some packaged sweets and gifts in Italy, and I have receipts. I also have [quantity] bottles of wine.” Say ONLY the items and amounts you actually have.']
   ];
   const DENNIS_CARDS=[
-    {group:'Florence · Italian',label:'Please take me to the airport',native:'Per favore, mi porti all’aeroporto di Firenze, alle partenze.',english:'Please take me to Florence Airport, departures.'},
-    {group:'Florence · Italian',label:'Where is airline check-in?',native:'Dov’è il banco check-in per il mio volo per Parigi?',english:'Where is the check-in desk for my flight to Paris?'},
-    {group:'Florence · Italian',label:'My bag / boarding passes',native:'Può controllare se il mio bagaglio è registrato fino a Cleveland? Posso avere tutte le carte d’imbarco disponibili?',english:'Can you check whether my bag is checked to Cleveland? Can I get all available boarding passes?'},
-    {group:'Florence · Italian',label:'Help with security / gate',native:'Mi scusi, non trovo i controlli di sicurezza o il gate. Può aiutarmi?',english:'Excuse me, I cannot find security or my gate. Can you help me?'},
-    {group:'Paris · French',label:'I am connecting to Detroit',native:'Je suis en correspondance pour Détroit, puis Cleveland. Où dois-je aller ?',english:'I am connecting to Detroit, then Cleveland. Where should I go?'},
-    {group:'Paris · French',label:'Where is passport control?',native:'Où se trouve le contrôle des passeports pour mon vol vers les États-Unis ?',english:'Where is passport control for my flight to the United States?'},
-    {group:'Paris · French',label:'I cannot find my gate',native:'Je ne trouve pas ma porte d’embarquement. Pouvez-vous me montrer le chemin ?',english:'I cannot find my boarding gate. Can you show me the way?'},
-    {group:'Paris · French',label:'My connection is very tight',native:'Ma correspondance est très courte. Je risque de manquer mon vol. Pouvez-vous m’aider tout de suite ?',english:'My connection is very tight and I may miss my flight. Can you help me immediately?'},
-    {group:'Paris · French',label:'I missed my flight',native:'J’ai manqué ma correspondance. Où est le comptoir de transfert de ma compagnie aérienne ?',english:'I missed my connection. Where is my airline’s transfer desk?'},
-    {group:'Any airport · English',label:'I need step-by-step assistance',native:'I am traveling alone and need step-by-step help getting to my next flight. Could you please show me exactly where to go?',english:'Please point me toward the correct desk, gate, or connection route.'},
-    {group:'Detroit · English',label:'Where do I pick up my bag?',native:'I just arrived internationally and I am connecting to Cleveland. Do I need to collect my checked bag here for customs, or is it being handled automatically?',english:'Ask CBP or airline staff; do not assume either bag procedure.'},
-    {group:'Detroit · English',label:'Where do I recheck my suitcase?',native:'I have cleared customs and I’m connecting to Cleveland. Where is the baggage recheck counter and where do I go for TSA security?',english:'Show the baggage tag if needed.'},
-    {group:'Customs · English',label:'I have items to declare',native:'I would like to declare the items I brought back from Italy. I have food and purchases, and I can show you the items and receipts.',english:'Only state categories you actually have; answer any follow-up questions truthfully.'},
-    {group:'Any airport · English',label:'Please help me rebook',native:'My connecting flight was delayed or missed. This is one ticket to Cleveland. Can you help me get rebooked on the next available itinerary and confirm what happens to my luggage?',english:'Show itinerary and baggage tag.'},
-    {group:'Any airport · English',label:'I need a printed boarding pass',native:'I cannot access my boarding pass on my phone. Could you please print it for me and confirm the gate and boarding time?',english:'Show passport and reservation.'},
-    {group:'Any airport · English',label:'I need help with a lost bag',native:'My checked suitcase did not arrive. I have my baggage claim receipt. Please help me file a missing baggage report before I leave the airport.',english:'Request a tracking reference number.'}
-  ];
+  {
+    "group": "Florence · Italian",
+    "label": "Please take me to Florence airport",
+    "native": "Per favore, mi porti all’aeroporto di Firenze, alla zona partenze.",
+    "english": "Please take me to Florence Airport, departures."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Where is my taxi?",
+    "native": "Ho prenotato un taxi. Dove devo aspettarlo?",
+    "english": "I booked a taxi. Where should I wait?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Please call me a taxi",
+    "native": "Può chiamarmi un taxi ufficiale per l’aeroporto, per favore?",
+    "english": "Could you call a licensed taxi to the airport?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I have a very early flight",
+    "native": "Il mio volo parte molto presto. A che ora devo lasciare l’hotel?",
+    "english": "My flight leaves very early. When should I leave the hotel?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Can I pay by card?",
+    "native": "Posso pagare con carta di credito?",
+    "english": "Can I pay by credit card?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "How much will the taxi cost?",
+    "native": "Quanto costa la corsa fino all’aeroporto?",
+    "english": "How much is the ride to the airport?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I am flying to Paris",
+    "native": "Ho un volo per Parigi e poi proseguo per Detroit e Cleveland.",
+    "english": "I am flying to Paris, then Detroit and Cleveland."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Where is the check-in desk?",
+    "native": "Dov’è il banco del check-in per il mio volo per Parigi?",
+    "english": "Where is check-in for my Paris flight?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I need all boarding passes",
+    "native": "Può stampare tutte le carte d’imbarco disponibili per il mio viaggio fino a Cleveland?",
+    "english": "Can you print all available boarding passes to Cleveland?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Check my checked bag",
+    "native": "Può confermare la destinazione finale del mio bagaglio registrato?",
+    "english": "Can you confirm the final destination on my checked-bag tag?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "What about bags in Detroit?",
+    "native": "Devo ritirare e registrare di nuovo il bagaglio a Detroit?",
+    "english": "Will I need to collect and recheck my bag in Detroit?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "My boarding pass is missing",
+    "native": "Non riesco ad accedere alla mia carta d’imbarco. Può aiutarmi a stamparla?",
+    "english": "I cannot access my boarding pass. Please help me print it."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Where is security?",
+    "native": "Dove si trovano i controlli di sicurezza?",
+    "english": "Where is security screening?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Where is my departure gate?",
+    "native": "Non trovo il mio gate. Può indicarmi la strada?",
+    "english": "I cannot find my gate. Can you show me?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Is this the correct line?",
+    "native": "È questa la fila giusta per il mio volo?",
+    "english": "Is this the correct line for my flight?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Can you help me immediately?",
+    "native": "Sono in difficoltà e viaggio da solo. Può aiutarmi, per favore?",
+    "english": "I need assistance and am traveling alone. Could you help me?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I might miss my flight",
+    "native": "Rischio di perdere il volo. Può aiutarmi subito a trovare il banco della compagnia aerea?",
+    "english": "I may miss my flight. Please help me find my airline desk now."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "My flight has been canceled",
+    "native": "Il mio volo è stato cancellato. Dove posso farmi riprenotare?",
+    "english": "My flight was canceled. Where can I get rebooked?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "My suitcase is missing",
+    "native": "Non trovo la mia valigia. Dove si trova l’ufficio bagagli smarriti?",
+    "english": "I cannot find my suitcase. Where is baggage services?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "My phone does not work",
+    "native": "Il mio telefono non funziona e non ho accesso a Internet. Può aiutarmi?",
+    "english": "My phone is not working and I have no internet. Can you help?"
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I lost my passport",
+    "native": "Ho perso il passaporto. Mi può aiutare a contattare la polizia aeroportuale?",
+    "english": "I lost my passport. Please help me contact airport police."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "I need medical assistance",
+    "native": "Ho bisogno di assistenza medica, per favore.",
+    "english": "I need medical assistance, please."
+  },
+  {
+    "group": "Florence · Italian",
+    "label": "Please speak slowly",
+    "native": "Non parlo bene italiano. Può parlare lentamente o scrivere le istruzioni?",
+    "english": "I do not speak Italian well. Please speak slowly or write instructions."
+  },
+  {
+    "group": "Paris · French",
+    "label": "I have a connection to Detroit",
+    "native": "Je suis en correspondance pour Détroit, puis Cleveland. Où dois-je aller ?",
+    "english": "I am connecting to Detroit, then Cleveland. Where should I go?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Where are flight connections?",
+    "native": "Où se trouve le parcours des correspondances ?",
+    "english": "Where is the flight connections route?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "I must stay in transit",
+    "native": "Je suis en transit. Je ne veux pas sortir de l’aéroport. Quel chemin dois-je suivre ?",
+    "english": "I am connecting and do not want to exit the airport. Which way?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Where is passport control?",
+    "native": "Où se trouve le contrôle des passeports pour les vols vers les États-Unis ?",
+    "english": "Where is passport control for U.S. flights?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Where is security screening?",
+    "native": "Dois-je passer un contrôle de sécurité ? Où dois-je aller ?",
+    "english": "Do I need security screening, and where is it?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Find my terminal",
+    "native": "Quel est le terminal de mon vol pour Détroit ?",
+    "english": "Which terminal is my flight to Detroit in?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Find my boarding gate",
+    "native": "Je ne trouve pas ma porte d’embarquement. Pouvez-vous me montrer le chemin ?",
+    "english": "I cannot find my boarding gate. Please show me the way."
+  },
+  {
+    "group": "Paris · French",
+    "label": "Is this the right shuttle?",
+    "native": "Cette navette va-t-elle au terminal de mon vol pour Détroit ?",
+    "english": "Does this shuttle go to my Detroit departure terminal?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Is this the correct line?",
+    "native": "Est-ce la bonne file pour mon vol vers Détroit ?",
+    "english": "Is this the right line for my Detroit flight?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Is my flight on time?",
+    "native": "Mon vol pour Détroit est-il à l’heure ? À quelle porte dois-je aller ?",
+    "english": "Is my Detroit flight on time? Which gate?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "My connection is very tight",
+    "native": "Ma correspondance est très courte. Je risque de manquer mon vol. Aidez-moi, s’il vous plaît.",
+    "english": "My connection is tight. I may miss the flight. Please help."
+  },
+  {
+    "group": "Paris · French",
+    "label": "I missed my connection",
+    "native": "J’ai manqué ma correspondance. Où se trouve le comptoir de transfert de ma compagnie aérienne ?",
+    "english": "I missed my connection. Where is my airline transfer desk?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "My flight is canceled",
+    "native": "Mon vol a été annulé. Pouvez-vous m’aider à obtenir un autre vol vers Cleveland ?",
+    "english": "My flight is canceled. Can you help rebook me to Cleveland?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "Please confirm my entire itinerary",
+    "native": "Pouvez-vous confirmer tous mes vols jusqu’à Cleveland et m’indiquer les nouvelles portes ?",
+    "english": "Can you confirm all flights to Cleveland and the new gates?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "What happens to my checked bag?",
+    "native": "Où se trouve mon bagage enregistré ? Suivra-t-il mon nouvel itinéraire ?",
+    "english": "Where is my checked luggage? Will it follow my new itinerary?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "I need a boarding pass",
+    "native": "Je n’ai pas ma carte d’embarquement. Pouvez-vous l’imprimer ?",
+    "english": "I do not have my boarding pass. Can you print it?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "I need step-by-step help",
+    "native": "Je voyage seul et je suis perdu. Pouvez-vous m’indiquer exactement où aller ?",
+    "english": "I am traveling alone and lost. Please tell me exactly where to go."
+  },
+  {
+    "group": "Paris · French",
+    "label": "Please speak English or slowly",
+    "native": "Je ne parle pas français. Parlez-vous anglais ? Sinon, pouvez-vous parler lentement ?",
+    "english": "I do not speak French. Do you speak English, or can you speak slowly?"
+  },
+  {
+    "group": "Paris · French",
+    "label": "I cannot use my phone",
+    "native": "Mon téléphone ne fonctionne pas et je n’ai pas Internet. Pouvez-vous m’aider ?",
+    "english": "My phone does not work and I have no internet. Please help."
+  },
+  {
+    "group": "Paris · French",
+    "label": "I lost my passport",
+    "native": "J’ai perdu mon passeport. Pouvez-vous m’aider à contacter la police de l’aéroport ?",
+    "english": "I lost my passport. Please help me contact airport police."
+  },
+  {
+    "group": "Paris · French",
+    "label": "I need medical help",
+    "native": "J’ai besoin d’une assistance médicale immédiate, s’il vous plaît.",
+    "english": "I need immediate medical help, please."
+  },
+  {
+    "group": "Paris · French",
+    "label": "Where is a restroom?",
+    "native": "Où sont les toilettes les plus proches ?",
+    "english": "Where is the nearest restroom?"
+  }
+];
+  // v44: supplemental airport-specific phrases. Offline-first data, no remote request.
+  DENNIS_CARDS.push(
+    {"group": "Florence · Italian", "label": "Where is Air France check-in?", "native": "Dove si trova il banco check-in di Air France per il volo per Parigi?", "english": "Where is Air France check-in for the flight to Paris?"},
+    {"group": "Florence · Italian", "label": "Is this the line for my flight?", "native": "È questa la fila giusta per il volo Air France per Parigi delle 6:50?", "english": "Is this the correct line for the 6:50 Air France flight to Paris?"},
+    {"group": "Florence · Italian", "label": "Check bag to Cleveland", "native": "Il mio itinerario prosegue da Parigi a Detroit e Cleveland. Può controllare fino a dove viene registrato il mio bagaglio?", "english": "I connect through Paris and Detroit to Cleveland. Please confirm my bag’s checked destination."},
+    {"group": "Florence · Italian", "label": "Where will I collect my bag?", "native": "Devo ritirare il bagaglio a Parigi oppure a Detroit? Può verificare l’etichetta?", "english": "Do I collect my luggage in Paris or Detroit? Please verify the bag tag."},
+    {"group": "Florence · Italian", "label": "I need all boarding passes", "native": "Può verificare i miei tre voli e dirmi come ottenere tutte le carte d’imbarco?", "english": "Please check all three flights and tell me how to get all boarding passes."},
+    {"group": "Florence · Italian", "label": "Where is security?", "native": "Dove si trova il controllo di sicurezza per le partenze?", "english": "Where is departure security?"},
+    {"group": "Florence · Italian", "label": "Where is my gate?", "native": "Qual è il gate del mio volo per Parigi? È cambiato?", "english": "What is my gate for Paris? Has it changed?"},
+    {"group": "Florence · Italian", "label": "My flight has a delay", "native": "Il mio volo per Parigi è in ritardo. Riuscirò a prendere la coincidenza per Detroit?", "english": "My flight to Paris is delayed. Will I make my Detroit connection?"},
+    {"group": "Florence · Italian", "label": "I need a written route", "native": "Può scrivermi il numero del gate e le indicazioni, per favore?", "english": "Please write down my gate and directions."},
+    {"group": "Florence · Italian", "label": "My bag is missing", "native": "Il mio bagaglio non è arrivato. Dove posso fare la denuncia?", "english": "My checked bag is missing. Where do I report it?"},
+    {"group": "Paris · French", "label": "Flight DL0229 to Detroit", "native": "Je cherche le vol Delta DL0229 pour Détroit, prévu à 10 h 30. Est-ce toujours au terminal 2E, porte K52 ?", "english": "I am looking for Delta DL0229 to Detroit at 10:30. Is it still at Terminal 2E, gate K52?"},
+    {"group": "Paris · French", "label": "From 2F to K gates", "native": "Je viens d’arriver au terminal 2F de Florence. Pouvez-vous m’indiquer la correspondance vers le terminal 2E, portes K ?", "english": "I arrived at Terminal 2F from Florence. Please direct me to Terminal 2E K gates."},
+    {"group": "Paris · French", "label": "I have only 1h45", "native": "Ma correspondance prévue n’est que d’une heure quarante-cinq. Quel est le chemin le plus direct vers ma porte ?", "english": "My scheduled connection is only 1 hour 45 minutes. What is the most direct route to my gate?"},
+    {"group": "Paris · French", "label": "Is there a priority transfer?", "native": "Mon vol de correspondance part bientôt. Suis-je admissible à une assistance pour correspondance courte ?", "english": "My connecting flight leaves soon. Am I eligible for short-connection assistance?"},
+    {"group": "Paris · French", "label": "Passport exit control", "native": "Où dois-je passer le contrôle de sortie des passeports pour le vol vers Détroit ?", "english": "Where is Schengen exit passport control for my Detroit flight?"},
+    {"group": "Paris · French", "label": "Did my gate change?", "native": "La porte du vol DL0229 a-t-elle changé ? Pouvez-vous vérifier sur votre écran ?", "english": "Did gate for DL0229 change? Can you check your screen?"},
+    {"group": "Paris · French", "label": "Please write down gate", "native": "Pouvez-vous écrire le terminal, la porte et le chemin à suivre, s’il vous plaît ?", "english": "Please write down the terminal, gate and route."},
+    {"group": "Paris · French", "label": "I might miss boarding", "native": "Il reste très peu de temps avant la fin de l’embarquement. Pouvez-vous m’aider immédiatement ?", "english": "There is very little time before boarding closes. Please help immediately."},
+    {"group": "Paris · French", "label": "My inbound flight was late", "native": "Mon vol Air France en provenance de Florence était en retard. J’ai besoin d’aide pour ma correspondance Delta vers Détroit.", "english": "My Air France flight from Florence was late. I need help with my Delta connection to Detroit."},
+    {"group": "Paris · French", "label": "Please rebook through Cleveland", "native": "Si je manque le vol, pouvez-vous me replacer sur un itinéraire confirmé jusqu’à Cleveland et vérifier mon bagage ?", "english": "If I miss the flight, please rebook me all the way to Cleveland and check my bag."},
+    {"group": "Paris · French", "label": "Is this an airside transfer?", "native": "Dois-je rester dans la zone de correspondance sans récupérer mes bagages ?", "english": "Should I remain in the secure transfer area without reclaiming my luggage?"},
+    {"group": "Paris · French", "label": "Where is Delta help?", "native": "Où se trouve le comptoir de correspondance Delta ou le personnel qui peut m’aider pour le vol DL0229 ?", "english": "Where is the Delta transfer desk or staff who can help with DL0229?"},
+    {"group": "Paris · French", "label": "I need wheelchair or mobility help", "native": "J’ai besoin d’aide pour me déplacer rapidement jusqu’à ma porte. Où puis-je demander une assistance ?", "english": "I need help getting to my gate. Where can I request assistance?"}
+  );
   function dennisDone(){try{return JSON.parse(localStorage.getItem('italy2026-dennis-v25-checks')||'{}')}catch(e){return {}}}
   window.dennisToggle=(k,checked)=>{const x=dennisDone();x[k]=checked;localStorage.setItem('italy2026-dennis-v25-checks',JSON.stringify(x));render()};
   window.dennisReset=()=>{if(confirm('Reset Dennis’s travel progress?')){localStorage.removeItem('italy2026-dennis-v25-checks');render()}};
   function dennisChecklist(stage){const done=dennisDone();return stage.steps.map(([heading,body],i)=>{const key=stage.id+'-'+i;return `<div class="dennis-task"><label><input type="checkbox" ${done[key]?'checked':''} onchange="dennisToggle('${key}',this.checked)"><b>${esc(heading)}</b></label><p>${esc(body)}</p></div>`}).join('')}
+  window.dennisSavePhraseSheet=()=>{
+    const quote=x=>'"'+String(x??'').replace(/"/g,'""')+'"';
+    const rows=[['Language / area','When to use','Show to staff','English translation'],...DENNIS_CARDS.map(x=>[x.group,x.label,x.native,x.english])];
+    const csv='\ufeff'+rows.map(row=>row.map(quote).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');
+    a.href=url;a.download='Dennis-Airport-Phrase-Sheet-OFFLINE.csv';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  };
   window.dennisCopyCard=i=>{const x=DENNIS_CARDS[i];if(x)copyText(x.native)};
   window.dennisShowCard=i=>{const x=DENNIS_CARDS[i];if(!x)return;const modal=document.createElement('div');modal.className='dennis-card-overlay';modal.id='dennis-card-overlay';modal.innerHTML=`<div class="dennis-card-popup" role="dialog" aria-modal="true"><button class="dennis-card-close" onclick="document.getElementById('dennis-card-overlay').remove()">✕ Close</button><p class="dennis-card-group">${esc(x.group)}</p><h2>${esc(x.label)}</h2><div class="dennis-native">${esc(x.native)}</div><p>${esc(x.english)}</p><button class="pill-btn" onclick="dennisCopyCard(${i})">Copy text</button></div>`;modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});document.body.appendChild(modal)};
+  const DENNIS_MAPS = {"flr": {"title": "FLORENCE (FLR)", "local": "airport-flr-offline.svg", "url": "https://www.toscana-aeroporti.com/console/sites/default/files/2025-06/20250424-Firenze_ENG_2025.pdf"}, "cdg": {"title": "PARIS (CDG)", "local": "airport-cdg-offline.svg", "url": "https://www.parisaeroport.fr/docs/default-source/passager-fichiers/plans/terminal_2f-2g.pdf?sfvrsn=58ddf1bd_6"}, "dtw": {"title": "DETROIT (DTW)", "local": "airport-dtw-offline.svg", "url": "https://metroairport.com/at-dtw/maps"}, "cle": {"title": "CLEVELAND (CLE)", "local": "airport-cle-offline.svg", "url": "https://www.clevelandairport.com/sites/default/files/cle_digital_map_vertical_1_8_2024%20%281%29.pdf"}};
+  window.dennisShowMap=k=>{const m=DENNIS_MAPS[k];if(!m)return;const modal=document.createElement('div');modal.className='dennis-map-overlay';modal.innerHTML=`<div class="dennis-map-window" role="dialog" aria-modal="true"><button class="pill-btn" onclick="this.closest('.dennis-map-overlay').remove()">✕ Close map</button><p><b>${esc(m.title)}</b> · English start-to-finish route guide (not a floor plan)</p><div class="dennis-map-scroll"><img alt="${esc(m.title)} route guide" src="${m.local}"/></div><p>Follow live airport signs and monitors for actual gates.</p></div>`;modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});document.body.appendChild(modal)};
+
+  const CDG_PLAYBOOK = [
+    ['BEFORE THE FLORENCE FLIGHT','Current itinerary: Air France-operated DL8565, FLR 6:50 AM → CDG 8:45 AM, arriving Terminal 2F. Next is Delta-operated DL0229 at 10:30 AM from Terminal 2E K52 (as last shown). At Florence airline check-in, ask for boarding passes for FLR → CDG, CDG → DTW and DTW → CLE. Photograph the baggage tag and confirm whether the bag is tagged all the way to CLE. Confirm the operating airlines and actual Paris layover. If the second boarding pass cannot be issued, ask where the Air France connection desk at CDG can print it.'],
+    ['BEFORE DESCENT INTO PARIS','Open the Paris → Detroit boarding pass. Write down its flight number, departure time and boarding time. Use airplane Wi-Fi or ask a flight attendant whether the Detroit gate is known; treat any answer as provisional. Keep passport in your own accessible pocket, not overhead luggage.'],
+    ['AS SOON AS YOU STEP OFF THE PLANE','If you see Air France transfer staff holding signs or announcing short connections, tell them you are flying to Detroit. Otherwise follow YELLOW “Correspondances / Flight Connections” signs. Do not follow “Sortie / Exit,” “Bagages / Baggage claim,” trains to Paris, taxis or ordinary public transit. If brought to the terminal on a bus, follow the connection signs after the bus drops you off.'],
+    ['FIND THE CORRECT DETROIT GATE','At last check, DL0229 to Detroit is 10:30 AM from 2E K52. This IS NOT guaranteed: check the newest live display. At the FIRST connections monitor or Air France kiosk, find your CDG → DTW flight number. Record the full gate (letter and numbers, e.g. K/L/M with numbers if assigned). Terminal 2E gates K, L, and M are DIFFERENT boarding areas. Do not blindly follow 2E without choosing the exact boarding area. If the gate is not yet posted, ask the staffed transfer desk or check another live screen frequently.'],
+    ['TAKE THE ROUTE SHOWN FOR YOUR GATE','CURRENT TARGET 2F → 2E K52. Stay in the airside connecting-passenger route. For a common 2F → 2E connection: follow yellow signs toward 2E and the indicated K, L, or M gates. K can involve a walking transfer; L or M may require an airside shuttle/train/bus. Routes and closures change. Use yellow signs and airport staff over any saved map. Never board the public CDGVAL/RER or exit security to find a gate unless staff specifically instructs you.'],
+    ['PASSPORT EXIT CONTROL','Florence → Paris is within Schengen; Paris → Detroit leaves Schengen. Expect French border/police passport control along your transfer. Have your U.S. passport ready, plus boarding pass if requested. Join whichever line staff assigns. If an automated lane is offered and rejects the passport, go to an officer—do not keep retrying. Never photograph the checkpoint.'],
+    ['SECURITY IF DIRECTED','Security screening may or may not be required depending on actual arrival and transfer route. If the yellow signs lead to security, join the transfer line; prepare to remove items as directed. Keep your passport and boarding pass with you. If you see a Short Connection Pass notification or dedicated yellow priority route, show it to staff and follow their guidance. Do not assume priority access without being authorized.'],
+    ['GET TO THE BOARDING GATE FIRST','Current flight is DL0229 operated by DELTA AIR LINES to Detroit, gate K52 as shown on Nov 1. Check the live screen again AFTER border/security screening. Walk to the Detroit gate without a food or shopping stop. Confirm DTW and the exact flight number on the gate display. Ask staff whether the flight is boarding. Boarding closes before the published departure time. Only relax once you have located the correct gate.'],
+    ['BAGGAGE / BOARDING PASS EXCEPTION','With one through-ticket and a CLE-tagged bag, checked luggage normally transfers in Paris automatically. Do not go to the baggage carousel in Paris unless the airline explicitly tells you to. If the bag tag ends at CDG, you have separate tickets, or an airline says your baggage needs attention, show staff the baggage receipt and follow their specific instructions. If no Detroit boarding pass, go immediately to the Air France connections desk/kiosk—not the airport exit.'],
+    ['IF THE FLIGHT ARRIVES LATE','On landing tell the flight attendant or transfer agent: “I have a short connection to Detroit. What is the fastest authorized route?” Ask whether you qualify for Short Connection Pass and follow any designated assistance signs. Keep moving toward the gate, but never skip passport/security or enter restricted passages without permission.'],
+    ['IF LOST OR THE SIGNS DISAGREE','STOP at the nearest staffed Air France transfer/information desk. Show the French “Please direct me to my Detroit connection” card and your Detroit flight number. Ask staff to point to the next sign, not just the general terminal. Take a photo of the sign or write down the next step. Avoid wandering toward baggage claim.'],
+    ['IF THE GATE CHANGES','Follow the newest airport monitor and gate announcements, not a previously saved screenshot. Confirm the changed flight number and full K/L/M area. If the new route is unclear or boarding time is close, ask airport staff for the quickest authorized transfer.'],
+    ['IF YOU MISS THE DETROIT FLIGHT','Go to an Air France transfer/service desk immediately. Say that the prior flight was delayed if that is true. Ask for rebooking to CLEVELAND on the SAME reservation, the new boarding passes, baggage location, and any meals/hotel assistance you qualify for. Do not buy a separate ticket or leave the secured area before talking with the airline. If the flight is canceled, ask the same questions.'],
+    ['IF STRANDED OVERNIGHT','Ask the airline about accommodation, meal vouchers, transport to a hotel, and when to return. Confirm whether passport/border formalities are needed to exit. If you are unable to enter France for any reason, tell the airline agent before going to the exit. Save the new itinerary offline and notify your ride home.'],
+    ['IF THE PHONE / INTERNET FAILS','Use a printed itinerary and airport departure screens; ask uniformed Air France staff with the French show-card. CDG advertises free WIFI-AIRPORT, but these guide steps and the language cards are designed to be saved in the app. A printed boarding pass and passport are the most dependable backups.']
+  ];
+  const CDG_BRANCHES = [
+    ['Gate K','Follow the yellow connection signs for Terminal 2E, gates K; walking may be involved. Expect passport exit control. Exact walking turns are not fixed in this guide.'],
+    ['Gate L','Follow the yellow connection signs for Terminal 2E, gates L; use the signed airside transfer method, which may involve an automated shuttle. Expect passport exit control.'],
+    ['Gate M','Follow the yellow connection signs for Terminal 2E, gates M; use the signed airside transfer method, which may involve a bus or shuttle. Expect passport exit control.'],
+    ['Different terminal / gate','Do NOT force a 2F→2E route. Check the live screen and show the boarding pass to Air France staff for the correct airside transfer.'],
+    ['No gate listed','Go to a transfer screen/kiosk or Air France transfer desk. Do not guess which K/L/M hall is correct.'],
+    ['Very short connection','Ask staff about Short Connection Pass and show any airline-issued priority pass. Never bypass controls without authorization.']
+  ];
+  const CDG_FRENCH_HELP = [
+    ['URGENT: Please help me reach Detroit','Ma correspondance pour Détroit est très courte. Pouvez-vous me montrer le chemin le plus rapide autorisé ?','My connection to Detroit is very short. Can you show me the fastest authorized route?'],
+    ['Which gate and terminal?','Pouvez-vous vérifier le terminal et la porte de mon vol pour Détroit ?','Can you check my Detroit flight’s terminal and gate?'],
+    ['Do I need passport control?','Où se trouve le contrôle des passeports pour mon vol vers Détroit ?','Where is passport control for my Detroit flight?'],
+    ['Am I eligible for priority transfer?','Puis-je bénéficier du passage prioritaire pour une correspondance courte ?','Can I use priority passage for a short connection?'],
+    ['I arrived late and may miss the flight','Mon vol précédent est arrivé en retard et je risque de manquer ma correspondance pour Détroit. Pouvez-vous m’aider ?','My previous flight arrived late and I may miss my Detroit connection. Can you help?'],
+    ['I missed it; rebook me to Cleveland','J’ai manqué mon vol de correspondance. Pouvez-vous me réacheminer jusqu’à Cleveland et vérifier mes bagages ?','I missed my connection. Can you rebook me all the way to Cleveland and check my baggage?'],
+    ['Please direct me one sign at a time','Je suis perdu. Pouvez-vous me montrer la prochaine direction à suivre pour mon vol vers Détroit ?','I am lost. Please show me the next direction to follow for my Detroit flight.']
+  ];
+  function dennisConfirmedFlights(){return `<section class="dennis-details"><h3>✈️ FLIGHT NUMBERS & CURRENT GATES (Nov 1 screenshot)</h3><div class="tip"><b>CHECK MONITORS AGAIN ON NOV 2.</b> A terminal or gate can change. These details are based on the Delta app screenshots, not a live tracking feed.</div><p><b>1 · Florence → Paris:</b> DL8565, operated by <b>AIR FRANCE</b>. FLR 6:50 AM → CDG 8:45 AM. <b>CDG arrival TERMINAL 2F</b> (arrival gate not yet confirmed). Seat 18C. At Florence follow Air France-operated flight check-in and the gate assigned on the departure monitor.</p><p><b>2 · Paris → Detroit:</b> DL0229, operated by <b>DELTA AIR LINES</b>. CDG 10:30 AM, <b>Terminal 2E, K52</b> as last shown → DTW 1:16 PM (shown early). Seat 44G. Paris transfer is <b>1h45</b> scheduled. <b>Boarding closes before departure!</b> Move to K52 promptly, after required passport control.</p><p><b>3 · Detroit → Cleveland:</b> DL4954, operated by <b>ENDEAVOR AIR / DELTA CONNECTION</b>. DTW 5:40 PM, <b>McNamara C11</b> as last shown → CLE 6:36 PM (Cleveland B6B shown). Seat 16B. Verify gate after customs and TSA; it may change.</p></section>`;}
+  function dennisOfficialParisMaps(){return `<section class="dennis-details"><h3>🗺️ Paris official maps — saved offline</h3><p><b>Arrive Terminal 2F</b> (exact arrival gate unassigned in screenshot). <b>Depart Terminal 2E, K52</b> (check live screen). These are cropped official reference maps from provided screenshots; they may be older and are NOT turn-by-turn paths. Pinch-zoom or scroll to inspect.</p><div class="dennis-map-item"><b>2F — arrival concourse reference</b><div class="dennis-map-scroll"><img src="paris-2f-official-reference.jpg" alt="Official Terminal 2F map reference" style="min-width:500px;width:100%;height:auto"></div></div><div class="dennis-map-item"><b>2E — K gates, current departure K52</b><div class="dennis-map-scroll"><img src="paris-2e-k-official-reference.jpg" alt="Official Terminal 2E K gates map reference" style="min-width:500px;width:100%;height:auto"></div></div><div class="tip"><b>Do not walk based on the crop alone:</b> follow yellow Correspondances / Flight Connections signs toward 2E Gates K. Complete passport control as directed and confirm DL0229 and K52 again after the checkpoint. Do not take public CDGVAL or follow baggage claim unless staff directs you.</div></section>`;}
+  function dennisParisDeepDive(){return `<section class="dennis-paris-deep"><div class="tip"><b>PARIS: PRIORITY IS YOUR DETROIT GATE.</b> Gate assignments, timing and even the route can change. The steps below are a decision guide, NOT an exact floor plan. The airline/airport signs and staff always win.</div>${dennisOfficialParisMaps()}<h3>🧭 Paris — step-by-step action order</h3>${CDG_PLAYBOOK.map(([h,b],i)=>`<details class="flight-step" ${i<4?'open':''}><summary>${i+1}. ${esc(h)}</summary><div class="dennis-details"><p>${esc(b)}</p></div></details>`).join('')}<h3>🚦 Which boarding area is on the screen?</h3>${CDG_BRANCHES.map(([h,b])=>`<details class="flight-step"><summary>${esc(h)}</summary><div class="dennis-details"><p>${esc(b)}</p></div></details>`).join('')}<h3>🗣️ Emergency French — tap to show staff</h3>${CDG_FRENCH_HELP.map(([h,fr,en],i)=>`<button type="button" class="dennis-phrase-button" onclick="dennisShowUrgentFrench(${i})"><b>${esc(h)}</b><small>Show full-screen French message</small><span>SHOW CARD ↗</span></button>`).join('')}<div class="tip"><b>If departure is imminent:</b> Seek airline help immediately, but do not push through security or passport control. If your incoming flight causes a missed protected connection, the airline can arrange rerouting. Separate-ticket bookings have different protections.</div></section>`}
+  window.dennisShowUrgentFrench=i=>{const x=CDG_FRENCH_HELP[i];if(!x)return;const modal=document.createElement('div');modal.className='dennis-card-overlay';modal.innerHTML=`<div class="dennis-card-popup" role="dialog" aria-modal="true"><button class="dennis-card-close" onclick="this.closest('.dennis-card-overlay').remove()">✕ Close</button><p>🇫🇷 SHOW THIS TO AIR FRANCE STAFF</p><div class="dennis-native">${esc(x[1])}</div><p>${esc(x[2])}</p></div>`;modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});document.body.appendChild(modal)};
+
   function dennisHomeScreen(){const current=DENNIS_STAGES.find(x=>x.id===route.params.stage);const done=dennisDone();const total=DENNIS_STAGES.reduce((n,x)=>n+x.steps.length,0);const count=DENNIS_STAGES.reduce((n,x)=>n+x.steps.filter((_,i)=>done[x.id+'-'+i]).length,0);return `<section class="screen">${topbar('✈️ Dennis Goes Home')}<div class="content dennis-content">
     <div class="wallet-intro"><h2>Home to Cleveland 🏠</h2><p>Monday, November 2 · Florence → Paris → Detroit → Cleveland<br>Detailed offline instructions · airport help cards · checkpoints.</p></div>
-    <div class="dennis-banner"><b>What do I do next?</b><small>Choose your location · ${count}/${total} steps checked</small><div class="dennis-meter"><span style="width:${100*count/total}%"></span></div></div>
-    <div class="tip"><b>Before leaving:</b> Open Bookings & Tickets to view Dennis’s PRIVATE airline reservation and saved boarding passes. Verify the live flights, times, operating airline, terminal/gate, and baggage handling. The intended Florence–Paris–Detroit–Cleveland routing is a plan and may change; do not follow the wrong route if the airline rebooks you.</div>
-    ${current?`<div class="dennis-details dennis-selected-panel" id="dennis-selected-instructions"><h3>${esc(current.title)}</h3><div class="tip"><b>Read each numbered step below in order. Check it when finished.</b> If anything differs from airline/CBP instructions, follow the employee’s live directions.</div>${dennisChecklist(current)}<button class="pill-btn gray" onclick="go('rome',{},'rome')">← All airports</button></div>`:''}
+    ${dennisConfirmedFlights()}<div class="dennis-banner"><b>What do I do next?</b><small>Choose your location · ${count}/${total} steps checked</small><div class="dennis-meter"><span style="width:${100*count/total}%"></span></div></div>
+    <div class="tip"><b>Before leaving:</b> Open Bookings & Tickets to view Dennis’s PRIVATE airline reservation and saved boarding passes. Verify the live flights, times, operating airline, terminal/gate, and baggage handling. Current screenshot identifies flights DL8565, DL0229, and DL4954; gate assignments may change; do not follow the wrong route if the airline rebooks you.</div>
+    ${current?`<div class="dennis-details dennis-selected-panel" id="dennis-selected-instructions"><h3>${esc(current.title)}</h3><div class="tip"><b>Read each numbered step below in order. Check it when finished.</b> If anything differs from airline/CBP instructions, follow the employee’s live directions.</div>${dennisChecklist(current)}${current.id==='cdg'?dennisParisDeepDive():''}<button class="pill-btn gray" onclick="go('rome',{},'rome')">← All airports</button></div>`:''}
+    <details class="flight-step" open><summary>🗺️ ENGLISH AIRPORT ROUTE GUIDES · OFFLINE</summary><div class="dennis-details"><p><b>These offline diagrams show the full sequence from your starting point to the next plane or airport exit. They are NOT spatial terminal maps or turn-by-turn directions.</b> They help you remember the next area to find. Always check screens and staff for the current gate, terminal and routing.</p>${Object.entries(DENNIS_MAPS).map(([k,m])=>`<div class="dennis-map-item"><b>${esc(m.title)}</b><button class="pill-btn" type="button" onclick="dennisShowMap('${k}')">🗺️ Open English route</button><button class="pill-btn gray" type="button" onclick="openExternal('${m.url}')">Official map online ↗</button></div>`).join('')}</div></details>
     ${DENNIS_STAGES.map(x=>`<button type="button" class="dennis-stage ${current?.id===x.id?'selected':''}" onclick="go('rome',{stage:'${x.id}'},'rome')"><span>${x.icon}</span><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><span>›</span></button>`).join('')}
-    <details class="flight-step" open><summary>💬 LARGE CARDS TO SHOW AIRPORT STAFF · ${DENNIS_CARDS.length} cards</summary><div class="dennis-details"><p>Tap a situation to open a full-screen, large-letter message. These cards work offline once the updated app is installed and cached.</p>${DENNIS_CARDS.map((x,i)=>`<button class="dennis-phrase-button" type="button" onclick="dennisShowCard(${i})"><b>${esc(x.label)}</b><small>${esc(x.group)}</small><span>SHOW CARD ↗</span></button>`).join('')}</div></details>
+    <details class="flight-step" open><summary>💬 ITALIAN & FRENCH SHOW-TO-STAFF CARDS · ${DENNIS_CARDS.length} cards</summary><div class="dennis-details"><p>Florence cards are Italian; Paris cards are French. Show the large translation to airport staff, or copy it. No English-only cards. These cards are stored in the app for offline use once installed and cached.</p><button class="pill-btn" type="button" onclick="dennisSavePhraseSheet()">💾 Save all phrase cards as offline sheet (CSV)</button><p class="small-note">Saved sheet opens in Numbers, Excel or Google Sheets once downloaded. The app cards themselves work offline after caching. This does not synchronize with a live Google Sheet.</p>${DENNIS_CARDS.map((x,i)=>`<button class="dennis-phrase-button" type="button" onclick="dennisShowCard(${i})"><b>${esc(x.label)}</b><small>${esc(x.group)}</small><span>SHOW CARD ↗</span></button>`).join('')}</div></details>
     <details class="flight-step"><summary>🧾 CUSTOMS · what to declare (detailed)</summary><div class="dennis-details"><p><b>Declare truthfully. No hiding food, gifts or alcohol.</b> An officer determines admissibility and duties. Have receipts and totals handy.</p>${DENNIS_DECLARATIONS.map(([a,b])=>`<p><b>${esc(a)}</b><br>${esc(b)}</p>`).join('')}</div></details>
     <details class="flight-step"><summary>🆘 EMERGENCIES · missed flight, baggage, passport, phone</summary><div class="dennis-details"><p><b>Missed connection:</b> Ask the operating airline’s transfer desk for rebooking on the whole trip and confirm where your checked bag is. Save the new boarding passes.</p><p><b>Lost boarding pass:</b> Airline desk can usually reprint with passport and reservation.</p><p><b>Lost bag:</b> Get a missing-baggage report number before leaving the airport; photograph the baggage tag.</p><p><b>Lost passport:</b> Contact airport police and the nearest U.S. embassy or consulate; notify the airline.</p><p><b>Medical emergency:</b> Italy and France 112; United States 911.</p><p><b>Can't connect:</b> Ask uniformed airline/airport staff for gate information. Instructions and translation cards here are static and offline; changing flight details are not.</p></div></details>
     <div class="action-row"><button class="pill-btn" onclick="go('bookings',{},'more')">🔐 Private bookings</button><button class="pill-btn gray" onclick="go('documents',{},'more')">📄 Saved documents</button><button class="pill-btn gray" onclick="go('offline',{},'more')">📱 Offline check</button><button class="pill-btn gray" onclick="dennisReset()">Reset checks</button></div><div class="small-note">No personal airline codes embedded in public files. Public pages are not a substitute for current airline/CBP instructions. Official reference: CBP, Air France and Florence Airport.</div></div>${bottomNav('rome')}</section>`;}
