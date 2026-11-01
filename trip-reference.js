@@ -24,10 +24,9 @@ quickBar:[
 
 navigation:{
 provider:"Apple Maps",
-offlineNote:"Download Rome and Florence offline areas in Apple Maps before the trip.",
+offlineNote:"Download the Florence offline area in Apple Maps; Dennis’s airport route diagrams are also saved inside the app.",
 fallbackNote:"Written planned-route information remains available inside this app offline.",
 downloads:[
-{city:"Rome",statusKey:"appleMapsRome"},
 {city:"Florence",statusKey:"appleMapsFlorence"}
 ]
 },
@@ -37,7 +36,7 @@ offlineChecklist:[
 {id:"trip",label:"Trip plans available offline"},
 {id:"italian",label:"Italian phrases available offline"},
 {id:"progress",label:"Checkmarks and progress save correctly"},
-{id:"rome-map",label:"Rome downloaded in Apple Maps"},
+{id:"dennis-maps",label:"Dennis airport maps available offline"},
 {id:"florence-map",label:"Florence downloaded in Apple Maps"},
 {id:"test",label:"Full Airplane Mode test completed"}
 ],
